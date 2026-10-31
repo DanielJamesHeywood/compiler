@@ -123,7 +123,7 @@ extension ArraySlice<Token> {
         guard let firstToken = popFirst() else {
             throw .unexpectedEndOfFile(expected: .expression)
         }
-        var expression: SyntacticExpression = switch firstToken.kind {
+        var expression = switch firstToken.kind {
         case let .identifier(identifier):
             .identifier(identifier, at: firstToken.location)
         case .selfKeyword:
@@ -132,7 +132,7 @@ extension ArraySlice<Token> {
             .integerLiteral(literal, at: firstToken.location)
         default:
             throw .unexpectedToken(firstToken, expected: .expression)
-        }
+        } as SyntacticExpression
         while let token = first {
             if token.kind == .openingParenthesis, !token.isAtStartOfLine {
                 let arguments = try _parseArguments()
