@@ -167,10 +167,9 @@ extension ArraySlice<Token> {
         guard let firstToken = first else {
             throw .unexpectedEndOfFile(expected: .argument)
         }
-        var label = nil as Identifier?
-        if dropFirst().first?.kind == .colon {
-            label = try _parseIdentifier()
-            removeFirst()
+        let label = dropFirst().first?.kind == .colon ? try _parseIdentifier() : nil
+        if label != nil {
+            try _parseColon()
         }
         let value = try _parseExpression()
         return SyntacticArgument(value, label: label, at: firstToken.location)
