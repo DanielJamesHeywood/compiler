@@ -79,6 +79,25 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     }
     
     @inlinable
+    public static func function(
+        _ name: Identifier,
+        accessLevel: AccessLevel? = nil,
+        isExternal: Bool = false,
+        parameters: [SyntacticParameter],
+        returnType: SyntacticType,
+        @ArrayBuilder<SyntacticStatement> makeBody: () -> [SyntacticStatement]
+    ) -> SyntacticDeclaration {
+        .function(
+            name,
+            accessLevel: accessLevel,
+            isExternal: isExternal,
+            parameters: parameters,
+            returnType: returnType,
+            body: makeBody()
+        )
+    }
+    
+    @inlinable
     public static func initializer(
         accessLevel: AccessLevel? = nil,
         parameters: [SyntacticParameter],
@@ -89,6 +108,19 @@ public struct SyntacticDeclaration: Hashable, Sendable {
             _kind: .initializer(parameters: parameters, body: body),
             accessLevel: accessLevel,
             at: location
+        )
+    }
+
+    @inlinable
+    public static func initializer(
+        accessLevel: AccessLevel? = nil,
+        parameters: [SyntacticParameter],
+        @ArrayBuilder<SyntacticStatement> makeBody: () -> [SyntacticStatement]
+    ) -> SyntacticDeclaration {
+        .initializer(
+            accessLevel: accessLevel,
+            parameters: parameters,
+            body: makeBody()
         )
     }
     
@@ -103,6 +135,19 @@ public struct SyntacticDeclaration: Hashable, Sendable {
             _kind: .structure(name, members: members),
             accessLevel: accessLevel,
             at: location
+        )
+    }
+    
+    @inlinable
+    public static func structure(
+        _ name: Identifier,
+        accessLevel: AccessLevel? = nil,
+        @ArrayBuilder<SyntacticDeclaration> makeMembers: () -> [SyntacticDeclaration]
+    ) -> SyntacticDeclaration {
+        .structure(
+            name,
+            accessLevel: accessLevel,
+            members: makeMembers()
         )
     }
     
