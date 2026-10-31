@@ -25,6 +25,7 @@ public struct ParsingError: Hashable, Error {
         case statement
         case declaration
         case externalDeclaration
+        case accessLevel
         case parameter
     }
     
@@ -88,6 +89,8 @@ extension ParsingError: CustomStringConvertible {
             "a declaration"
         case .externalDeclaration:
             "a declaration that can be external"
+        case .accessLevel:
+            "an access level"
         case .parameter:
             "a parameter"
         }
