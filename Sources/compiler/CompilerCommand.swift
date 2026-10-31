@@ -16,6 +16,57 @@ struct CompilerCommand: ParsableCommand {
             sourcePaths.allSatisfy { $0.extension == "source" },
             "Expected the validated source paths to have extension \"source\""
         )
+        let contentsOfSourceFiles = try sourcePaths.map { path in
+            do {
+                let descriptor = try FileDescriptor.open(path, .readOnly)
+                return try descriptor.closeAfter {
+                    var codeUnits = [] as [UInt8]
+                    var isAtEnd = false
+                    repeat {
+#if os(Windows)
+                        let rawByteCount = try descriptor.seek(offset: 0, from: .end)
+                        try descriptor.seek(offset: Int64(codeUnits.count), from: .start)
+#else
+                        let rawByteCount = try descriptor.stat().size
+#endif
+                        guard let byteCount = Int(exactly: rawByteCount) else {
+                            throw StringError("File is larger than \(Int.max) bytes")
+                        }
+                        codeUnits.reserveCapacity(byteCount)
+                        try codeUnits.append(addingCapacity: codeUnits.capacity - codeUnits.count) { span in
+                            try span.withUnsafeMutableBufferPointer { buffer, initializedCount in
+                                initializedCount = try descriptor.read(into: UnsafeMutableRawBufferPointer(buffer))
+                                if initializedCount == 0 {
+                                    isAtEnd = true
+                                }
+                            }
+                        }
+                    } while !isAtEnd
+                    do throws(UTF8.ValidationError) {
+                        return String(copying: try UTF8Span(validating: codeUnits.span))
+                    } catch {
+                        let message = switch error.kind {
+                        case .invalidNonSurrogateCodePointByte:
+                            "UTF-8 validation failed: Invalid non-surrogate code point byte"
+                        case .overlongEncodingByte:
+                            "UTF-8 validation failed: Overlong encoding byte"
+                        case .surrogateCodePointByte:
+                            "UTF-8 validation failed: Surrogate code point byte"
+                        case .truncatedScalar:
+                            "UTF-8 validation failed: Truncated scalar"
+                        case .unexpectedContinuationByte:
+                            "UTF-8 validation failed: Unexpected continuation byte"
+                        default:
+                            "UTF-8 validation failed"
+                        }
+                        throw StringError(message)
+                    }
+                }
+            } catch {
+                throw StringError("Failed to read '\(path)': \(error)")
+            }
+        }
+        _ = contentsOfSourceFiles
     }
     
     func validate() throws {
