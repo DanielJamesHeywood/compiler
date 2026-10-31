@@ -15,8 +15,8 @@ struct CompilerCommand: ParsableCommand {
     )
     var sourcePaths: [FilePath]
     
-    @Option(help: ArgumentHelp("The target triple.", valueName: "triple"))
-    var targetTriple = llvmDefaultTargetTriple
+    @Option(help: "The target triple.")
+    var triple = llvmDefaultTargetTriple
     
     func run() throws {
         precondition(
@@ -24,7 +24,7 @@ struct CompilerCommand: ParsableCommand {
             "Expected the validated source paths to have extension \"source\""
         )
         llvmInitializeTargetInfos()
-        let target = try LLVMTarget(triple: targetTriple)
+        let target = try LLVMTarget(triple: triple)
         _ = target
         let contentsOfSourceFiles = try sourcePaths.map { path in
             do {
