@@ -4,8 +4,8 @@ public struct SyntacticType: Hashable, Sendable {
     
     public enum Kind: Hashable, Sendable {
         case identifier(Identifier)
-        case primitiveInteger(bitWidth: BitWidth)
-        case primitiveByte(bitWidth: BitWidth)
+        case integerPrimitive(bitWidth: BitWidth)
+        case bytePrimitive(bitWidth: BitWidth)
     }
     
     public let kind: Kind
@@ -24,12 +24,12 @@ public struct SyntacticType: Hashable, Sendable {
     }
 
     @inlinable
-    public static func primitiveInteger(bitWidth: BitWidth) -> SyntacticType {
-        SyntacticType(_kind: .primitiveInteger(bitWidth: bitWidth))
+    public static func integerPrimitive(bitWidth: BitWidth) -> SyntacticType {
+        SyntacticType(_kind: .integerPrimitive(bitWidth: bitWidth))
     }
 
     @inlinable
-    public static func primitiveByte(bitWidth: BitWidth) -> SyntacticType {
-        SyntacticType(_kind: .primitiveByte(bitWidth: bitWidth))
+    public static func bytePrimitive(bitWidth: BitWidth) -> SyntacticType {
+        SyntacticType(_kind: .bytePrimitive(bitWidth: bitWidth))
     }
 }
