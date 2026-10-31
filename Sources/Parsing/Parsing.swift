@@ -230,7 +230,7 @@ extension ArraySlice<Token> {
             let parameters = try _parseParameters()
             try _parseArrow()
             let returnType = try _parseType()
-            let body = try _parseBodyIfPresent()
+            let body = first?.kind == .openingBrace ? try _parseBody() : nil
             return .function(
                 name,
                 accessLevel: accessLevel,
@@ -242,7 +242,7 @@ extension ArraySlice<Token> {
             )
         case .initializerKeyword where !isExternal:
             let parameters = try _parseParameters()
-            let body = try _parseBodyIfPresent()
+            let body = first?.kind == .openingBrace ? try _parseBody() : nil
             return .initializer(
                 accessLevel: accessLevel,
                 parameters: parameters,
@@ -336,15 +336,6 @@ extension ArraySlice<Token> {
         let name = try _parseIdentifier()
         let type = try _parseTypeAnnotation()
         return SyntacticParameter(name, label: label, type: type, at: firstToken.location)
-    }
-    
-    @inlinable
-    internal mutating func _parseBodyIfPresent() throws(ParsingError) -> [SyntacticStatement]? {
-        if first?.kind == .openingBrace {
-            try _parseBody()
-        } else {
-            nil
-        }
     }
     
     @inlinable
