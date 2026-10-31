@@ -203,7 +203,17 @@ extension ArraySlice<Token> {
         guard let firstToken = first else {
             throw .unexpectedEndOfFile(expected: .declaration)
         }
-        let accessLevel = _parseAccessLevelIfPresent()
+        let accessLevel = switch first?.kind {
+        case .publicKeyword:
+            .public
+        case .privateKeyword:
+            .private
+        default:
+            nil
+        } as AccessLevel?
+        if accessLevel != nil {
+            removeFirst()
+        }
         let isExternal = first?.kind == .externalKeyword
         if isExternal {
             removeFirst()
@@ -272,20 +282,6 @@ extension ArraySlice<Token> {
             )
         default:
             throw .unexpectedToken(token, expected: expectation)
-        }
-    }
-    
-    @inlinable
-    internal mutating func _parseAccessLevelIfPresent() -> AccessLevel? {
-        switch first?.kind {
-        case .publicKeyword:
-            removeFirst()
-            return .public
-        case .privateKeyword:
-            removeFirst()
-            return .private
-        default:
-            return nil
         }
     }
     
