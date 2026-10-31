@@ -321,10 +321,7 @@ extension ArraySlice<Token> {
         guard let firstToken = first else {
             throw .unexpectedEndOfFile(expected: .parameter)
         }
-        var label = nil as Identifier?
-        if case .identifier = dropFirst().first?.kind {
-            label = try _parseIdentifier()
-        }
+        let label = if case .identifier = dropFirst().first?.kind { try _parseIdentifier() } else { nil as Identifier? }
         let name = try _parseIdentifier()
         let type = try _parseTypeAnnotation()
         return SyntacticParameter(name, label: label, type: type, at: firstToken.location)
