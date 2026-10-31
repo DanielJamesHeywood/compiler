@@ -6,10 +6,10 @@ public struct SyntacticArgument: Hashable, Sendable {
     
     public let label: Identifier?
     
-    public let location: SourceLocation
+    public let location: SourceLocation?
     
     @inlinable
-    public init(_ value: SyntacticExpression, label: Identifier?, at location: SourceLocation) {
+    public init(_ value: SyntacticExpression, label: Identifier? = nil, at location: SourceLocation? = nil) {
         self.value = value
         self.label = label
         self.location = location

@@ -12,10 +12,10 @@ public struct SyntacticExpression: Hashable, Sendable {
     
     public let kind: Kind
     
-    public let location: SourceLocation
+    public let location: SourceLocation?
     
     @inlinable
-    internal init(_kind: Kind, at location: SourceLocation) {
+    internal init(_kind: Kind, at location: SourceLocation?) {
         self.kind = _kind
         self.location = location
     }
@@ -23,33 +23,31 @@ public struct SyntacticExpression: Hashable, Sendable {
     @inlinable
     public static func identifier(
         _ identifier: Identifier,
-        at location: SourceLocation
-    ) -> SyntacticExpression {
-        SyntacticExpression(_kind: .identifier(identifier), at: location)
-    }
+        at location: SourceLocation? = nil
+    ) -> SyntacticExpression {  SyntacticExpression(_kind: .identifier(identifier), at: location) }
     
     @inlinable
     public static func `self`(
-        at location: SourceLocation
+        at location: SourceLocation? = nil
     ) -> SyntacticExpression { SyntacticExpression(_kind: .self, at: location) }
     
     @inlinable
     public static func integerLiteral(
         _ literal: IntegerLiteral,
-        at location: SourceLocation
+        at location: SourceLocation? = nil
     ) -> SyntacticExpression { SyntacticExpression(_kind: .integerLiteral(literal), at: location) }
     
     @inlinable
     public static func call(
         to function: SyntacticExpression,
         passing arguments: [SyntacticArgument],
-        at location: SourceLocation
+        at location: SourceLocation? = nil
     ) -> SyntacticExpression { SyntacticExpression(_kind: .call(to: function, passing: arguments), at: location) }
     
     @inlinable
     public static func member(
         _ name: Identifier,
         of base: SyntacticExpression,
-        at location: SourceLocation
+        at location: SourceLocation? = nil
     ) -> SyntacticExpression { SyntacticExpression(_kind: .member(name, of: base), at: location) }
 }

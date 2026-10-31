@@ -9,10 +9,10 @@ public struct SyntacticStatement: Hashable, Sendable {
     
     public let kind: Kind
     
-    public let location: SourceLocation
+    public let location: SourceLocation?
     
     @inlinable
-    internal init(_kind: Kind, at location: SourceLocation) {
+    internal init(_kind: Kind, at location: SourceLocation?) {
         self.kind = _kind
         self.location = location
     }
@@ -20,13 +20,13 @@ public struct SyntacticStatement: Hashable, Sendable {
     @inlinable
     public static func `return`(
         of value: SyntacticExpression? = nil,
-        at location: SourceLocation
+        at location: SourceLocation? = nil
     ) -> SyntacticStatement { SyntacticStatement(_kind: .return(of: value), at: location) }
     
     @inlinable
     public static func assignment(
         of source: SyntacticExpression,
         to destination: SyntacticExpression,
-        at location: SourceLocation
+        at location: SourceLocation? = nil
     ) -> SyntacticStatement { SyntacticStatement(_kind: .assignment(of: source, to: destination), at: location) }
 }

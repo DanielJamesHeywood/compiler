@@ -8,16 +8,16 @@ public struct SyntacticType: Hashable, Sendable {
     
     public let kind: Kind
     
-    public let location: SourceLocation
+    public let location: SourceLocation?
     
     @inlinable
-    internal init(_kind: Kind, at location: SourceLocation) {
+    internal init(_kind: Kind, at location: SourceLocation?) {
         self.kind = _kind
         self.location = location
     }
     
     @inlinable
-    public static func identifier(_ identifier: Identifier, at location: SourceLocation) -> SyntacticType {
+    public static func identifier(_ identifier: Identifier, at location: SourceLocation? = nil) -> SyntacticType {
         SyntacticType(_kind: .identifier(identifier), at: location)
     }
 }
