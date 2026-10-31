@@ -216,7 +216,7 @@ extension ArraySlice<Token> {
         case .constantKeyword:
             let name = try _parseIdentifier()
             let type = try _parseTypeAnnotation()
-            let initialValue = try _parseInitialValueIfPresent()
+            let initialValue = first?.kind == .equalsSign ? try _parseInitialValue() : nil
             return .constant(
                 name,
                 accessLevel: accessLevel,
@@ -261,7 +261,7 @@ extension ArraySlice<Token> {
         case .variableKeyword:
             let name = try _parseIdentifier()
             let type = try _parseTypeAnnotation()
-            let initialValue = try _parseInitialValueIfPresent()
+            let initialValue = first?.kind == .equalsSign ? try _parseInitialValue() : nil
             return .variable(
                 name,
                 accessLevel: accessLevel,
@@ -293,15 +293,6 @@ extension ArraySlice<Token> {
     internal mutating func _parseTypeAnnotation() throws(ParsingError) -> SyntacticType {
         try _parseColon()
         return try _parseType()
-    }
-    
-    @inlinable
-    internal mutating func _parseInitialValueIfPresent() throws(ParsingError) -> SyntacticExpression? {
-        if first?.kind == .equalsSign {
-            try _parseInitialValue()
-        } else {
-            nil
-        }
     }
     
     @inlinable
