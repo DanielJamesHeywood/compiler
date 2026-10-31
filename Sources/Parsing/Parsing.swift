@@ -184,10 +184,9 @@ extension ArraySlice<Token> {
         switch firstToken.kind {
         case .returnKeyword:
             removeFirst()
-            guard let token = first, !token.isAtStartOfLine, token.kind != .closingBrace else {
-                return .return(at: firstToken.location)
-            }
-            let value = try _parseExpression()
+            let value = if let token = first, !token.isAtStartOfLine, token.kind != .closingBrace {
+                try _parseExpression()
+            } else { nil as SyntacticExpression? }
             return .return(of: value, at: firstToken.location)
         case .identifier, .selfKeyword, .integerLiteral:
             let destination = try _parseExpression()
