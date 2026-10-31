@@ -8,6 +8,8 @@ public struct SyntacticExpression: Hashable, Sendable {
         case integerLiteral(IntegerLiteral)
         indirect case call(to: SyntacticExpression, passing: [SyntacticArgument])
         indirect case member(Identifier, of: SyntacticExpression)
+        indirect case primitiveTruncation(of: SyntacticExpression, to: SyntacticType)
+        indirect case primitiveBitCast(of: SyntacticExpression, to: SyntacticType)
     }
     
     public let kind: Kind
@@ -15,7 +17,7 @@ public struct SyntacticExpression: Hashable, Sendable {
     public let location: SourceLocation?
     
     @inlinable
-    internal init(_kind: Kind, at location: SourceLocation?) {
+    internal init(_kind: Kind, at location: SourceLocation? = nil) {
         self.kind = _kind
         self.location = location
     }
@@ -50,4 +52,16 @@ public struct SyntacticExpression: Hashable, Sendable {
         of base: SyntacticExpression,
         at location: SourceLocation? = nil
     ) -> SyntacticExpression { SyntacticExpression(_kind: .member(name, of: base), at: location) }
+
+    @inlinable
+    public static func primitiveTruncation(
+        of value: SyntacticExpression,
+        to type: SyntacticType
+    ) -> SyntacticExpression { SyntacticExpression(_kind: .primitiveTruncation(of: value, to: type)) }
+
+    @inlinable
+    public static func primitiveBitCast(
+        of value: SyntacticExpression,
+        to type: SyntacticType
+    ) -> SyntacticExpression { SyntacticExpression(_kind: .primitiveBitCast(of: value, to: type)) }
 }
