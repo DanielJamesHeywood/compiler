@@ -302,10 +302,10 @@ extension ArraySlice<Token> {
         var parameters = [] as [SyntacticParameter]
         try _parseOpeningParenthesis()
         while let token = first, token.kind != .closingParenthesis {
-            parameters.append(try _parseParameter())
-            if first?.kind != .closingParenthesis {
+            if !parameters.isEmpty {
                 try _parseComma()
             }
+            parameters.append(try _parseParameter())
         }
         try _parseClosingParenthesis()
         return parameters
