@@ -17,6 +17,7 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "SystemPackage", package: "swift-system")
             ]
-        )
+        ),
+        .target(name: "Tokens")
     ]
 )
