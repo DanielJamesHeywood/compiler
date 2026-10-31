@@ -15,17 +15,7 @@ public func syntacticDeclarations(for tokens: [Token]) throws(ParsingError) -> [
 }
 
 extension ArraySlice<Token> {
-
-    @inlinable
-    internal mutating func _parse(_ kind: Token.Kind, expected expectation: ParsingError.Expectation) throws(ParsingError) {
-        guard let token = popFirst() else {
-            throw .unexpectedEndOfFile(expected: expectation)
-        }
-        guard token.kind == kind else {
-            throw .unexpectedToken(token, expected: expectation)
-        }
-    }
-
+    
     @inlinable
     internal mutating func _parseIfPresent(_ kind: Token.Kind) -> Bool {
         guard first?.kind == kind else {
@@ -34,7 +24,7 @@ extension ArraySlice<Token> {
         removeFirst()
         return true
     }
-
+    
     @inlinable
     internal mutating func _parseIdentifier() throws(ParsingError) -> Identifier {
         guard let token = popFirst() else {
@@ -45,7 +35,87 @@ extension ArraySlice<Token> {
         }
         return identifier
     }
-
+    
+    @inlinable
+    internal mutating func _parseOpeningParenthesis() throws(ParsingError) {
+        guard let token = popFirst() else {
+            throw .unexpectedEndOfFile(expected: .openingParenthesis)
+        }
+        guard token.kind == .openingParenthesis else {
+            throw .unexpectedToken(token, expected: .openingParenthesis)
+        }
+    }
+    
+    @inlinable
+    internal mutating func _parseClosingParenthesis() throws(ParsingError) {
+        guard let token = popFirst() else {
+            throw .unexpectedEndOfFile(expected: .closingParenthesis)
+        }
+        guard token.kind == .closingParenthesis else {
+            throw .unexpectedToken(token, expected: .closingParenthesis)
+        }
+    }
+    
+    @inlinable
+    internal mutating func _parseOpeningBrace() throws(ParsingError) {
+        guard let token = popFirst() else {
+            throw .unexpectedEndOfFile(expected: .openingBrace)
+        }
+        guard token.kind == .openingBrace else {
+            throw .unexpectedToken(token, expected: .openingBrace)
+        }
+    }
+    
+    @inlinable
+    internal mutating func _parseClosingBrace() throws(ParsingError) {
+        guard let token = popFirst() else {
+            throw .unexpectedEndOfFile(expected: .closingBrace)
+        }
+        guard token.kind == .closingBrace else {
+            throw .unexpectedToken(token, expected: .closingBrace)
+        }
+    }
+    
+    @inlinable
+    internal mutating func _parseComma() throws(ParsingError) {
+        guard let token = popFirst() else {
+            throw .unexpectedEndOfFile(expected: .comma)
+        }
+        guard token.kind == .comma else {
+            throw .unexpectedToken(token, expected: .comma)
+        }
+    }
+    
+    @inlinable
+    internal mutating func _parseColon() throws(ParsingError) {
+        guard let token = popFirst() else {
+            throw .unexpectedEndOfFile(expected: .colon)
+        }
+        guard token.kind == .colon else {
+            throw .unexpectedToken(token, expected: .colon)
+        }
+    }
+    
+    @inlinable
+    internal mutating func _parseEqualsSign() throws(ParsingError) {
+        guard let token = popFirst() else {
+            throw .unexpectedEndOfFile(expected: .equalsSign)
+        }
+        guard token.kind == .equalsSign else {
+            throw .unexpectedToken(token, expected: .equalsSign)
+        }
+    }
+    
+    @inlinable
+    internal mutating func _parseArrow() throws(ParsingError) {
+        guard let token = popFirst() else {
+            throw .unexpectedEndOfFile(expected: .arrow)
+        }
+        guard token.kind == .arrow else {
+            throw .unexpectedToken(token, expected: .arrow)
+        }
+    }
+    
     @inlinable
     internal mutating func _parseType() throws(ParsingError) -> SyntacticType {
         guard let token = popFirst() else {
@@ -56,13 +126,13 @@ extension ArraySlice<Token> {
         }
         return .identifier(identifier, at: token.location)
     }
-
+    
     @inlinable
     internal mutating func _parseTypeAnnotation() throws(ParsingError) -> SyntacticType {
-        try _parse(.colon, expected: .colon)
+        try _parseColon()
         return try _parseType()
     }
-
+    
     @inlinable
     internal mutating func _parseExpression() throws(ParsingError) -> SyntacticExpression {
         guard let firstToken = popFirst() else {
@@ -91,21 +161,21 @@ extension ArraySlice<Token> {
         }
         return expression
     }
-
+    
     @inlinable
     internal mutating func _parseArguments() throws(ParsingError) -> [SyntacticArgument] {
         var arguments = [] as [SyntacticArgument]
-        try _parse(.openingParenthesis, expected: .openingParenthesis)
+        try _parseOpeningParenthesis()
         while let token = first, token.kind != .closingParenthesis {
             arguments.append(try _parseArgument())
             if first?.kind != .closingParenthesis {
-                try _parse(.comma, expected: .comma)
+                try _parseComma()
             }
         }
-        try _parse(.closingParenthesis, expected: .closingParenthesis)
+        try _parseClosingParenthesis()
         return arguments
     }
-
+    
     @inlinable
     internal mutating func _parseArgument() throws(ParsingError) -> SyntacticArgument {
         guard let firstToken = first else {
@@ -119,7 +189,7 @@ extension ArraySlice<Token> {
         let value = try _parseExpression()
         return SyntacticArgument(value, label: label, at: firstToken.location)
     }
-
+    
     @inlinable
     internal mutating func _parseStatement() throws(ParsingError) -> SyntacticStatement {
         guard let firstToken = first else {
@@ -135,14 +205,14 @@ extension ArraySlice<Token> {
             return .return(of: value, at: firstToken.location)
         case .identifier, .selfKeyword, .integerLiteral:
             let destination = try _parseExpression()
-            try _parse(.equalsSign, expected: .equalsSign)
+            try _parseEqualsSign()
             let source = try _parseExpression()
             return .assignment(of: source, to: destination, at: firstToken.location)
         default:
             throw .unexpectedToken(firstToken, expected: .statement)
         }
     }
-
+    
     @inlinable
     internal mutating func _parseDeclaration() throws(ParsingError) -> SyntacticDeclaration {
         guard let firstToken = first else {
@@ -170,7 +240,7 @@ extension ArraySlice<Token> {
         case .functionKeyword:
             let name = try _parseIdentifier()
             let parameters = try _parseParameters()
-            try _parse(.arrow, expected: .arrow)
+            try _parseArrow()
             let returnType = try _parseType()
             let body = try _parseBodyIfPresent()
             return .function(
@@ -216,7 +286,7 @@ extension ArraySlice<Token> {
             throw .unexpectedToken(token, expected: expectation)
         }
     }
-
+    
     @inlinable
     internal mutating func _parseAccessLevelIfPresent() -> AccessLevel? {
         if _parseIfPresent(.publicKeyword) {
@@ -227,7 +297,7 @@ extension ArraySlice<Token> {
             nil
         }
     }
-
+    
     @inlinable
     internal mutating func _parseInitialValueIfPresent() throws(ParsingError) -> SyntacticExpression? {
         if _parseIfPresent(.equalsSign) {
@@ -236,21 +306,21 @@ extension ArraySlice<Token> {
             nil
         }
     }
-
+    
     @inlinable
     internal mutating func _parseParameters() throws(ParsingError) -> [SyntacticParameter] {
         var parameters = [] as [SyntacticParameter]
-        try _parse(.openingParenthesis, expected: .openingParenthesis)
+        try _parseOpeningParenthesis()
         while let token = first, token.kind != .closingParenthesis {
             parameters.append(try _parseParameter())
             if first?.kind != .closingParenthesis {
-                try _parse(.comma, expected: .comma)
+                try _parseComma()
             }
         }
-        try _parse(.closingParenthesis, expected: .closingParenthesis)
+        try _parseClosingParenthesis()
         return parameters
     }
-
+    
     @inlinable
     internal mutating func _parseParameter() throws(ParsingError) -> SyntacticParameter {
         guard let firstToken = first else {
@@ -264,7 +334,7 @@ extension ArraySlice<Token> {
         let type = try _parseTypeAnnotation()
         return SyntacticParameter(name, label: label, type: type, at: firstToken.location)
     }
-
+    
     @inlinable
     internal mutating func _parseBodyIfPresent() throws(ParsingError) -> [SyntacticStatement]? {
         if first?.kind == .openingBrace {
@@ -273,32 +343,32 @@ extension ArraySlice<Token> {
             nil
         }
     }
-
+    
     @inlinable
     internal mutating func _parseBody() throws(ParsingError) -> [SyntacticStatement] {
         var statements = [] as [SyntacticStatement]
-        try _parse(.openingBrace, expected: .openingBrace)
+        try _parseOpeningBrace()
         while let token = first, token.kind != .closingBrace {
             if !token.isAtStartOfLine, !statements.isEmpty {
                 throw .unexpectedToken(token, expected: .newlineSeparatingConsecutiveStatements)
             }
             statements.append(try _parseStatement())
         }
-        try _parse(.closingBrace, expected: .closingBrace)
+        try _parseClosingBrace()
         return statements
     }
-
+    
     @inlinable
     internal mutating func _parseMembers() throws(ParsingError) -> [SyntacticDeclaration] {
         var members = [] as [SyntacticDeclaration]
-        try _parse(.openingBrace, expected: .openingBrace)
+        try _parseOpeningBrace()
         while let token = first, token.kind != .closingBrace {
             if !token.isAtStartOfLine, !members.isEmpty {
                 throw .unexpectedToken(token, expected: .newlineSeparatingConsecutiveDeclarations)
             }
             members.append(try _parseDeclaration())
         }
-        try _parse(.closingBrace, expected: .closingBrace)
+        try _parseClosingBrace()
         return members
     }
 }
