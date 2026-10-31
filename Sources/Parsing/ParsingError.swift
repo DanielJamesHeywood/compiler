@@ -87,7 +87,7 @@ extension ParsingError: CustomStringConvertible {
         case .declaration:
             "a declaration"
         case .externalDeclaration:
-            "a declaration that can be external"
+            "an external declaration"
         case .parameter:
             "a parameter"
         }
