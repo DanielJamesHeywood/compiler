@@ -153,10 +153,10 @@ extension ArraySlice<Token> {
         var arguments = [] as [SyntacticArgument]
         try _parseOpeningParenthesis()
         while let token = first, token.kind != .closingParenthesis {
-            arguments.append(try _parseArgument())
-            if first?.kind != .closingParenthesis {
+            if !arguments.isEmpty {
                 try _parseComma()
             }
+            arguments.append(try _parseArgument())
         }
         try _parseClosingParenthesis()
         return arguments
