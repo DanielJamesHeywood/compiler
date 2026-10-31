@@ -8,7 +8,8 @@ let package = Package(
     products: [.executable(name: "compiler", targets: ["compiler"])],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-system", from: "1.7.0")
+        .package(url: "https://github.com/apple/swift-system", from: "1.7.0"),
+        .package(path: "../llvm-swift")
     ],
     targets: [
         .executableTarget(
@@ -16,6 +17,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "SystemPackage", package: "swift-system"),
+                .product(name: "LLVM", package: "llvm-swift"),
                 "Lexing",
                 "Parsing"
             ]

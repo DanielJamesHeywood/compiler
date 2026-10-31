@@ -1,5 +1,6 @@
 import ArgumentParser
 import SystemPackage
+import LLVM
 
 import Lexing
 import Parsing
@@ -10,9 +11,12 @@ struct CompilerCommand: ParsableCommand {
     @Argument(
         help: "The paths to the source files.",
         completion: .file(extensions: ["source"]),
-        transform: { FilePath($0) }
+        transform: FilePath.init(_:)
     )
     var sourcePaths: [FilePath]
+    
+    @Option(help: ArgumentHelp("The target triple.", valueName: "triple"))
+    var targetTriple = llvmDefaultTargetTriple
     
     func run() throws {
         precondition(
