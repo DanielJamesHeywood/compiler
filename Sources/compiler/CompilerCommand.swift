@@ -24,22 +24,26 @@ struct CompilerCommand: ParsableCommand {
                     var isAtEnd = false
                     repeat {
 #if os(Windows)
-                        let rawByteCount = try descriptor.seek(offset: 0, from: .end)
+                        let rawFileSize = try descriptor.seek(offset: 0, from: .end)
                         try descriptor.seek(offset: Int64(codeUnits.count), from: .start)
 #else
-                        let rawByteCount = try descriptor.stat().size
+                        let rawFileSize = try descriptor.stat().size
 #endif
-                        guard let byteCount = Int(exactly: rawByteCount) else {
+                        guard let fileSize = Int(exactly: rawFileSize) else {
                             throw StringError("File is larger than \(Int.max) bytes")
                         }
-                        codeUnits.reserveCapacity(byteCount)
-                        try codeUnits.append(addingCapacity: codeUnits.capacity - codeUnits.count) { span in
-                            try span.withUnsafeMutableBufferPointer { buffer, initializedCount in
-                                initializedCount = try descriptor.read(into: UnsafeMutableRawBufferPointer(buffer))
-                                if initializedCount == 0 {
-                                    isAtEnd = true
+                        if codeUnits.count < fileSize {
+                            codeUnits.reserveCapacity(fileSize)
+                            try codeUnits.append(addingCapacity: codeUnits.capacity - codeUnits.count) { span in
+                                try span.withUnsafeMutableBufferPointer { buffer, initializedCount in
+                                    initializedCount = try descriptor.read(into: UnsafeMutableRawBufferPointer(buffer))
+                                    if initializedCount == 0 {
+                                        isAtEnd = true
+                                    }
                                 }
                             }
+                        } else {
+                            isAtEnd = true
                         }
                     } while !isAtEnd
                     do throws(UTF8.ValidationError) {
