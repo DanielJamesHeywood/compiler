@@ -23,6 +23,9 @@ struct CompilerCommand: ParsableCommand {
             sourcePaths.allSatisfy { $0.extension == "source" },
             "Expected the validated source paths to have extension \"source\""
         )
+        llvmInitializeTargetInfos()
+        let target = try LLVMTarget(triple: targetTriple)
+        _ = target
         let contentsOfSourceFiles = try sourcePaths.map { path in
             do {
                 let descriptor = try FileDescriptor.open(path, .readOnly)
