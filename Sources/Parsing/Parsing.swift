@@ -204,7 +204,10 @@ extension ArraySlice<Token> {
             throw .unexpectedEndOfFile(expected: .declaration)
         }
         let accessLevel = _parseAccessLevelIfPresent()
-        let isExternal = _parseExternalKeywordIfPresent()
+        let isExternal = first?.kind == .externalKeyword
+        if isExternal {
+            removeFirst()
+        }
         let expectation: ParsingError.Expectation = isExternal ? .externalDeclaration : .declaration
         guard let token = popFirst() else {
             throw .unexpectedEndOfFile(expected: expectation)
@@ -284,15 +287,6 @@ extension ArraySlice<Token> {
         default:
             return nil
         }
-    }
-    
-    @inlinable
-    internal mutating func _parseExternalKeywordIfPresent() -> Bool {
-        guard first?.kind == .externalKeyword else {
-            return false
-        }
-        removeFirst()
-        return true
     }
     
     @inlinable
