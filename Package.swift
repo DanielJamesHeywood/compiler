@@ -20,6 +20,7 @@ let package = Package(
             ]
         ),
         .target(name: "Lexing", dependencies: ["Tokens"]),
+        .target(name: "Syntax", dependencies: ["Tokens"]),
         .target(name: "Tokens")
     ]
 )
