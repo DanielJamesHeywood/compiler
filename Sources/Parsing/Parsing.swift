@@ -119,12 +119,6 @@ extension ArraySlice<Token> {
     }
     
     @inlinable
-    internal mutating func _parseTypeAnnotation() throws(ParsingError) -> SyntacticType {
-        try _parseColon()
-        return try _parseType()
-    }
-    
-    @inlinable
     internal mutating func _parseExpression() throws(ParsingError) -> SyntacticExpression {
         guard let firstToken = popFirst() else {
             throw .unexpectedEndOfFile(expected: .expression)
@@ -300,6 +294,12 @@ extension ArraySlice<Token> {
         }
         removeFirst()
         return true
+    }
+    
+    @inlinable
+    internal mutating func _parseTypeAnnotation() throws(ParsingError) -> SyntacticType {
+        try _parseColon()
+        return try _parseType()
     }
     
     @inlinable
