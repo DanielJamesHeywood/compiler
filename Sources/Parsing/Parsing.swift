@@ -17,15 +17,6 @@ public func syntacticDeclarations(for tokens: [Token]) throws(ParsingError) -> [
 extension ArraySlice<Token> {
     
     @inlinable
-    internal mutating func _parseIfPresent(_ kind: Token.Kind) -> Bool {
-        guard first?.kind == kind else {
-            return false
-        }
-        removeFirst()
-        return true
-    }
-    
-    @inlinable
     internal mutating func _parseIdentifier() throws(ParsingError) -> Identifier {
         guard let token = popFirst() else {
             throw .unexpectedEndOfFile(expected: .identifier)
@@ -152,7 +143,8 @@ extension ArraySlice<Token> {
             if token.kind == .openingParenthesis, !token.isAtStartOfLine {
                 let arguments = try _parseArguments()
                 expression = .call(to: expression, passing: arguments, at: firstToken.location)
-            } else if _parseIfPresent(.period) {
+            } else if token.kind == .period {
+                removeFirst()
                 let name = try _parseIdentifier()
                 expression = .member(name, of: expression, at: firstToken.location)
             } else {
@@ -219,7 +211,7 @@ extension ArraySlice<Token> {
             throw .unexpectedEndOfFile(expected: .declaration)
         }
         let accessLevel = _parseAccessLevelIfPresent()
-        let isExternal = _parseIfPresent(.externalKeyword)
+        let isExternal = _parseExternalKeywordIfPresent()
         let expectation: ParsingError.Expectation = isExternal ? .externalDeclaration : .declaration
         guard let token = popFirst() else {
             throw .unexpectedEndOfFile(expected: expectation)
@@ -289,22 +281,40 @@ extension ArraySlice<Token> {
     
     @inlinable
     internal mutating func _parseAccessLevelIfPresent() -> AccessLevel? {
-        if _parseIfPresent(.publicKeyword) {
-            .public
-        } else if _parseIfPresent(.privateKeyword) {
-            .private
+        switch first?.kind {
+        case .publicKeyword:
+            removeFirst()
+            return .public
+        case .privateKeyword:
+            removeFirst()
+            return .private
+        default:
+            return nil
+        }
+    }
+    
+    @inlinable
+    internal mutating func _parseExternalKeywordIfPresent() -> Bool {
+        guard first?.kind == .externalKeyword else {
+            return false
+        }
+        removeFirst()
+        return true
+    }
+    
+    @inlinable
+    internal mutating func _parseInitialValueIfPresent() throws(ParsingError) -> SyntacticExpression? {
+        if first?.kind == .equalsSign {
+            try _parseInitialValue()
         } else {
             nil
         }
     }
     
     @inlinable
-    internal mutating func _parseInitialValueIfPresent() throws(ParsingError) -> SyntacticExpression? {
-        if _parseIfPresent(.equalsSign) {
-            try _parseExpression()
-        } else {
-            nil
-        }
+    internal mutating func _parseInitialValue() throws(ParsingError) -> SyntacticExpression {
+        try _parseEqualsSign()
+        return try _parseExpression()
     }
     
     @inlinable
