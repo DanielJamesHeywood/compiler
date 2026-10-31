@@ -226,7 +226,7 @@ extension ArraySlice<Token> {
         case .constantKeyword:
             let name = try _parseIdentifier()
             let type = try _parseTypeAnnotation()
-            let initialValue = first?.kind == .equalsSign ? try _parseInitialValue() : nil
+            let initialValue = first?.kind == .equalsSign ? try _parseInitializerClause() : nil
             return .constant(
                 name,
                 accessLevel: accessLevel,
@@ -271,7 +271,7 @@ extension ArraySlice<Token> {
         case .variableKeyword:
             let name = try _parseIdentifier()
             let type = try _parseTypeAnnotation()
-            let initialValue = first?.kind == .equalsSign ? try _parseInitialValue() : nil
+            let initialValue = first?.kind == .equalsSign ? try _parseInitializerClause() : nil
             return .variable(
                 name,
                 accessLevel: accessLevel,
@@ -292,7 +292,7 @@ extension ArraySlice<Token> {
     }
     
     @inlinable
-    internal mutating func _parseInitialValue() throws(ParsingError) -> SyntacticExpression {
+    internal mutating func _parseInitializerClause() throws(ParsingError) -> SyntacticExpression {
         try _parseEqualsSign()
         return try _parseExpression()
     }
