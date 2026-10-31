@@ -2,6 +2,7 @@ import ArgumentParser
 import SystemPackage
 
 import Lexing
+import Parsing
 
 @main
 struct CompilerCommand: ParsableCommand {
@@ -79,7 +80,14 @@ struct CompilerCommand: ParsableCommand {
                 throw StringError("Failed to compile '\(path)': \(error)")
             }
         }
-        _ = tokensForSourceFiles
+        let syntacticDeclarationsForSourceFiles = try zip(sourcePaths, tokensForSourceFiles).map { path, tokens in
+            do {
+                return try syntacticDeclarations(for: tokens)
+            } catch {
+                throw StringError("Failed to compile '\(path)': \(error)")
+            }
+        }
+        _ = syntacticDeclarationsForSourceFiles
     }
     
     func validate() throws {
