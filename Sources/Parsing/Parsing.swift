@@ -6,7 +6,7 @@ public func syntacticDeclarations(for tokens: [Token]) throws(ParsingError) -> [
     var declarations = [] as [SyntacticDeclaration]
     var unparsedTokens = ArraySlice(tokens)
     while let token = unparsedTokens.first {
-        guard token.isAtStartOfLine else {
+        if !token.isAtStartOfLine, !declarations.isEmpty {
             throw .unexpectedToken(token, expected: .newlineSeparatingConsecutiveDeclarations)
         }
         declarations.append(try unparsedTokens._parseDeclaration())
@@ -279,7 +279,7 @@ extension ArraySlice<Token> {
         var statements = [] as [SyntacticStatement]
         try _parse(.openingBrace, expected: .openingBrace)
         while let token = first, token.kind != .closingBrace {
-            guard token.isAtStartOfLine || statements.isEmpty else {
+            if !token.isAtStartOfLine, !statements.isEmpty {
                 throw .unexpectedToken(token, expected: .newlineSeparatingConsecutiveStatements)
             }
             statements.append(try _parseStatement())
@@ -293,7 +293,7 @@ extension ArraySlice<Token> {
         var members = [] as [SyntacticDeclaration]
         try _parse(.openingBrace, expected: .openingBrace)
         while let token = first, token.kind != .closingBrace {
-            guard token.isAtStartOfLine || members.isEmpty else {
+            if !token.isAtStartOfLine, !members.isEmpty {
                 throw .unexpectedToken(token, expected: .newlineSeparatingConsecutiveDeclarations)
             }
             members.append(try _parseDeclaration())
