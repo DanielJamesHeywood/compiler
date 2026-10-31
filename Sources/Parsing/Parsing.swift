@@ -202,7 +202,17 @@ extension ArraySlice<Token> {
         guard let firstToken = first else {
             throw .unexpectedEndOfFile(expected: .declaration)
         }
-        let accessLevel = [.publicKeyword, .privateKeyword].contains(first?.kind) ? try _parseAccessLevel() : nil
+        let accessLevel = switch firstToken.kind {
+        case .publicKeyword:
+            .public
+        case .privateKeyword:
+            .private
+        default:
+            nil
+        } as AccessLevel?
+        if accessLevel != nil {
+            removeFirst()
+        }
         let isExternal = first?.kind == .externalKeyword
         if isExternal {
             removeFirst()
@@ -213,8 +223,13 @@ extension ArraySlice<Token> {
         switch token.kind {
         case .constantKeyword:
             let name = try _parseIdentifier()
-            let type = try _parseTypeAnnotation()
-            let initialValue = first?.kind == .equalsSign ? try _parseInitializerClause() : nil
+            try _parseColon()
+            let type = try _parseType()
+            let hasInitialValue = first?.kind == .equalsSign
+            if hasInitialValue {
+                removeFirst()
+            }
+            let initialValue = hasInitialValue ? try _parseExpression() : nil
             return .constant(
                 name,
                 accessLevel: accessLevel,
@@ -258,8 +273,13 @@ extension ArraySlice<Token> {
             )
         case .variableKeyword:
             let name = try _parseIdentifier()
-            let type = try _parseTypeAnnotation()
-            let initialValue = first?.kind == .equalsSign ? try _parseInitializerClause() : nil
+            try _parseColon()
+            let type = try _parseType()
+            let hasInitialValue = first?.kind == .equalsSign
+            if hasInitialValue {
+                removeFirst()
+            }
+            let initialValue = hasInitialValue ? try _parseExpression() : nil
             return .variable(
                 name,
                 accessLevel: accessLevel,
@@ -271,33 +291,6 @@ extension ArraySlice<Token> {
         default:
             throw .unexpectedToken(token, expected: isExternal ? .externalDeclaration : .declaration)
         }
-    }
-    
-    @inlinable
-    internal mutating func _parseAccessLevel() throws(ParsingError) -> AccessLevel {
-        guard let token = popFirst() else {
-            throw .unexpectedEndOfFile(expected: .accessLevel)
-        }
-        switch token.kind {
-        case .publicKeyword:
-            return .public
-        case .privateKeyword:
-            return .private
-        default:
-            throw .unexpectedToken(token, expected: .accessLevel)
-        }
-    }
-    
-    @inlinable
-    internal mutating func _parseTypeAnnotation() throws(ParsingError) -> SyntacticType {
-        try _parseColon()
-        return try _parseType()
-    }
-    
-    @inlinable
-    internal mutating func _parseInitializerClause() throws(ParsingError) -> SyntacticExpression {
-        try _parseEqualsSign()
-        return try _parseExpression()
     }
     
     @inlinable
@@ -321,7 +314,8 @@ extension ArraySlice<Token> {
         }
         let label = if case .identifier = dropFirst().first?.kind { try _parseIdentifier() } else { nil as Identifier? }
         let name = try _parseIdentifier()
-        let type = try _parseTypeAnnotation()
+        try _parseColon()
+        let type = try _parseType()
         return SyntacticParameter(name, label: label, type: type, at: firstToken.location)
     }
     
