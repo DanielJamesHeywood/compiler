@@ -207,9 +207,8 @@ extension ArraySlice<Token> {
         if isExternal {
             removeFirst()
         }
-        let expectation: ParsingError.Expectation = isExternal ? .externalDeclaration : .declaration
         guard let token = popFirst() else {
-            throw .unexpectedEndOfFile(expected: expectation)
+            throw .unexpectedEndOfFile(expected: isExternal ? .externalDeclaration : .declaration)
         }
         switch token.kind {
         case .constantKeyword:
@@ -270,7 +269,7 @@ extension ArraySlice<Token> {
                 at: firstToken.location
             )
         default:
-            throw .unexpectedToken(token, expected: expectation)
+            throw .unexpectedToken(token, expected: isExternal ? .externalDeclaration : .declaration)
         }
     }
     
