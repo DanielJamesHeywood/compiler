@@ -15,9 +15,11 @@ let package = Package(
             name: "compiler",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                .product(name: "SystemPackage", package: "swift-system")
+                .product(name: "SystemPackage", package: "swift-system"),
+                "Lexing"
             ]
         ),
+        .target(name: "Lexing", dependencies: ["Tokens"]),
         .target(name: "Tokens")
     ]
 )

@@ -1,5 +1,6 @@
 import ArgumentParser
 import SystemPackage
+import Lexing
 
 @main
 struct CompilerCommand: ParsableCommand {
@@ -70,7 +71,14 @@ struct CompilerCommand: ParsableCommand {
                 throw StringError("Failed to read '\(path)': \(error)")
             }
         }
-        _ = contentsOfSourceFiles
+        let tokensForSourceFiles = try zip(sourcePaths, contentsOfSourceFiles).map { path, contents in
+            do {
+                return try tokens(for: contents)
+            } catch {
+                throw StringError("Failed to compile '\(path)': \(error)")
+            }
+        }
+        _ = tokensForSourceFiles
     }
     
     func validate() throws {
