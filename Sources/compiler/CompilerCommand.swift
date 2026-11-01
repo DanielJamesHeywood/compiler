@@ -29,7 +29,11 @@ struct CompilerCommand: ParsableCommand {
         let target = try LLVMTarget(from: triple)
         let targetMachine = LLVMTargetMachine(target: target, triple: triple)
         let dataLayout = targetMachine.makeDataLayout()
-        _ = dataLayout
+        if dataLayout.pointerSize != 4, dataLayout.pointerSize != 8 {
+            throw StringError(
+                "Expected '\(triple)' to have 4 or 8-byte pointers, but it has \(dataLayout.pointerSize)-byte pointers"
+            )
+        }
         let contentsOfSourceFiles = try sourcePaths.map { path in
             do {
                 let descriptor = try FileDescriptor.open(path, .readOnly)
