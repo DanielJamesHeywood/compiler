@@ -31,7 +31,7 @@ struct CompilerCommand: ParsableCommand {
         let dataLayout = targetMachine.makeDataLayout()
         if dataLayout.pointerSize != 4, dataLayout.pointerSize != 8 {
             throw StringError(
-                "Expected '\(triple)' to have 4 or 8-byte pointers, but it has \(dataLayout.pointerSize)-byte pointers"
+                "Expected '\(triple)' to have 4- or 8-byte pointers, but it has \(dataLayout.pointerSize)-byte pointers"
             )
         }
         let contentsOfSourceFiles = try sourcePaths.map { path in
