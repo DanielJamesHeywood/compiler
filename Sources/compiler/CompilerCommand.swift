@@ -1,6 +1,5 @@
 import ArgumentParser
 import SystemPackage
-import LLVM
 
 import Lexing
 import Parsing
@@ -15,25 +14,11 @@ struct CompilerCommand: ParsableCommand {
     )
     var sourcePaths: [FilePath]
     
-    @Option(help: "The target triple.")
-    var triple = llvmDefaultTargetTriple
-    
     func run() throws {
         precondition(
             sourcePaths.allSatisfy { $0.extension == "source" },
             "Expected the validated source paths to have extension \"source\""
         )
-        llvmInitializeTargetInfos()
-        llvmInitializeTargets()
-        llvmInitializeTargetMachineCodes()
-        let target = try LLVMTarget(from: triple)
-        let targetMachine = LLVMTargetMachine(target: target, triple: triple)
-        let dataLayout = targetMachine.makeDataLayout()
-        if dataLayout.pointerSize != 4, dataLayout.pointerSize != 8 {
-            throw StringError(
-                "Expected '\(triple)' to have 4- or 8-byte pointers, but it has \(dataLayout.pointerSize)-byte pointers"
-            )
-        }
         let contentsOfSourceFiles = try sourcePaths.map { path in
             do {
                 let descriptor = try FileDescriptor.open(path, .readOnly)
