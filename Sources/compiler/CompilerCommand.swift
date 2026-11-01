@@ -28,7 +28,8 @@ struct CompilerCommand: ParsableCommand {
         llvmInitializeTargetMachineCodes()
         let target = try LLVMTarget(from: triple)
         let targetMachine = LLVMTargetMachine(target: target, triple: triple)
-        _ = targetMachine
+        let dataLayout = targetMachine.makeDataLayout()
+        _ = dataLayout
         let contentsOfSourceFiles = try sourcePaths.map { path in
             do {
                 let descriptor = try FileDescriptor.open(path, .readOnly)
