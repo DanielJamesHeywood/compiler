@@ -22,9 +22,13 @@ public var syntacticDeclarationsForStandardLibrary: [SyntacticDeclaration] {
             )
         }
     }
+    SyntacticDeclaration.structure("UnsignedInteger64", accessLevel: .public) {
+        SyntacticDeclaration.variable("value", accessLevel: .private, type: .integerPrimitive(bitWidth: 64))
+    }
     SyntacticDeclaration.structure("IntegerLiteral", accessLevel: .public) {
         SyntacticDeclaration.structure("Words", accessLevel: .public) {
             SyntacticDeclaration.constant("storage", accessLevel: .private, type: .bytePrimitive(bitWidth: 64))
+            SyntacticDeclaration.constant("count", accessLevel: .private, type: .identifier("UnsignedInteger64"))
         }
         SyntacticDeclaration.constant("words", accessLevel: .private, type: .identifier("Words"))
     }
