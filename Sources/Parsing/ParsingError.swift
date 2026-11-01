@@ -21,7 +21,6 @@ public struct ParsingError: Hashable, Error {
         case arrow
         case type
         case expression
-        case argument
         case statement
         case declaration
         case externalDeclaration
@@ -80,8 +79,6 @@ extension ParsingError: CustomStringConvertible {
             "a type"
         case .expression:
             "an expression"
-        case .argument:
-            "an argument"
         case .statement:
             "a statement"
         case .declaration:

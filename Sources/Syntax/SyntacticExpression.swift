@@ -6,7 +6,6 @@ public struct SyntacticExpression: Hashable, Sendable {
         case identifier(Identifier)
         case `self`
         case integerLiteral(IntegerLiteral)
-        indirect case call(to: SyntacticExpression, passing: [SyntacticArgument])
         indirect case member(Identifier, of: SyntacticExpression)
         indirect case primitiveTruncation(of: SyntacticExpression, to: SyntacticType)
         indirect case primitiveBitCast(of: SyntacticExpression, to: SyntacticType)
@@ -38,13 +37,6 @@ public struct SyntacticExpression: Hashable, Sendable {
         _ literal: IntegerLiteral,
         at location: SourceLocation? = nil
     ) -> SyntacticExpression { SyntacticExpression(_kind: .integerLiteral(literal), at: location) }
-    
-    @inlinable
-    public static func call(
-        to function: SyntacticExpression,
-        passing arguments: [SyntacticArgument],
-        at location: SourceLocation? = nil
-    ) -> SyntacticExpression { SyntacticExpression(_kind: .call(to: function, passing: arguments), at: location) }
     
     @inlinable
     public static func member(

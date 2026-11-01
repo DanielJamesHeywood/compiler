@@ -133,46 +133,12 @@ extension ArraySlice<Token> {
         default:
             throw .unexpectedToken(firstToken, expected: .expression)
         } as SyntacticExpression
-        while let token = first {
-            if token.kind == .openingParenthesis, !token.isAtStartOfLine {
-                let arguments = try _parseArguments()
-                expression = .call(to: expression, passing: arguments, at: firstToken.location)
-            } else if token.kind == .period {
-                removeFirst()
-                let name = try _parseIdentifier()
-                expression = .member(name, of: expression, at: firstToken.location)
-            } else {
-                break
-            }
+        while first?.kind == .period {
+            removeFirst()
+            let name = try _parseIdentifier()
+            expression = .member(name, of: expression, at: firstToken.location)
         }
         return expression
-    }
-    
-    @inlinable
-    internal mutating func _parseArguments() throws(ParsingError) -> [SyntacticArgument] {
-        var arguments = [] as [SyntacticArgument]
-        try _parseOpeningParenthesis()
-        while let token = first, token.kind != .closingParenthesis {
-            if !arguments.isEmpty {
-                try _parseComma()
-            }
-            arguments.append(try _parseArgument())
-        }
-        try _parseClosingParenthesis()
-        return arguments
-    }
-    
-    @inlinable
-    internal mutating func _parseArgument() throws(ParsingError) -> SyntacticArgument {
-        guard let firstToken = first else {
-            throw .unexpectedEndOfFile(expected: .argument)
-        }
-        let label = dropFirst().first?.kind == .colon ? try _parseIdentifier() : nil
-        if label != nil {
-            try _parseColon()
-        }
-        let value = try _parseExpression()
-        return SyntacticArgument(value, label: label, at: firstToken.location)
     }
     
     @inlinable
