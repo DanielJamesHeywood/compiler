@@ -1,14 +1,18 @@
+import Syntax
 import Tokens
 
 public final class SemanticStructureDeclaration {
     
     public let name: Identifier
     
+    public let accessLevel: AccessLevel?
+    
     public let location: SourceLocation?
     
     @inlinable
-    public init(_ name: Identifier, at location: SourceLocation?) {
+    public init(_ name: Identifier, accessLevel: AccessLevel?, at location: SourceLocation?) {
         self.name = name
+        self.accessLevel = accessLevel
         self.location = location
     }
 }
