@@ -1,7 +1,7 @@
 import Syntax
 import Tokens
 
-public final class SemanticStructureDeclaration {
+public final class SemanticStructure {
     
     public let name: Identifier
     
@@ -9,23 +9,29 @@ public final class SemanticStructureDeclaration {
     
     public let location: SourceLocation?
     
+    @usableFromInline
+    internal var initializers = [] as [SemanticInitializer]
+    
     @inlinable
     public init(_ name: Identifier, accessLevel: AccessLevel?, at location: SourceLocation?) {
         self.name = name
         self.accessLevel = accessLevel
         self.location = location
     }
-}
-
-extension SemanticStructureDeclaration: Equatable {
     
     @inlinable
-    public static func == (lhs: SemanticStructureDeclaration, rhs: SemanticStructureDeclaration) -> Bool {
-        lhs === rhs
+    public func appendInitializer(accessLevel: AccessLevel?, at location: SourceLocation?) {
+        initializers.append(SemanticInitializer(_of: self, accessLevel: accessLevel, at: location))
     }
 }
 
-extension SemanticStructureDeclaration: Hashable {
+extension SemanticStructure: Equatable {
+    
+    @inlinable
+    public static func == (lhs: SemanticStructure, rhs: SemanticStructure) -> Bool { lhs === rhs }
+}
+
+extension SemanticStructure: Hashable {
     
     @inlinable
     public func hash(into hasher: inout Hasher) {
