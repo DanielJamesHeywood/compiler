@@ -14,7 +14,7 @@ public struct SemanticType: Hashable {
     public let location: SourceLocation?
     
     @inlinable
-    internal init(_kind: Kind, at location: SourceLocation?) {
+    internal init(_kind: Kind, at location: SourceLocation? = nil) {
         self.kind = _kind
         self.location = location
     }
@@ -27,13 +27,11 @@ public struct SemanticType: Hashable {
     
     @inlinable
     public static func integerPrimitive(
-        bitWidth: BitWidth,
-        at location: SourceLocation?
-    ) -> SemanticType { SemanticType(_kind: .integerPrimitive(bitWidth: bitWidth), at: location) }
+        bitWidth: BitWidth
+    ) -> SemanticType { SemanticType(_kind: .integerPrimitive(bitWidth: bitWidth)) }
     
     @inlinable
     public static func bytePrimitive(
-        bitWidth: BitWidth,
-        at location: SourceLocation?
-    ) -> SemanticType { SemanticType(_kind: .bytePrimitive(bitWidth: bitWidth), at: location) }
+        bitWidth: BitWidth
+    ) -> SemanticType { SemanticType(_kind: .bytePrimitive(bitWidth: bitWidth)) }
 }
