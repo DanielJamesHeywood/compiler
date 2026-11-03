@@ -4,6 +4,7 @@ import Tokens
 public struct SemanticType: Hashable {
     
     public enum Kind: Hashable {
+        case structure(Weak<SemanticStructureDeclaration>)
         case integerPrimitive(bitWidth: BitWidth)
         case bytePrimitive(bitWidth: BitWidth)
     }
@@ -19,12 +20,20 @@ public struct SemanticType: Hashable {
     }
     
     @inlinable
-    public static func integerPrimitive(bitWidth: BitWidth, at location: SourceLocation?) -> SemanticType {
-        SemanticType(_kind: .integerPrimitive(bitWidth: bitWidth), at: location)
-    }
+    public static func structure(
+        _ structure: SemanticStructureDeclaration,
+        at location: SourceLocation?
+    ) -> SemanticType { SemanticType(_kind: .structure(Weak(structure)), at: location) }
     
     @inlinable
-    public static func bytePrimitive(bitWidth: BitWidth, at location: SourceLocation?) -> SemanticType {
-        SemanticType(_kind: .bytePrimitive(bitWidth: bitWidth), at: location)
-    }
+    public static func integerPrimitive(
+        bitWidth: BitWidth,
+        at location: SourceLocation?
+    ) -> SemanticType { SemanticType(_kind: .integerPrimitive(bitWidth: bitWidth), at: location) }
+    
+    @inlinable
+    public static func bytePrimitive(
+        bitWidth: BitWidth,
+        at location: SourceLocation?
+    ) -> SemanticType { SemanticType(_kind: .bytePrimitive(bitWidth: bitWidth), at: location) }
 }
