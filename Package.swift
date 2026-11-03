@@ -23,7 +23,7 @@ let package = Package(
         ),
         .target(name: "Lexing", dependencies: ["Tokens"]),
         .target(name: "Parsing", dependencies: ["Syntax", "Tokens"]),
-        .target(name: "Semantics"),
+        .target(name: "Semantics", dependencies: ["Syntax", "Tokens"]),
         .target(name: "StandardLibrary", dependencies: ["Syntax", "Tokens"]),
         .target(name: "Syntax", dependencies: ["Tokens"]),
         .target(name: "Tokens")
