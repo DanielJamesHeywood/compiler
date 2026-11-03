@@ -20,7 +20,9 @@ public final class SemanticStructureDeclaration {
 extension SemanticStructureDeclaration: Equatable {
     
     @inlinable
-    public static func == (lhs: SemanticStructureDeclaration, rhs: SemanticStructureDeclaration) -> Bool { lhs === rhs }
+    public static func == (lhs: SemanticStructureDeclaration, rhs: SemanticStructureDeclaration) -> Bool {
+        lhs === rhs
+    }
 }
 
 extension SemanticStructureDeclaration: Hashable {
