@@ -1,8 +1,8 @@
 import Tokens
 
-public struct SemanticStatement: Hashable, Sendable {
+public struct SemanticStatement: Hashable {
     
-    public enum Kind: Hashable, Sendable {
+    public enum Kind: Hashable {
         case `return`(of: SemanticExpression?)
         case assignment(of: SemanticExpression, to: SemanticExpression)
     }
