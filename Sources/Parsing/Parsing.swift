@@ -191,17 +191,11 @@ extension ArraySlice<Token> {
             let name = try _parseIdentifier()
             try _parseColon()
             let type = try _parseType()
-            let hasInitialValue = first?.kind == .equalsSign
-            if hasInitialValue {
-                removeFirst()
-            }
-            let initialValue = hasInitialValue ? try _parseExpression() : nil
             return .constant(
                 name,
                 accessLevel: accessLevel,
                 isExternal: isExternal,
                 type: type,
-                initialValue: initialValue,
                 at: firstToken.location
             )
         case .functionKeyword:
@@ -241,17 +235,11 @@ extension ArraySlice<Token> {
             let name = try _parseIdentifier()
             try _parseColon()
             let type = try _parseType()
-            let hasInitialValue = first?.kind == .equalsSign
-            if hasInitialValue {
-                removeFirst()
-            }
-            let initialValue = hasInitialValue ? try _parseExpression() : nil
             return .variable(
                 name,
                 accessLevel: accessLevel,
                 isExternal: isExternal,
                 type: type,
-                initialValue: initialValue,
                 at: firstToken.location
             )
         default:

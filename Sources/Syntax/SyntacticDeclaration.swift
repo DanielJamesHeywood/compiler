@@ -6,8 +6,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
         case constant(
             Identifier,
             isExternal: Bool,
-            type: SyntacticType,
-            initialValue: SyntacticExpression?
+            type: SyntacticType
         )
         case function(
             Identifier,
@@ -27,8 +26,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
         case variable(
             Identifier,
             isExternal: Bool,
-            type: SyntacticType,
-            initialValue: SyntacticExpression?
+            type: SyntacticType
         )
     }
     
@@ -51,11 +49,10 @@ public struct SyntacticDeclaration: Hashable, Sendable {
         accessLevel: AccessLevel? = nil,
         isExternal: Bool = false,
         type: SyntacticType,
-        initialValue: SyntacticExpression? = nil,
         at location: SourceLocation? = nil
     ) -> SyntacticDeclaration {
         SyntacticDeclaration(
-            _kind: .constant(name, isExternal: isExternal, type: type, initialValue: initialValue),
+            _kind: .constant(name, isExternal: isExternal, type: type),
             accessLevel: accessLevel,
             at: location
         )
@@ -157,11 +154,10 @@ public struct SyntacticDeclaration: Hashable, Sendable {
         accessLevel: AccessLevel? = nil,
         isExternal: Bool = false,
         type: SyntacticType,
-        initialValue: SyntacticExpression? = nil,
         at location: SourceLocation? = nil
     ) -> SyntacticDeclaration {
         SyntacticDeclaration(
-            _kind: .variable(name, isExternal: isExternal, type: type, initialValue: initialValue),
+            _kind: .variable(name, isExternal: isExternal, type: type),
             accessLevel: accessLevel,
             at: location
         )
