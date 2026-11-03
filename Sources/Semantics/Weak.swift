@@ -1,7 +1,7 @@
 public struct Weak<Object: AnyObject> {
-
+    
     public weak let object: Object?
-
+    
     @inlinable
     public init(_ object: Object) {
         self.object = object
