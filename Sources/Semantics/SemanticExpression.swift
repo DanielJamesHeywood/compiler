@@ -17,6 +17,7 @@ public struct SemanticExpression: Hashable {
     @inlinable
     internal init(_kind: Kind, at location: SourceLocation? = nil) {
         self.kind = _kind
+        self.location = location
     }
     
     @inlinable
