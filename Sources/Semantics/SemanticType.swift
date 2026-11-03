@@ -1,4 +1,5 @@
 import Syntax
+import Tokens
 
 public struct SemanticType: Hashable {
     
@@ -9,9 +10,12 @@ public struct SemanticType: Hashable {
     
     public let kind: Kind
     
+    public let location: SourceLocation?
+    
     @inlinable
-    internal init(_kind: Kind) {
+    internal init(_kind: Kind, at location: SourceLocation?) {
         self.kind = _kind
+        self.location = location
     }
     
     @inlinable
