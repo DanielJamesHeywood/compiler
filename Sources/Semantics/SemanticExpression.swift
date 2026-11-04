@@ -5,9 +5,13 @@ public struct SemanticExpression: Hashable {
     
     public enum Kind: Hashable {
         case constant(Weak<SemanticConstant>)
+        case function(Weak<SemanticFunction>)
         case parameter(Weak<SemanticParameter>)
         case variable(Weak<SemanticVariable>)
         case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
+        indirect case constantMember(Weak<SemanticConstant>, of: SemanticExpression)
+        indirect case functionMember(Weak<SemanticFunction>, of: SemanticExpression)
+        indirect case variableMember(Weak<SemanticVariable>, of: SemanticExpression)
         case integerPrimitive(words: [UInt64], bitWidth: BitWidth)
         case bytePrimitive(words: [UInt64], bitWidth: BitWidth)
         indirect case primitiveTruncation(of: SemanticExpression, to: SemanticType)
@@ -33,6 +37,14 @@ public struct SemanticExpression: Hashable {
     }
     
     @inlinable
+    public static func function(
+        _ function: SemanticFunction,
+        at location: SourceLocation?
+    ) -> SemanticExpression {
+        SemanticExpression(_kind: .function(Weak(function)), at: location)
+    }
+    
+    @inlinable
     public static func parameter(
         _ parameter: SemanticParameter,
         at location: SourceLocation?
@@ -55,6 +67,33 @@ public struct SemanticExpression: Hashable {
         at location: SourceLocation?
     ) -> SemanticExpression {
         SemanticExpression(_kind: .call(toInitializer: Weak(initializer), passing: arguments), at: location)
+    }
+    
+    @inlinable
+    public static func constantMember(
+        _ constant: SemanticConstant,
+        of base: SemanticExpression,
+        at location: SourceLocation?
+    ) -> SemanticExpression {
+        SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
+    }
+    
+    @inlinable
+    public static func functionMember(
+        _ function: SemanticFunction,
+        of base: SemanticExpression,
+        at location: SourceLocation?
+    ) -> SemanticExpression {
+        SemanticExpression(_kind: .functionMember(Weak(function), of: base), at: location)
+    }
+    
+    @inlinable
+    public static func variableMember(
+        _ variable: SemanticVariable,
+        of base: SemanticExpression,
+        at location: SourceLocation?
+    ) -> SemanticExpression {
+        SemanticExpression(_kind: .variableMember(Weak(variable), of: base), at: location)
     }
     
     @inlinable
