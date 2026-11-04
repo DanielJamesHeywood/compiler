@@ -5,8 +5,6 @@ public final class SemanticFunction {
     
     public let name: Identifier
     
-    public let accessLevel: AccessLevel
-    
     public let isExternal: Bool
     
     public let parameters: [SemanticParameter]
@@ -23,14 +21,12 @@ public final class SemanticFunction {
     @inlinable
     internal init(
         _name: Identifier,
-        accessLevel: AccessLevel,
         isExternal: Bool,
         parameters: [SemanticParameter],
         returnType: SemanticType,
         at location: SourceLocation?
     ) {
         self.name = _name
-        self.accessLevel = accessLevel
         self.isExternal = isExternal
         self.parameters = parameters
         self.returnType = returnType
@@ -41,14 +37,12 @@ public final class SemanticFunction {
     @inlinable
     internal init(
         _name: Identifier,
-        accessLevel: AccessLevel,
         parameters: [SemanticParameter],
         returnType: SemanticType,
         in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
         self.name = _name
-        self.accessLevel = accessLevel
         self.isExternal = false
         self.parameters = parameters
         self.returnType = returnType

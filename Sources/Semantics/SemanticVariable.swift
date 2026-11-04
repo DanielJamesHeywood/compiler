@@ -5,8 +5,6 @@ public final class SemanticVariable {
     
     public let name: Identifier
     
-    public let accessLevel: AccessLevel
-    
     public let isExternal: Bool
     
     public let type: SemanticType
@@ -18,13 +16,11 @@ public final class SemanticVariable {
     @inlinable
     internal init(
         _name: Identifier,
-        accessLevel: AccessLevel,
         isExternal: Bool,
         type: SemanticType,
         at location: SourceLocation?
     ) {
         self.name = _name
-        self.accessLevel = accessLevel
         self.isExternal = isExternal
         self.type = type
         self.container = nil
@@ -34,13 +30,11 @@ public final class SemanticVariable {
     @inlinable
     internal init(
         _name: Identifier,
-        accessLevel: AccessLevel,
         type: SemanticType,
         in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
         self.name = _name
-        self.accessLevel = accessLevel
         self.isExternal = false
         self.type = type
         self.container = .structure(Weak(structure))

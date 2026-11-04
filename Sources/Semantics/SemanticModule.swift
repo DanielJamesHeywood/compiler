@@ -16,6 +16,9 @@ public final class SemanticModule {
     internal var _variables = [] as [SemanticVariable]
     
     @inlinable
+    public init() {}
+    
+    @inlinable
     public func appendConstant(
         _ name: Identifier,
         accessLevel: AccessLevel,
@@ -25,7 +28,6 @@ public final class SemanticModule {
     ) -> SemanticConstant {
         let constant = SemanticConstant(
             _name: name,
-            accessLevel: accessLevel,
             isExternal: isExternal,
             type: type,
             at: location
@@ -45,7 +47,6 @@ public final class SemanticModule {
     ) -> SemanticFunction {
         let function = SemanticFunction(
             _name: name,
-            accessLevel: accessLevel,
             isExternal: isExternal,
             parameters: parameters,
             returnType: returnType,
@@ -63,7 +64,6 @@ public final class SemanticModule {
     ) -> SemanticStructure {
         let structure = SemanticStructure(
             _name: name,
-            accessLevel: accessLevel,
             at: location
         )
         _structures.append(structure)
@@ -80,7 +80,6 @@ public final class SemanticModule {
     ) -> SemanticVariable {
         let variable = SemanticVariable(
             _name: name,
-            accessLevel: accessLevel,
             isExternal: isExternal,
             type: type,
             at: location

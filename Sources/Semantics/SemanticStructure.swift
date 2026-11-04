@@ -5,8 +5,6 @@ public final class SemanticStructure {
     
     public let name: Identifier
     
-    public let accessLevel: AccessLevel
-    
     public let location: SourceLocation?
     
     @usableFromInline
@@ -25,9 +23,8 @@ public final class SemanticStructure {
     internal var _variables = [] as [SemanticVariable]
     
     @inlinable
-    internal init(_name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
+    internal init(_name: Identifier, at location: SourceLocation?) {
         self.name = _name
-        self.accessLevel = accessLevel
         self.location = location
     }
     
@@ -40,7 +37,6 @@ public final class SemanticStructure {
     ) -> SemanticConstant {
         let constant = SemanticConstant(
             _name: name,
-            accessLevel: accessLevel,
             type: type,
             in: self,
             at: location
@@ -59,7 +55,6 @@ public final class SemanticStructure {
     ) -> SemanticFunction {
         let function = SemanticFunction(
             _name: name,
-            accessLevel: accessLevel,
             parameters: parameters,
             returnType: returnType,
             in: self,
@@ -76,8 +71,7 @@ public final class SemanticStructure {
         at location: SourceLocation?
     ) -> SemanticInitializer {
         let initializer = SemanticInitializer(
-            _accessLevel: accessLevel,
-            parameters: parameters,
+            _parameters: parameters,
             in: self,
             at: location
         )
@@ -93,7 +87,6 @@ public final class SemanticStructure {
     ) -> SemanticStructure {
         let structure = SemanticStructure(
             _name: name,
-            accessLevel: accessLevel,
             at: location
         )
         _structures.append(structure)
@@ -103,13 +96,11 @@ public final class SemanticStructure {
     @inlinable
     public func appendVariable(
         _ name: Identifier,
-        accessLevel: AccessLevel,
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticVariable {
         let variable = SemanticVariable(
             _name: name,
-            accessLevel: accessLevel,
             type: type,
             in: self,
             at: location
