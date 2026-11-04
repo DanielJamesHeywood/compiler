@@ -16,7 +16,7 @@ public final class SemanticFunction {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal var body = nil as [SemanticStatement]?
+    internal var _body = nil as [SemanticStatement]?
     
     @inlinable
     internal init(
@@ -48,6 +48,14 @@ public final class SemanticFunction {
         self.returnType = returnType
         self.container = .structure(Weak(structure))
         self.location = location
+    }
+    
+    @inlinable
+    public var body: [SemanticStatement]? {
+        get { _body }
+        set {
+            _body = newValue
+        }
     }
 }
 

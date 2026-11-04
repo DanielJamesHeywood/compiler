@@ -10,7 +10,7 @@ public final class SemanticInitializer {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal var body = nil as [SemanticStatement]?
+    internal var _body = nil as [SemanticStatement]?
     
     @inlinable
     internal init(
@@ -21,6 +21,14 @@ public final class SemanticInitializer {
         self.parameters = _parameters
         self.container = .structure(Weak(structure))
         self.location = location
+    }
+    
+    @inlinable
+    public var body: [SemanticStatement]? {
+        get { _body }
+        set {
+            _body = newValue
+        }
     }
 }
 
