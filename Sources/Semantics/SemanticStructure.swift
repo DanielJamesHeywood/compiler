@@ -35,11 +35,10 @@ public final class SemanticStructure {
     public func appendConstant(
         _ name: Identifier,
         accessLevel: AccessLevel?,
-        isExternal: Bool,
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticConstant {
-        let constant = SemanticConstant(name, accessLevel: accessLevel, isExternal: isExternal, type: type, at: location)
+        let constant = SemanticConstant(name, accessLevel: accessLevel, isExternal: false, type: type, at: location)
         _constants.append(constant)
         return constant
     }
@@ -70,11 +69,10 @@ public final class SemanticStructure {
     public func appendVariable(
         _ name: Identifier,
         accessLevel: AccessLevel?,
-        isExternal: Bool,
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticVariable {
-        let variable = SemanticVariable(name, accessLevel: accessLevel, isExternal: isExternal, type: type, at: location)
+        let variable = SemanticVariable(name, accessLevel: accessLevel, isExternal: false, type: type, at: location)
         _variables.append(variable)
         return variable
     }
