@@ -7,6 +7,7 @@ public struct SemanticExpression {
         case constant(Weak<SemanticConstant>)
         case parameter(Weak<SemanticParameter>)
         case variable(Weak<SemanticVariable>)
+        case `self`(ofType: SemanticType)
         case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
         indirect case constantMember(Weak<SemanticConstant>, of: SemanticExpression)
         indirect case variableMember(Weak<SemanticVariable>, of: SemanticExpression)
@@ -50,6 +51,17 @@ public struct SemanticExpression {
     ) -> SemanticExpression {
         precondition(variable.container == nil, "The variable is a member of a structure")
         return SemanticExpression(_kind: .variable(Weak(variable)), at: location)
+    }
+    
+    @inlinable
+    public static func `self`(
+        ofType type: SemanticType,
+        at location: SourceLocation?
+    ) -> SemanticExpression {
+        guard case .structure = type.kind else {
+            preconditionFailure("Expected a structure type")
+        }
+        return SemanticExpression(_kind: .self(ofType: type), at: location)
     }
     
     @inlinable
@@ -134,6 +146,8 @@ public struct SemanticExpression {
             weakParameter.object.type
         case let .variable(weakVariable), let .variableMember(weakVariable, of: _):
             weakVariable.object.type
+        case let .self(ofType: type), let .primitiveTruncation(of: _, to: type), let .primitiveBitCast(of: _, to: type):
+            type
         case let .call(toInitializer: weakInitializer, passing: _):
             switch weakInitializer.object.container {
             case let .structure(weakStructure):
@@ -143,8 +157,6 @@ public struct SemanticExpression {
             .integerPrimitive(bitWidth: bitWidth)
         case let .bytePrimitive(words: _, bitWidth: bitWidth):
             .bytePrimitive(bitWidth: bitWidth)
-        case let .primitiveTruncation(of: _, to: type), let .primitiveBitCast(of: _, to: type):
-            type
         }
     }
 }
