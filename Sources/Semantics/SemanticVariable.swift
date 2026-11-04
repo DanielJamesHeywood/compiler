@@ -14,12 +14,7 @@ public final class SemanticVariable {
     public let location: SourceLocation?
     
     @inlinable
-    internal init(
-        _name: Identifier,
-        isExternal: Bool,
-        type: SemanticType,
-        at location: SourceLocation?
-    ) {
+    internal init(_name: Identifier, isExternal: Bool, type: SemanticType, at location: SourceLocation?) {
         self.name = _name
         self.isExternal = isExternal
         self.type = type
@@ -28,12 +23,7 @@ public final class SemanticVariable {
     }
     
     @inlinable
-    internal init(
-        _name: Identifier,
-        type: SemanticType,
-        in structure: SemanticStructure,
-        at location: SourceLocation?
-    ) {
+    internal init(_name: Identifier, type: SemanticType, in structure: SemanticStructure, at location: SourceLocation?) {
         self.name = _name
         self.isExternal = false
         self.type = type

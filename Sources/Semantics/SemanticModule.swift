@@ -21,7 +21,6 @@ public final class SemanticModule {
     @inlinable
     public func appendConstant(
         _ name: Identifier,
-        accessLevel: AccessLevel,
         isExternal: Bool,
         type: SemanticType,
         at location: SourceLocation?
@@ -39,7 +38,6 @@ public final class SemanticModule {
     @inlinable
     public func appendFunction(
         _ name: Identifier,
-        accessLevel: AccessLevel,
         isExternal: Bool,
         parameters: [SemanticParameter],
         returnType: SemanticType,
@@ -59,7 +57,6 @@ public final class SemanticModule {
     @inlinable
     public func appendStructure(
         _ name: Identifier,
-        accessLevel: AccessLevel,
         at location: SourceLocation?
     ) -> SemanticStructure {
         let structure = SemanticStructure(
@@ -73,7 +70,6 @@ public final class SemanticModule {
     @inlinable
     public func appendVariable(
         _ name: Identifier,
-        accessLevel: AccessLevel,
         isExternal: Bool,
         type: SemanticType,
         at location: SourceLocation?

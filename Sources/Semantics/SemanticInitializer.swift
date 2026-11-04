@@ -13,11 +13,7 @@ public final class SemanticInitializer {
     internal var _body = nil as [SemanticStatement]?
     
     @inlinable
-    internal init(
-        _parameters: [SemanticParameter],
-        in structure: SemanticStructure,
-        at location: SourceLocation?
-    ) {
+    internal init(_parameters: [SemanticParameter], in structure: SemanticStructure, at location: SourceLocation?) {
         self.parameters = _parameters
         self.container = .structure(Weak(structure))
         self.location = location
