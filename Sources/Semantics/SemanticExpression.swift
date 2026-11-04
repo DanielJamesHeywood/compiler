@@ -4,7 +4,9 @@ import Tokens
 public struct SemanticExpression: Hashable {
     
     public enum Kind: Hashable {
+        case constant(Weak<SemanticConstant>)
         case parameter(Weak<SemanticParameter>)
+        case variable(Weak<SemanticVariable>)
         case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
         case integerPrimitive(words: [UInt64], bitWidth: BitWidth)
         case bytePrimitive(words: [UInt64], bitWidth: BitWidth)
@@ -23,11 +25,27 @@ public struct SemanticExpression: Hashable {
     }
     
     @inlinable
+    public static func constant(
+        _ constant: SemanticConstant,
+        at location: SourceLocation?
+    ) -> SemanticExpression {
+        SemanticExpression(_kind: .constant(Weak(constant)), at: location)
+    }
+    
+    @inlinable
     public static func parameter(
         _ parameter: SemanticParameter,
         at location: SourceLocation?
     ) -> SemanticExpression {
         SemanticExpression(_kind: .parameter(Weak(parameter)), at: location)
+    }
+    
+    @inlinable
+    public static func variable(
+        _ variable: SemanticVariable,
+        at location: SourceLocation?
+    ) -> SemanticExpression {
+        SemanticExpression(_kind: .variable(Weak(variable)), at: location)
     }
     
     @inlinable
