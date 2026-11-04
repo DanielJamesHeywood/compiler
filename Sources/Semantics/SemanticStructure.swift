@@ -12,6 +12,9 @@ public final class SemanticStructure {
     @usableFromInline
     internal var _initializers = [] as [SemanticInitializer]
     
+    @usableFromInline
+    internal var _structures = [] as [SemanticStructure]
+    
     @inlinable
     public init(_ name: Identifier, accessLevel: AccessLevel?, at location: SourceLocation?) {
         self.name = name
@@ -28,6 +31,17 @@ public final class SemanticStructure {
         let initializer = SemanticInitializer(_of: self, accessLevel: accessLevel, parameters: parameters, at: location)
         _initializers.append(initializer)
         return initializer
+    }
+    
+    @inlinable
+    public func appendStructure(
+        _ name: Identifier,
+        accessLevel: AccessLevel?,
+        at location: SourceLocation?
+    ) -> SemanticStructure {
+        let structure = SemanticStructure(name, accessLevel: accessLevel, at: location)
+        _structures.append(structure)
+        return structure
     }
 }
 
