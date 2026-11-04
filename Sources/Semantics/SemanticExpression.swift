@@ -112,6 +112,29 @@ public struct SemanticExpression {
     ) -> SemanticExpression {
         SemanticExpression(_kind: .primitiveBitCast(of: value, to: type))
     }
+    
+    @inlinable
+    public var type: SemanticType {
+        switch kind {
+        case let .constant(weakConstant), let .constantMember(weakConstant, of: _):
+            weakConstant.object.type
+        case let .parameter(weakParameter):
+            weakParameter.object.type
+        case let .variable(weakVariable), let .variableMember(weakVariable, of: _):
+            weakVariable.object.type
+        case let .call(toInitializer: weakInitializer, passing: _):
+            switch weakInitializer.object.container {
+            case let .structure(weakStructure):
+                .structure(weakStructure.object, at: nil)
+            }
+        case let .integerPrimitive(words: _, bitWidth: bitWidth):
+            .bytePrimitive(bitWidth: bitWidth)
+        case let .bytePrimitive(words: _, bitWidth: bitWidth):
+            .integerPrimitive(bitWidth: bitWidth)
+        case let .primitiveTruncation(of: _, to: type), let .primitiveBitCast(of: _, to: type):
+            type
+        }
+    }
 }
 
 extension SemanticExpression: Equatable {

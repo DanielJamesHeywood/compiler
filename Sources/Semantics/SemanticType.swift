@@ -20,7 +20,7 @@ public struct SemanticType {
     }
     
     @inlinable
-    public static func structure(_ structure: SemanticStructure, at location: SourceLocation?) -> SemanticType {
+    public static func structure(_ structure: SemanticStructure, at location: SourceLocation? = nil) -> SemanticType {
         SemanticType(_kind: .structure(Weak(structure)), at: location)
     }
     
