@@ -16,15 +16,15 @@ public final class SemanticFunction {
     public let location: SourceLocation?
     
     @inlinable
-    public init(
-        _ name: Identifier,
+    internal init(
+        _name: Identifier,
         accessLevel: AccessLevel?,
-        isExternal: Bool,
+        isExternal: Bool = false,
         parameters: [SemanticParameter],
         returnType: SemanticType,
         at location: SourceLocation?
     ) {
-        self.name = name
+        self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = isExternal
         self.parameters = parameters

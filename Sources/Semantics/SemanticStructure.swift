@@ -25,8 +25,8 @@ public final class SemanticStructure {
     internal var _variables = [] as [SemanticVariable]
     
     @inlinable
-    public init(_ name: Identifier, accessLevel: AccessLevel?, at location: SourceLocation?) {
-        self.name = name
+    internal init(_name: Identifier, accessLevel: AccessLevel?, at location: SourceLocation?) {
+        self.name = _name
         self.accessLevel = accessLevel
         self.location = location
     }
@@ -38,9 +38,34 @@ public final class SemanticStructure {
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticConstant {
-        let constant = SemanticConstant(name, accessLevel: accessLevel, isExternal: false, type: type, at: location)
+        let constant = SemanticConstant(
+            _name: name,
+            accessLevel: accessLevel,
+            type: type,
+            at: location
+        )
         _constants.append(constant)
         return constant
+    }
+    
+    @inlinable
+    public func appendFunction(
+        _ name: Identifier,
+        accessLevel: AccessLevel?,
+        parameters: [SemanticParameter],
+        returnType: SemanticType,
+        at location: SourceLocation?
+    ) -> SemanticFunction {
+        let function =  SemanticFunction(
+            _name: name,
+            accessLevel: accessLevel,
+            parameters: parameters,
+            returnType: returnType,
+            at: location
+        )
+        _functions.append(function)
+        return function
+       
     }
     
     @inlinable
@@ -49,7 +74,11 @@ public final class SemanticStructure {
         parameters: [SemanticParameter],
         at location: SourceLocation?
     ) -> SemanticInitializer {
-        let initializer = SemanticInitializer(accessLevel: accessLevel, parameters: parameters, at: location)
+        let initializer = SemanticInitializer(
+            accessLevel: accessLevel,
+            parameters: parameters,
+            at: location
+        )
         _initializers.append(initializer)
         return initializer
     }
@@ -60,7 +89,11 @@ public final class SemanticStructure {
         accessLevel: AccessLevel?,
         at location: SourceLocation?
     ) -> SemanticStructure {
-        let structure = SemanticStructure(name, accessLevel: accessLevel, at: location)
+        let structure = SemanticStructure(
+            _name: name,
+            accessLevel: accessLevel,
+            at: location
+        )
         _structures.append(structure)
         return structure
     }
@@ -72,7 +105,12 @@ public final class SemanticStructure {
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticVariable {
-        let variable = SemanticVariable(name, accessLevel: accessLevel, isExternal: false, type: type, at: location)
+        let variable = SemanticVariable(
+            _name: name,
+            accessLevel: accessLevel,
+            type: type,
+            at: location
+        )
         _variables.append(variable)
         return variable
     }

@@ -14,14 +14,14 @@ public final class SemanticVariable {
     public let location: SourceLocation?
     
     @inlinable
-    public init(
-        _ name: Identifier,
+    internal init(
+        _name: Identifier,
         accessLevel: AccessLevel?,
-        isExternal: Bool,
+        isExternal: Bool = false,
         type: SemanticType,
         at location: SourceLocation?
     ) {
-        self.name = name
+        self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = isExternal
         self.type = type
