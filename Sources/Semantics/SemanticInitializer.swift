@@ -15,7 +15,7 @@ public final class SemanticInitializer {
     internal init(
         _accessLevel: AccessLevel?,
         parameters: [SemanticParameter],
-        of container: SemanticContainer? = nil,
+        in container: SemanticContainer? = nil,
         at location: SourceLocation?
     ) {
         self.accessLevel = _accessLevel

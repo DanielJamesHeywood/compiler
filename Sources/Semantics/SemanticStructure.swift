@@ -78,7 +78,7 @@ public final class SemanticStructure {
         let initializer = SemanticInitializer(
             _accessLevel: accessLevel,
             parameters: parameters,
-            of: .structure(Weak(self)),
+            in: .structure(Weak(self)),
             at: location
         )
         _initializers.append(initializer)
