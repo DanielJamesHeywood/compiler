@@ -17,6 +17,9 @@ public final class SemanticFunction {
     
     public let location: SourceLocation?
     
+    @usableFromInline
+    internal var body = nil as [SemanticStatement]?
+    
     @inlinable
     internal init(
         _name: Identifier,

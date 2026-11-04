@@ -11,6 +11,9 @@ public final class SemanticInitializer {
     
     public let location: SourceLocation?
     
+    @usableFromInline
+    internal var body = nil as [SemanticStatement]?
+    
     @inlinable
     internal init(
         _accessLevel: AccessLevel?,
