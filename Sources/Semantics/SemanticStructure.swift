@@ -31,7 +31,6 @@ public final class SemanticStructure {
     @inlinable
     public func appendConstant(
         _ name: Identifier,
-        accessLevel: AccessLevel,
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticConstant {
@@ -48,7 +47,6 @@ public final class SemanticStructure {
     @inlinable
     public func appendFunction(
         _ name: Identifier,
-        accessLevel: AccessLevel,
         parameters: [SemanticParameter],
         returnType: SemanticType,
         at location: SourceLocation?
@@ -66,7 +64,6 @@ public final class SemanticStructure {
     
     @inlinable
     public func appendInitializer(
-        accessLevel: AccessLevel,
         parameters: [SemanticParameter],
         at location: SourceLocation?
     ) -> SemanticInitializer {
@@ -82,7 +79,6 @@ public final class SemanticStructure {
     @inlinable
     public func appendStructure(
         _ name: Identifier,
-        accessLevel: AccessLevel,
         at location: SourceLocation?
     ) -> SemanticStructure {
         let structure = SemanticStructure(
