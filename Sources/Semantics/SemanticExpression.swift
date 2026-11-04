@@ -13,6 +13,7 @@ public struct SemanticExpression {
         indirect case variableMember(Weak<SemanticVariable>, of: SemanticExpression)
         case integerPrimitive(words: [UInt64], bitWidth: BitWidth)
         case bytePrimitive(words: [UInt64], bitWidth: BitWidth)
+        case structurePrimitive(Weak<SemanticStructure>, storing: [SemanticExpression])
         indirect case primitiveTruncation(of: SemanticExpression, to: SemanticType)
         indirect case primitiveBitCast(of: SemanticExpression, to: SemanticType)
     }
@@ -122,6 +123,14 @@ public struct SemanticExpression {
     }
     
     @inlinable
+    public static func structurePrimitive(
+        _ structure: SemanticStructure,
+        storing values: [SemanticExpression]
+    ) -> SemanticExpression {
+        SemanticExpression(_kind: .structurePrimitive(Weak(structure), storing: values))
+    }
+    
+    @inlinable
     public static func primitiveTruncation(
         of value: SemanticExpression,
         to type: SemanticType
@@ -157,6 +166,8 @@ public struct SemanticExpression {
             .integerPrimitive(bitWidth: bitWidth)
         case let .bytePrimitive(words: _, bitWidth: bitWidth):
             .bytePrimitive(bitWidth: bitWidth)
+        case let .structurePrimitive(weakStructure, storing: _):
+            .structure(weakStructure.object)
         }
     }
 }
