@@ -68,14 +68,11 @@ public struct SemanticExpression {
         at location: SourceLocation?
     ) -> SemanticExpression {
         guard let container = constant.container else {
-            preconditionFailure("The constant is not a member of a structure")
+            preconditionFailure("Expected the constant to be a member of a structure")
         }
         switch container {
         case let .structure(weakStructure):
-            precondition(
-                base.type.kind == .structure(weakStructure),
-                "The constant is not a member of the type of the base"
-            )
+            precondition(base.type.kind == .structure(weakStructure), "Expected the constant to be a member of the base")
         }
         return SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
     }
@@ -87,14 +84,11 @@ public struct SemanticExpression {
         at location: SourceLocation?
     ) -> SemanticExpression {
         guard let container = variable.container else {
-            preconditionFailure("The variable is not a member of a structure")
+            preconditionFailure("Expected the variable to be a member of a structure")
         }
         switch container {
         case let .structure(weakStructure):
-            precondition(
-                base.type.kind == .structure(weakStructure),
-                "The variable is not a member of the type of the base"
-            )
+            precondition(base.type.kind == .structure(weakStructure), "Expected the variable to be a member of the base")
         }
         return SemanticExpression(_kind: .variableMember(Weak(variable), of: base), at: location)
     }
