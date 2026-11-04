@@ -42,7 +42,7 @@ public final class SemanticStructure {
             _name: name,
             accessLevel: accessLevel,
             type: type,
-            in: .structure(Weak(self)),
+            in: self,
             at: location
         )
         _constants.append(constant)
@@ -62,7 +62,7 @@ public final class SemanticStructure {
             accessLevel: accessLevel,
             parameters: parameters,
             returnType: returnType,
-            in: .structure(Weak(self)),
+            in: self,
             at: location
         )
         _functions.append(function)
@@ -78,7 +78,7 @@ public final class SemanticStructure {
         let initializer = SemanticInitializer(
             _accessLevel: accessLevel,
             parameters: parameters,
-            in: .structure(Weak(self)),
+            in: self,
             at: location
         )
         _initializers.append(initializer)
@@ -111,7 +111,7 @@ public final class SemanticStructure {
             _name: name,
             accessLevel: accessLevel,
             type: type,
-            in: .structure(Weak(self)),
+            in: self,
             at: location
         )
         _variables.append(variable)

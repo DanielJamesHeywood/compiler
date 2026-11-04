@@ -36,14 +36,14 @@ public final class SemanticConstant {
         _name: Identifier,
         accessLevel: AccessLevel?,
         type: SemanticType,
-        in container: SemanticContainer,
+        in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
         self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = false
         self.type = type
-        self.container = container
+        self.container = .structure(Weak(structure))
         self.location = location
     }
 }

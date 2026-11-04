@@ -44,7 +44,7 @@ public final class SemanticFunction {
         accessLevel: AccessLevel?,
         parameters: [SemanticParameter],
         returnType: SemanticType,
-        in container: SemanticContainer,
+        in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
         self.name = _name
@@ -52,7 +52,7 @@ public final class SemanticFunction {
         self.isExternal = false
         self.parameters = parameters
         self.returnType = returnType
-        self.container = container
+        self.container = .structure(Weak(structure))
         self.location = location
     }
 }

@@ -18,12 +18,12 @@ public final class SemanticInitializer {
     internal init(
         _accessLevel: AccessLevel?,
         parameters: [SemanticParameter],
-        in container: SemanticContainer,
+        in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
         self.accessLevel = _accessLevel
         self.parameters = parameters
-        self.container = container
+        self.container = .structure(Weak(structure))
         self.location = location
     }
 }
