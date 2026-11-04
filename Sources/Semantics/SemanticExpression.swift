@@ -67,7 +67,16 @@ public struct SemanticExpression {
         of base: SemanticExpression,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        precondition(constant.container != nil, "The constant is not a member of a structure")
+        guard let container = constant.container else {
+            preconditionFailure("The constant is not a member of a structure")
+        }
+        switch container {
+        case let .structure(weakStructure):
+            precondition(
+                base.type.kind == .structure(weakStructure),
+                "The constant is not a member of the type of the base"
+            )
+        }
         return SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
     }
     
@@ -77,7 +86,16 @@ public struct SemanticExpression {
         of base: SemanticExpression,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        precondition(variable.container != nil, "The variable is not a member of a structure")
+        guard let container = variable.container else {
+            preconditionFailure("The variable is not a member of a structure")
+        }
+        switch container {
+        case let .structure(weakStructure):
+            precondition(
+                base.type.kind == .structure(weakStructure),
+                "The variable is not a member of the type of the base"
+            )
+        }
         return SemanticExpression(_kind: .variableMember(Weak(variable), of: base), at: location)
     }
     
@@ -128,9 +146,9 @@ public struct SemanticExpression {
                 .structure(weakStructure.object, at: nil)
             }
         case let .integerPrimitive(words: _, bitWidth: bitWidth):
-            .bytePrimitive(bitWidth: bitWidth)
-        case let .bytePrimitive(words: _, bitWidth: bitWidth):
             .integerPrimitive(bitWidth: bitWidth)
+        case let .bytePrimitive(words: _, bitWidth: bitWidth):
+            .bytePrimitive(bitWidth: bitWidth)
         case let .primitiveTruncation(of: _, to: type), let .primitiveBitCast(of: _, to: type):
             type
         }
