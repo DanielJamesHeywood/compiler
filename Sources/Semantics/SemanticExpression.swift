@@ -33,7 +33,8 @@ public struct SemanticExpression {
         _ constant: SemanticConstant,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .constant(Weak(constant)), at: location)
+        precondition(constant.container == nil, "The constant is a member of a structure")
+        return SemanticExpression(_kind: .constant(Weak(constant)), at: location)
     }
     
     @inlinable
@@ -41,7 +42,8 @@ public struct SemanticExpression {
         _ function: SemanticFunction,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .function(Weak(function)), at: location)
+        precondition(function.container == nil, "The function is a member of a structure")
+        return SemanticExpression(_kind: .function(Weak(function)), at: location)
     }
     
     @inlinable
@@ -57,7 +59,8 @@ public struct SemanticExpression {
         _ variable: SemanticVariable,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .variable(Weak(variable)), at: location)
+        precondition(variable.container == nil, "The variable is a member of a structure")
+        return SemanticExpression(_kind: .variable(Weak(variable)), at: location)
     }
     
     @inlinable
@@ -75,7 +78,8 @@ public struct SemanticExpression {
         of base: SemanticExpression,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
+        precondition(constant.container != nil, "The constant is not a member of a structure")
+        return SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
     }
     
     @inlinable
@@ -84,7 +88,8 @@ public struct SemanticExpression {
         of base: SemanticExpression,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .functionMember(Weak(function), of: base), at: location)
+        precondition(function.container != nil, "The function is not a member of a structure")
+        return SemanticExpression(_kind: .functionMember(Weak(function), of: base), at: location)
     }
     
     @inlinable
@@ -93,7 +98,8 @@ public struct SemanticExpression {
         of base: SemanticExpression,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .variableMember(Weak(variable), of: base), at: location)
+        precondition(variable.container != nil, "The variable is not a member of a structure")
+        return SemanticExpression(_kind: .variableMember(Weak(variable), of: base), at: location)
     }
     
     @inlinable
