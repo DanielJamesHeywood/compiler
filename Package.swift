@@ -18,11 +18,13 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "SystemPackage", package: "swift-system"),
                 "Lexing",
-                "Parsing"
+                "Parsing",
+                "SemanticAnalysis"
             ]
         ),
         .target(name: "Lexing", dependencies: ["Tokens"]),
         .target(name: "Parsing", dependencies: ["Syntax", "Tokens"]),
+        .target(name: "SemanticAnalysis", dependencies: ["Semantics"]),
         .target(name: "Semantics", dependencies: ["Syntax", "Tokens"]),
         .target(name: "StandardLibrary", dependencies: ["Syntax", "Tokens"]),
         .target(name: "Syntax", dependencies: ["Tokens"]),
