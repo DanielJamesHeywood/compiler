@@ -18,15 +18,30 @@ public final class SemanticConstant {
     @inlinable
     internal init(
         _name: Identifier,
-        accessLevel: AccessLevel?,
-        isExternal: Bool = false,
+        accessLevel: AccessLevel,
+        isExternal: Bool,
         type: SemanticType,
-        in container: SemanticContainer? = nil,
         at location: SourceLocation?
     ) {
         self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = isExternal
+        self.type = type
+        self.container = nil
+        self.location = location
+    }
+    
+    @inlinable
+    internal init(
+        _name: Identifier,
+        accessLevel: AccessLevel?,
+        type: SemanticType,
+        in container: SemanticContainer,
+        at location: SourceLocation?
+    ) {
+        self.name = _name
+        self.accessLevel = accessLevel
+        self.isExternal = false
         self.type = type
         self.container = container
         self.location = location
