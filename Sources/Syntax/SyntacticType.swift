@@ -1,6 +1,6 @@
 import Tokens
 
-public struct SyntacticType: Sendable {
+public struct SyntacticType: Hashable, Sendable {
     
     public enum Kind: Hashable, Sendable {
         case identifier(Identifier)
@@ -31,19 +31,5 @@ public struct SyntacticType: Sendable {
     @inlinable
     public static func bytePrimitive(bitWidth: BitWidth) -> SyntacticType {
         SyntacticType(_kind: .bytePrimitive(bitWidth: bitWidth))
-    }
-}
-
-extension SyntacticType: Equatable {
-    
-    @inlinable
-    public static func == (lhs: SyntacticType, rhs: SyntacticType) -> Bool { lhs.kind == rhs.kind }
-}
-
-extension SyntacticType: Hashable {
-    
-    @inlinable
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(kind)
     }
 }

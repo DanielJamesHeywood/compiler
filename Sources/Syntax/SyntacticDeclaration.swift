@@ -1,6 +1,6 @@
 import Tokens
 
-public struct SyntacticDeclaration: Sendable {
+public struct SyntacticDeclaration: Hashable, Sendable {
     
     public enum Kind: Hashable, Sendable {
         case constant(
@@ -161,22 +161,5 @@ public struct SyntacticDeclaration: Sendable {
             accessLevel: accessLevel,
             at: location
         )
-    }
-}
-
-extension SyntacticDeclaration: Equatable {
-    
-    @inlinable
-    public static func == (lhs: SyntacticDeclaration, rhs: SyntacticDeclaration) -> Bool {
-        lhs.kind == rhs.kind && lhs.accessLevel == rhs.accessLevel
-    }
-}
-
-extension SyntacticDeclaration: Hashable {
-    
-    @inlinable
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(kind)
-        hasher.combine(accessLevel)
     }
 }

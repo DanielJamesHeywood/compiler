@@ -1,6 +1,6 @@
 import Tokens
 
-public struct SyntacticParameter: Sendable {
+public struct SyntacticParameter: Hashable, Sendable {
     
     public let name: Identifier
     
@@ -16,23 +16,5 @@ public struct SyntacticParameter: Sendable {
         self.label = label
         self.type = type
         self.location = location
-    }
-}
-
-extension SyntacticParameter: Equatable {
-    
-    @inlinable
-    public static func == (lhs: SyntacticParameter, rhs: SyntacticParameter) -> Bool {
-        lhs.name == rhs.name && lhs.label == rhs.label && lhs.type == rhs.type
-    }
-}
-
-extension SyntacticParameter: Hashable {
-    
-    @inlinable
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-        hasher.combine(label)
-        hasher.combine(type)
     }
 }
