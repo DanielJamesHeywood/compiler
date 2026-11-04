@@ -56,7 +56,7 @@ public final class SemanticStructure {
         returnType: SemanticType,
         at location: SourceLocation?
     ) -> SemanticFunction {
-        let function =  SemanticFunction(
+        let function = SemanticFunction(
             _name: name,
             accessLevel: accessLevel,
             parameters: parameters,
@@ -65,7 +65,6 @@ public final class SemanticStructure {
         )
         _functions.append(function)
         return function
-       
     }
     
     @inlinable
