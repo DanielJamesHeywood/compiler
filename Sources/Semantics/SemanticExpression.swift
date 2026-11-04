@@ -5,7 +5,7 @@ public struct SemanticExpression: Hashable {
     
     public enum Kind: Hashable {
         case parameter(Weak<SemanticParameter>)
-        case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
+        case call(to: Weak<SemanticInitializer>, passing: [SemanticExpression])
         case integerPrimitive(words: [UInt64], bitWidth: BitWidth)
         case bytePrimitive(words: [UInt64], bitWidth: BitWidth)
         indirect case primitiveTruncation(of: SemanticExpression, to: SemanticType)
@@ -32,11 +32,11 @@ public struct SemanticExpression: Hashable {
     
     @inlinable
     public static func call(
-        toInitializer initializer: Weak<SemanticInitializer>,
+        to initializer: Weak<SemanticInitializer>,
         passing arguments: [SemanticExpression],
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .call(toInitializer: initializer, passing: arguments), at: location)
+        SemanticExpression(_kind: .call(to: initializer, passing: arguments), at: location)
     }
     
     @inlinable
