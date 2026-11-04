@@ -32,7 +32,7 @@ public struct SemanticExpression: Hashable {
     
     @inlinable
     public static func call(
-        to initializer: Weak<SemanticInitializer>,
+        to initializer: SemanticInitializer,
         passing arguments: [SemanticExpression],
         at location: SourceLocation?
     ) -> SemanticExpression {
