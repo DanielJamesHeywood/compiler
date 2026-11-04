@@ -165,7 +165,7 @@ extension ArraySlice<Token> {
     
     @inlinable
     internal mutating func _parseDeclaration() throws(ParsingError) -> SyntacticDeclaration {
-        guard let firstToken = first else {
+        guard let firstToken = popFirst() else {
             throw .unexpectedEndOfFile(expected: .declaration)
         }
         let accessLevel = switch firstToken.kind {
@@ -174,11 +174,8 @@ extension ArraySlice<Token> {
         case .privateKeyword:
             .private
         default:
-            nil
-        } as AccessLevel?
-        if accessLevel != nil {
-            removeFirst()
-        }
+            throw .unexpectedToken(firstToken, expected: .accessLevel)
+        } as AccessLevel
         let isExternal = first?.kind == .externalKeyword
         if isExternal {
             removeFirst()

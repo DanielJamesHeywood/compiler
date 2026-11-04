@@ -32,12 +32,12 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     
     public let kind: Kind
     
-    public let accessLevel: AccessLevel?
+    public let accessLevel: AccessLevel
     
     public let location: SourceLocation?
     
     @inlinable
-    internal init(_kind: Kind, accessLevel: AccessLevel?, at location: SourceLocation?) {
+    internal init(_kind: Kind, accessLevel: AccessLevel, at location: SourceLocation?) {
         self.kind = _kind
         self.accessLevel = accessLevel
         self.location = location
@@ -46,7 +46,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     @inlinable
     public static func constant(
         _ name: Identifier,
-        accessLevel: AccessLevel? = nil,
+        accessLevel: AccessLevel,
         isExternal: Bool = false,
         type: SyntacticType,
         at location: SourceLocation? = nil
@@ -61,7 +61,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     @inlinable
     public static func function(
         _ name: Identifier,
-        accessLevel: AccessLevel? = nil,
+        accessLevel: AccessLevel,
         isExternal: Bool = false,
         parameters: [SyntacticParameter],
         returnType: SyntacticType,
@@ -78,7 +78,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     @inlinable
     public static func function(
         _ name: Identifier,
-        accessLevel: AccessLevel? = nil,
+        accessLevel: AccessLevel,
         isExternal: Bool = false,
         parameters: [SyntacticParameter],
         returnType: SyntacticType,
@@ -96,7 +96,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     
     @inlinable
     public static func initializer(
-        accessLevel: AccessLevel? = nil,
+        accessLevel: AccessLevel,
         parameters: [SyntacticParameter],
         body: [SyntacticStatement]? = nil,
         at location: SourceLocation? = nil
@@ -110,7 +110,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
 
     @inlinable
     public static func initializer(
-        accessLevel: AccessLevel? = nil,
+        accessLevel: AccessLevel,
         parameters: [SyntacticParameter],
         @ArrayBuilder<SyntacticStatement> makeBody: () -> [SyntacticStatement]
     ) -> SyntacticDeclaration {
@@ -124,7 +124,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     @inlinable
     public static func structure(
         _ name: Identifier,
-        accessLevel: AccessLevel? = nil,
+        accessLevel: AccessLevel,
         members: [SyntacticDeclaration],
         at location: SourceLocation? = nil
     ) -> SyntacticDeclaration {
@@ -138,7 +138,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     @inlinable
     public static func structure(
         _ name: Identifier,
-        accessLevel: AccessLevel? = nil,
+        accessLevel: AccessLevel,
         @ArrayBuilder<SyntacticDeclaration> makeMembers: () -> [SyntacticDeclaration]
     ) -> SyntacticDeclaration {
         .structure(
@@ -151,7 +151,7 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     @inlinable
     public static func variable(
         _ name: Identifier,
-        accessLevel: AccessLevel? = nil,
+        accessLevel: AccessLevel,
         isExternal: Bool = false,
         type: SyntacticType,
         at location: SourceLocation? = nil

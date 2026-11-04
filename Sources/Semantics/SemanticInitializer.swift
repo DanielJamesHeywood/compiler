@@ -3,7 +3,7 @@ import Tokens
 
 public final class SemanticInitializer {
     
-    public let accessLevel: AccessLevel?
+    public let accessLevel: AccessLevel
     
     public let parameters: [SemanticParameter]
     
@@ -16,7 +16,7 @@ public final class SemanticInitializer {
     
     @inlinable
     internal init(
-        _accessLevel: AccessLevel?,
+        _accessLevel: AccessLevel,
         parameters: [SemanticParameter],
         in structure: SemanticStructure,
         at location: SourceLocation?

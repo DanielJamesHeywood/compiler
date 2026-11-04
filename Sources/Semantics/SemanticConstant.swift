@@ -5,7 +5,7 @@ public final class SemanticConstant {
     
     public let name: Identifier
     
-    public let accessLevel: AccessLevel?
+    public let accessLevel: AccessLevel
     
     public let isExternal: Bool
     
@@ -34,7 +34,7 @@ public final class SemanticConstant {
     @inlinable
     internal init(
         _name: Identifier,
-        accessLevel: AccessLevel?,
+        accessLevel: AccessLevel,
         type: SemanticType,
         in structure: SemanticStructure,
         at location: SourceLocation?

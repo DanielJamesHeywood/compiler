@@ -5,7 +5,7 @@ public final class SemanticFunction {
     
     public let name: Identifier
     
-    public let accessLevel: AccessLevel?
+    public let accessLevel: AccessLevel
     
     public let isExternal: Bool
     
@@ -41,7 +41,7 @@ public final class SemanticFunction {
     @inlinable
     internal init(
         _name: Identifier,
-        accessLevel: AccessLevel?,
+        accessLevel: AccessLevel,
         parameters: [SemanticParameter],
         returnType: SemanticType,
         in structure: SemanticStructure,

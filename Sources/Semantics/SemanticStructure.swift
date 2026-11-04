@@ -5,7 +5,7 @@ public final class SemanticStructure {
     
     public let name: Identifier
     
-    public let accessLevel: AccessLevel?
+    public let accessLevel: AccessLevel
     
     public let location: SourceLocation?
     
@@ -25,7 +25,7 @@ public final class SemanticStructure {
     internal var _variables = [] as [SemanticVariable]
     
     @inlinable
-    internal init(_name: Identifier, accessLevel: AccessLevel?, at location: SourceLocation?) {
+    internal init(_name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
         self.name = _name
         self.accessLevel = accessLevel
         self.location = location
@@ -34,7 +34,7 @@ public final class SemanticStructure {
     @inlinable
     public func appendConstant(
         _ name: Identifier,
-        accessLevel: AccessLevel?,
+        accessLevel: AccessLevel,
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticConstant {
@@ -52,7 +52,7 @@ public final class SemanticStructure {
     @inlinable
     public func appendFunction(
         _ name: Identifier,
-        accessLevel: AccessLevel?,
+        accessLevel: AccessLevel,
         parameters: [SemanticParameter],
         returnType: SemanticType,
         at location: SourceLocation?
@@ -71,7 +71,7 @@ public final class SemanticStructure {
     
     @inlinable
     public func appendInitializer(
-        accessLevel: AccessLevel?,
+        accessLevel: AccessLevel,
         parameters: [SemanticParameter],
         at location: SourceLocation?
     ) -> SemanticInitializer {
@@ -88,7 +88,7 @@ public final class SemanticStructure {
     @inlinable
     public func appendStructure(
         _ name: Identifier,
-        accessLevel: AccessLevel?,
+        accessLevel: AccessLevel,
         at location: SourceLocation?
     ) -> SemanticStructure {
         let structure = SemanticStructure(
@@ -103,7 +103,7 @@ public final class SemanticStructure {
     @inlinable
     public func appendVariable(
         _ name: Identifier,
-        accessLevel: AccessLevel?,
+        accessLevel: AccessLevel,
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticVariable {
