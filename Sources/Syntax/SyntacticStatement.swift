@@ -1,6 +1,6 @@
 import Tokens
 
-public struct SyntacticStatement: Hashable, Sendable {
+public struct SyntacticStatement: Sendable {
     
     public enum Kind: Hashable, Sendable {
         case `return`(of: SyntacticExpression?)
@@ -29,4 +29,18 @@ public struct SyntacticStatement: Hashable, Sendable {
         to destination: SyntacticExpression,
         at location: SourceLocation? = nil
     ) -> SyntacticStatement { SyntacticStatement(_kind: .assignment(of: source, to: destination), at: location) }
+}
+
+extension SyntacticStatement: Equatable {
+    
+    @inlinable
+    public static func == (lhs: SyntacticStatement, rhs: SyntacticStatement) -> Bool { lhs.kind == rhs.kind }
+}
+    
+extension SyntacticStatement: Hashable {
+    
+    @inlinable
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(kind)
+    }
 }

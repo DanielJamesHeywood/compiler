@@ -1,4 +1,4 @@
-public struct Token: Hashable, Sendable {
+public struct Token: Sendable {
     
     public enum Kind: Hashable, Sendable {
         case identifier(Identifier)
@@ -188,5 +188,22 @@ public struct Token: Hashable, Sendable {
         case .arrow:
             "->"
         }
+    }
+}
+
+extension Token: Equatable {
+    
+    @inlinable
+    public static func == (lhs: Token, rhs: Token) -> Bool {
+        lhs.kind == rhs.kind && lhs.isAtStartOfLine == rhs.isAtStartOfLine
+    }
+}
+
+extension Token: Hashable {
+    
+    @inlinable
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(kind)
+        hasher.combine(isAtStartOfLine)
     }
 }

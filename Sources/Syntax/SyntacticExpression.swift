@@ -1,6 +1,6 @@
 import Tokens
 
-public struct SyntacticExpression: Hashable, Sendable {
+public struct SyntacticExpression: Sendable {
     
     public enum Kind: Hashable, Sendable {
         case identifier(Identifier)
@@ -56,4 +56,18 @@ public struct SyntacticExpression: Hashable, Sendable {
         of value: SyntacticExpression,
         to type: SyntacticType
     ) -> SyntacticExpression { SyntacticExpression(_kind: .primitiveBitCast(of: value, to: type)) }
+}
+
+extension SyntacticExpression: Equatable {
+    
+    @inlinable
+    public static func == (lhs: SyntacticExpression, rhs: SyntacticExpression) -> Bool { lhs.kind == rhs.kind }
+}
+    
+extension SyntacticExpression: Hashable {
+    
+    @inlinable
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(kind)
+    }
 }
