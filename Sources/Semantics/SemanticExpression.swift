@@ -5,12 +5,10 @@ public struct SemanticExpression {
     
     public enum Kind: Hashable {
         case constant(Weak<SemanticConstant>)
-        case function(Weak<SemanticFunction>)
         case parameter(Weak<SemanticParameter>)
         case variable(Weak<SemanticVariable>)
         case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
         indirect case constantMember(Weak<SemanticConstant>, of: SemanticExpression)
-        indirect case functionMember(Weak<SemanticFunction>, of: SemanticExpression)
         indirect case variableMember(Weak<SemanticVariable>, of: SemanticExpression)
         case integerPrimitive(words: [UInt64], bitWidth: BitWidth)
         case bytePrimitive(words: [UInt64], bitWidth: BitWidth)
@@ -35,15 +33,6 @@ public struct SemanticExpression {
     ) -> SemanticExpression {
         precondition(constant.container == nil, "The constant is a member of a structure")
         return SemanticExpression(_kind: .constant(Weak(constant)), at: location)
-    }
-    
-    @inlinable
-    public static func function(
-        _ function: SemanticFunction,
-        at location: SourceLocation?
-    ) -> SemanticExpression {
-        precondition(function.container == nil, "The function is a member of a structure")
-        return SemanticExpression(_kind: .function(Weak(function)), at: location)
     }
     
     @inlinable
@@ -80,16 +69,6 @@ public struct SemanticExpression {
     ) -> SemanticExpression {
         precondition(constant.container != nil, "The constant is not a member of a structure")
         return SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
-    }
-    
-    @inlinable
-    public static func functionMember(
-        _ function: SemanticFunction,
-        of base: SemanticExpression,
-        at location: SourceLocation?
-    ) -> SemanticExpression {
-        precondition(function.container != nil, "The function is not a member of a structure")
-        return SemanticExpression(_kind: .functionMember(Weak(function), of: base), at: location)
     }
     
     @inlinable

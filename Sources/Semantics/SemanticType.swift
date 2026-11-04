@@ -4,7 +4,6 @@ import Tokens
 public struct SemanticType {
     
     public enum Kind: Hashable {
-        indirect case function(parameterTypes: [SemanticType], returnType: SemanticType)
         case structure(Weak<SemanticStructure>)
         case integerPrimitive(bitWidth: BitWidth)
         case bytePrimitive(bitWidth: BitWidth)
@@ -18,11 +17,6 @@ public struct SemanticType {
     internal init(_kind: Kind, at location: SourceLocation? = nil) {
         self.kind = _kind
         self.location = location
-    }
-    
-    @inlinable
-    public static func function(parameterTypes: [SemanticType], returnType: SemanticType) -> SemanticType {
-        SemanticType(_kind: .function(parameterTypes: parameterTypes, returnType: returnType))
     }
     
     @inlinable
