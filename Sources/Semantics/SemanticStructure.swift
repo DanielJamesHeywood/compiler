@@ -49,7 +49,7 @@ public final class SemanticStructure {
         parameters: [SemanticParameter],
         at location: SourceLocation?
     ) -> SemanticInitializer {
-        let initializer = SemanticInitializer(_of: self, accessLevel: accessLevel, parameters: parameters, at: location)
+        let initializer = SemanticInitializer(accessLevel: accessLevel, parameters: parameters, at: location)
         _initializers.append(initializer)
         return initializer
     }
