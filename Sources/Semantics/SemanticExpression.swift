@@ -7,8 +7,6 @@ public struct SemanticExpression: Hashable {
         case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
         case integerPrimitive(words: [UInt64], bitWidth: BitWidth)
         case bytePrimitive(words: [UInt64], bitWidth: BitWidth)
-        case globalFunctionCall(Weak<SemanticGlobalFunction>, arguments: [SemanticExpression])
-        case initializerCall(Weak<SemanticInitializer>, arguments: [SemanticExpression])
         indirect case primitiveTruncation(of: SemanticExpression, to: SemanticType)
         indirect case primitiveBitCast(of: SemanticExpression, to: SemanticType)
     }
