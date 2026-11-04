@@ -3,6 +3,7 @@ import SystemPackage
 
 import Lexing
 import Parsing
+import SemanticAnalysis
 
 @main
 struct CompilerCommand: ParsableCommand {
