@@ -7,12 +7,20 @@ public final class SemanticInitializer {
     
     public let parameters: [SemanticParameter]
     
+    public let container: SemanticContainer?
+    
     public let location: SourceLocation?
     
     @inlinable
-    internal init(accessLevel: AccessLevel?, parameters: [SemanticParameter], at location: SourceLocation?) {
-        self.accessLevel = accessLevel
+    internal init(
+        _accessLevel: AccessLevel?,
+        parameters: [SemanticParameter],
+        of container: SemanticContainer? = nil,
+        at location: SourceLocation?
+    ) {
+        self.accessLevel = _accessLevel
         self.parameters = parameters
+        self.container = container
         self.location = location
     }
 }

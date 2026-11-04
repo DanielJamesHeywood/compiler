@@ -11,6 +11,8 @@ public final class SemanticVariable {
     
     public let type: SemanticType
     
+    public let container: SemanticContainer?
+    
     public let location: SourceLocation?
     
     @inlinable
@@ -19,12 +21,14 @@ public final class SemanticVariable {
         accessLevel: AccessLevel?,
         isExternal: Bool = false,
         type: SemanticType,
+        in container: SemanticContainer? = nil,
         at location: SourceLocation?
     ) {
         self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = isExternal
         self.type = type
+        self.container = container
         self.location = location
     }
 }

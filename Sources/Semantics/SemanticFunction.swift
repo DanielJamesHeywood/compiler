@@ -13,6 +13,8 @@ public final class SemanticFunction {
     
     public let returnType: SemanticType
     
+    public let container: SemanticContainer?
+    
     public let location: SourceLocation?
     
     @inlinable
@@ -22,6 +24,7 @@ public final class SemanticFunction {
         isExternal: Bool = false,
         parameters: [SemanticParameter],
         returnType: SemanticType,
+        in container: SemanticContainer? = nil,
         at location: SourceLocation?
     ) {
         self.name = _name
@@ -29,6 +32,7 @@ public final class SemanticFunction {
         self.isExternal = isExternal
         self.parameters = parameters
         self.returnType = returnType
+        self.container = container
         self.location = location
     }
 }
