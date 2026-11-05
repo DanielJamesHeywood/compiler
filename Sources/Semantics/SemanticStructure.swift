@@ -46,6 +46,89 @@ public final class SemanticStructure {
     
     @inlinable
     public var variables: OrderedSet<SemanticVariable> { _variables }
+    
+    @inlinable
+    public func appendConstant(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        type: SemanticType,
+        at location: SourceLocation?
+    ) {
+        _constants.append(
+            SemanticConstant(
+                _name: name,
+                accessLevel: accessLevel,
+                type: type,
+                at: location
+            )
+        )
+    }
+    
+    @inlinable
+    public func appendFunction(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        parameters: [SemanticParameter],
+        returnType: SemanticType,
+        at location: SourceLocation?
+    ) {
+        _functions.append(
+            SemanticFunction(
+                _name: name,
+                accessLevel: accessLevel,
+                parameters: parameters,
+                returnType: returnType,
+                at: location
+            )
+        )
+    }
+    
+    @inlinable
+    public func appendInitializer(
+        accessLevel: AccessLevel,
+        parameters: [SemanticParameter],
+        at location: SourceLocation?
+    ) {
+        _initializers.append(
+            SemanticInitializer(
+                _accessLevel: accessLevel,
+                parameters: parameters,
+                at: location
+            )
+        )
+    }
+    
+    @inlinable
+    public func appendStructure(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        at location: SourceLocation?
+    ) {
+        _structures.append(
+            SemanticStructure(
+                _name: name,
+                accessLevel: accessLevel,
+                at: location
+            )
+        )
+    }
+    
+    @inlinable
+    public func appendVariable(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        type: SemanticType,
+        at location: SourceLocation?
+    ) {
+        _variables.append(
+            SemanticVariable(
+                _name: name,
+                accessLevel: accessLevel,
+                type: type,
+                at: location
+            )
+        )
+    }
 }
 
 extension SemanticStructure: Equatable {
