@@ -7,6 +7,8 @@ public final class SemanticInitializer {
     
     public let parameters: [SemanticParameter]
     
+    public var body = nil as [SemanticStatement]?
+    
     public let location: SourceLocation?
     
     @inlinable

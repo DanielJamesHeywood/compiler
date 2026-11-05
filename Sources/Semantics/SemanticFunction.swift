@@ -13,6 +13,8 @@ public final class SemanticFunction {
     
     public let returnType: SemanticType
     
+    public var body = nil as [SemanticStatement]?
+    
     public let location: SourceLocation?
     
     @inlinable
