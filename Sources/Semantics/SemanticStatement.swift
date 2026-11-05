@@ -1,6 +1,6 @@
 import Tokens
 
-public struct SemanticStatement {
+public struct SemanticStatement: Hashable {
     
     public enum Kind: Hashable {
         case `return`(of: SemanticExpression?)
@@ -32,20 +32,5 @@ public struct SemanticStatement {
         at location: SourceLocation?
     ) -> SemanticStatement {
         SemanticStatement(_kind: .assignment(of: source, to: destination), at: location)
-    }
-}
-
-extension SemanticStatement: Equatable {
-    
-    @inlinable
-    public static func == (lhs: SemanticStatement, rhs: SemanticStatement) -> Bool { lhs.kind == rhs.kind }
-    
-}
-
-extension SemanticStatement: Hashable {
-    
-    @inlinable
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(kind)
     }
 }
