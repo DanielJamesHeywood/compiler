@@ -5,6 +5,8 @@ public final class SemanticConstant {
     
     public let name: Identifier
     
+    public let accessLevel: AccessLevel
+    
     public let isExternal: Bool
     
     public let type: SemanticType
@@ -12,17 +14,16 @@ public final class SemanticConstant {
     public let location: SourceLocation?
     
     @inlinable
-    internal init(_name: Identifier, isExternal: Bool, type: SemanticType, at location: SourceLocation?) {
-        self.name = _name
+    public init(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        isExternal: Bool,
+        type: SemanticType,
+        at location: SourceLocation?
+    ) {
+        self.name = name
+        self.accessLevel = accessLevel
         self.isExternal = isExternal
-        self.type = type
-        self.location = location
-    }
-    
-    @inlinable
-    internal init(_name: Identifier, type: SemanticType, at location: SourceLocation?) {
-        self.name = _name
-        self.isExternal = false
         self.type = type
         self.location = location
     }

@@ -3,25 +3,17 @@ import Tokens
 
 public final class SemanticInitializer {
     
+    public let accessLevel: AccessLevel
+    
     public let parameters: [SemanticParameter]
     
     public let location: SourceLocation?
     
-    @usableFromInline
-    internal var _body = nil as [SemanticStatement]?
-    
     @inlinable
-    internal init(_parameters: [SemanticParameter], at location: SourceLocation?) {
-        self.parameters = _parameters
+    internal init(accessLevel: AccessLevel, parameters: [SemanticParameter], at location: SourceLocation?) {
+        self.accessLevel = accessLevel
+        self.parameters = parameters
         self.location = location
-    }
-    
-    @inlinable
-    public var body: [SemanticStatement]? {
-        get { _body }
-        set {
-            _body = newValue
-        }
     }
 }
 
