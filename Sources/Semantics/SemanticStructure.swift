@@ -1,3 +1,4 @@
+import OrderedCollections
 import Syntax
 import Tokens
 
@@ -8,6 +9,21 @@ public final class SemanticStructure {
     public let accessLevel: AccessLevel
     
     public let location: SourceLocation?
+    
+    @usableFromInline
+    internal var _constants = [] as OrderedSet<SemanticConstant>
+    
+    @usableFromInline
+    internal var _functions = [] as OrderedSet<SemanticFunction>
+    
+    @usableFromInline
+    internal var _initializers = [] as OrderedSet<SemanticInitializer>
+    
+    @usableFromInline
+    internal var _structures = [] as OrderedSet<SemanticStructure>
+    
+    @usableFromInline
+    internal var _variables = [] as OrderedSet<SemanticVariable>
     
     @inlinable
     public init(_ name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
