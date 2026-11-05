@@ -7,6 +7,7 @@ let package = Package(
     platforms: [.macOS("27.0.0")],
     products: [.executable(name: "compiler", targets: ["compiler"])],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-system", from: "1.7.0"),
         .package(path: "../llvm-swift")
@@ -22,12 +23,32 @@ let package = Package(
                 "SemanticAnalysis"
             ]
         ),
-        .target(name: "Lexing", dependencies: ["Tokens"]),
-        .target(name: "Parsing", dependencies: ["Syntax", "Tokens"]),
-        .target(name: "SemanticAnalysis", dependencies: ["Semantics"]),
-        .target(name: "Semantics", dependencies: ["Syntax", "Tokens"]),
-        .target(name: "StandardLibrary", dependencies: ["Syntax", "Tokens"]),
-        .target(name: "Syntax", dependencies: ["Tokens"]),
-        .target(name: "Tokens")
+        .target(
+            name: "Lexing",
+            dependencies: ["Tokens"]
+        ),
+        .target(
+            name: "Parsing",
+            dependencies: ["Syntax", "Tokens"]
+        ),
+        .target(
+            name: "SemanticAnalysis",
+            dependencies: ["Semantics"]
+        ),
+        .target(
+            name: "Semantics",
+            dependencies: [.product(name: "OrderedCollections", package: "swift-collections"), "Syntax", "Tokens"]
+        ),
+        .target(
+            name: "StandardLibrary",
+            dependencies: ["Syntax", "Tokens"]
+        ),
+        .target(
+            name: "Syntax",
+            dependencies: ["Tokens"]
+        ),
+        .target(
+            name: "Tokens"
+        )
     ]
 )
