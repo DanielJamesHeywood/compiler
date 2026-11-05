@@ -1,4 +1,3 @@
-import OrderedCollections
 import Syntax
 import Tokens
 
@@ -11,19 +10,19 @@ public final class SemanticStructure {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal var _constants = [] as OrderedSet<SemanticConstant>
+    internal var _constants = [] as [SemanticConstant]
     
     @usableFromInline
-    internal var _functions = [] as OrderedSet<SemanticFunction>
+    internal var _functions = [] as [SemanticFunction]
     
     @usableFromInline
-    internal var _initializers = [] as OrderedSet<SemanticInitializer>
+    internal var _initializers = [] as [SemanticInitializer]
     
     @usableFromInline
-    internal var _structures = [] as OrderedSet<SemanticStructure>
+    internal var _structures = [] as [SemanticStructure]
     
     @usableFromInline
-    internal var _variables = [] as OrderedSet<SemanticVariable>
+    internal var _variables = [] as [SemanticVariable]
     
     @inlinable
     internal init(_name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
@@ -33,19 +32,19 @@ public final class SemanticStructure {
     }
     
     @inlinable
-    public var constants: OrderedSet<SemanticConstant> { _constants }
+    public var constants: [SemanticConstant] { _constants }
     
     @inlinable
-    public var functions: OrderedSet<SemanticFunction> { _functions }
+    public var functions: [SemanticFunction] { _functions }
     
     @inlinable
-    public var initializers: OrderedSet<SemanticInitializer> { _initializers }
+    public var initializers: [SemanticInitializer] { _initializers }
     
     @inlinable
-    public var structures: OrderedSet<SemanticStructure> { _structures }
+    public var structures: [SemanticStructure] { _structures }
     
     @inlinable
-    public var variables: OrderedSet<SemanticVariable> { _variables }
+    public var variables: [SemanticVariable] { _variables }
     
     @inlinable
     public func appendConstant(

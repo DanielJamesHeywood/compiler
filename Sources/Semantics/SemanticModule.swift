@@ -1,35 +1,34 @@
-import OrderedCollections
 import Syntax
 import Tokens
 
 public final class SemanticModule {
     
     @usableFromInline
-    internal var _constants = [] as OrderedSet<SemanticConstant>
+    internal var _constants = [] as [SemanticConstant]
     
     @usableFromInline
-    internal var _functions = [] as OrderedSet<SemanticFunction>
+    internal var _functions = [] as [SemanticFunction]
     
     @usableFromInline
-    internal var _structures = [] as OrderedSet<SemanticStructure>
+    internal var _structures = [] as [SemanticStructure]
     
     @usableFromInline
-    internal var _variables = [] as OrderedSet<SemanticVariable>
+    internal var _variables = [] as [SemanticVariable]
     
     @inlinable
     public init() {}
     
     @inlinable
-    public var constants: OrderedSet<SemanticConstant> { _constants }
+    public var constants: [SemanticConstant] { _constants }
     
     @inlinable
-    public var functions: OrderedSet<SemanticFunction> { _functions }
+    public var functions: [SemanticFunction] { _functions }
     
     @inlinable
-    public var structures: OrderedSet<SemanticStructure> { _structures }
+    public var structures: [SemanticStructure] { _structures }
     
     @inlinable
-    public var variables: OrderedSet<SemanticVariable> { _variables }
+    public var variables: [SemanticVariable] { _variables }
     
     @inlinable
     public func appendConstant(
