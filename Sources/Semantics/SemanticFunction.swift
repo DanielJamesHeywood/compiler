@@ -24,7 +24,7 @@ public final class SemanticFunction {
         returnType: SemanticType,
         at location: SourceLocation?
     ) {
-        self.name = name
+        self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = isExternal
         self.parameters = parameters
