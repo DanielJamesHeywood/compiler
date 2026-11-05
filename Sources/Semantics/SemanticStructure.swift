@@ -34,12 +34,7 @@ public final class SemanticStructure {
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticConstant {
-        let constant = SemanticConstant(
-            _name: name,
-            type: type,
-            in: self,
-            at: location
-        )
+        let constant = SemanticConstant(_name: name, type: type, at: location)
         _constants.append(constant)
         return constant
     }
@@ -51,13 +46,7 @@ public final class SemanticStructure {
         returnType: SemanticType,
         at location: SourceLocation?
     ) -> SemanticFunction {
-        let function = SemanticFunction(
-            _name: name,
-            parameters: parameters,
-            returnType: returnType,
-            in: self,
-            at: location
-        )
+        let function = SemanticFunction(_name: name, parameters: parameters, returnType: returnType, at: location)
         _functions.append(function)
         return function
     }
@@ -69,7 +58,6 @@ public final class SemanticStructure {
     ) -> SemanticInitializer {
         let initializer = SemanticInitializer(
             _parameters: parameters,
-            in: self,
             at: location
         )
         _initializers.append(initializer)
@@ -81,10 +69,7 @@ public final class SemanticStructure {
         _ name: Identifier,
         at location: SourceLocation?
     ) -> SemanticStructure {
-        let structure = SemanticStructure(
-            _name: name,
-            at: location
-        )
+        let structure = SemanticStructure(_name: name, at: location)
         _structures.append(structure)
         return structure
     }
@@ -95,12 +80,7 @@ public final class SemanticStructure {
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticVariable {
-        let variable = SemanticVariable(
-            _name: name,
-            type: type,
-            in: self,
-            at: location
-        )
+        let variable = SemanticVariable(_name: name, type: type, at: location)
         _variables.append(variable)
         return variable
     }

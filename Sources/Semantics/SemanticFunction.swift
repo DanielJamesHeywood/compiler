@@ -11,8 +11,6 @@ public final class SemanticFunction {
     
     public let returnType: SemanticType
     
-    public let container: SemanticContainer?
-    
     public let location: SourceLocation?
     
     @usableFromInline
@@ -30,7 +28,6 @@ public final class SemanticFunction {
         self.isExternal = isExternal
         self.parameters = parameters
         self.returnType = returnType
-        self.container = nil
         self.location = location
     }
     
@@ -39,14 +36,12 @@ public final class SemanticFunction {
         _name: Identifier,
         parameters: [SemanticParameter],
         returnType: SemanticType,
-        in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
         self.name = _name
         self.isExternal = false
         self.parameters = parameters
         self.returnType = returnType
-        self.container = .structure(Weak(structure))
         self.location = location
     }
     

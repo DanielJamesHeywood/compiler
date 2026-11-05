@@ -33,8 +33,7 @@ public struct SemanticExpression {
         _ constant: SemanticConstant,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        precondition(constant.container == nil, "The constant is a member of a structure")
-        return SemanticExpression(_kind: .constant(Weak(constant)), at: location)
+        SemanticExpression(_kind: .constant(Weak(constant)), at: location)
     }
     
     @inlinable
@@ -50,8 +49,7 @@ public struct SemanticExpression {
         _ variable: SemanticVariable,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        precondition(variable.container == nil, "The variable is a member of a structure")
-        return SemanticExpression(_kind: .variable(Weak(variable)), at: location)
+        SemanticExpression(_kind: .variable(Weak(variable)), at: location)
     }
     
     @inlinable
@@ -59,10 +57,7 @@ public struct SemanticExpression {
         ofType type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        guard case .structure = type.kind else {
-            preconditionFailure("Expected a structure type")
-        }
-        return SemanticExpression(_kind: .self(ofType: type), at: location)
+        SemanticExpression(_kind: .self(ofType: type), at: location)
     }
     
     @inlinable
@@ -80,14 +75,7 @@ public struct SemanticExpression {
         of base: SemanticExpression,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        guard let container = constant.container else {
-            preconditionFailure("Expected the constant to be a member of a structure")
-        }
-        switch container {
-        case let .structure(weakStructure):
-            precondition(base.type.kind == .structure(weakStructure), "Expected the constant to be a member of the base")
-        }
-        return SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
+        SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
     }
     
     @inlinable
@@ -96,14 +84,7 @@ public struct SemanticExpression {
         of base: SemanticExpression,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        guard let container = variable.container else {
-            preconditionFailure("Expected the variable to be a member of a structure")
-        }
-        switch container {
-        case let .structure(weakStructure):
-            precondition(base.type.kind == .structure(weakStructure), "Expected the variable to be a member of the base")
-        }
-        return SemanticExpression(_kind: .variableMember(Weak(variable), of: base), at: location)
+        SemanticExpression(_kind: .variableMember(Weak(variable), of: base), at: location)
     }
     
     @inlinable
@@ -144,31 +125,6 @@ public struct SemanticExpression {
         to type: SemanticType
     ) -> SemanticExpression {
         SemanticExpression(_kind: .primitiveBitCast(of: value, to: type))
-    }
-    
-    @inlinable
-    public var type: SemanticType {
-        switch kind {
-        case let .constant(weakConstant), let .constantMember(weakConstant, of: _):
-            weakConstant.object.type
-        case let .parameter(weakParameter):
-            weakParameter.object.type
-        case let .variable(weakVariable), let .variableMember(weakVariable, of: _):
-            weakVariable.object.type
-        case let .self(ofType: type), let .primitiveTruncation(of: _, to: type), let .primitiveBitCast(of: _, to: type):
-            type
-        case let .call(toInitializer: weakInitializer, passing: _):
-            switch weakInitializer.object.container {
-            case let .structure(weakStructure):
-                .structure(weakStructure.object, at: nil)
-            }
-        case let .integerPrimitive(words: _, bitWidth: bitWidth):
-            .integerPrimitive(bitWidth: bitWidth)
-        case let .bytePrimitive(words: _, bitWidth: bitWidth):
-            .bytePrimitive(bitWidth: bitWidth)
-        case let .structurePrimitive(weakStructure, storing: _):
-            .structure(weakStructure.object)
-        }
     }
 }
 
