@@ -26,8 +26,8 @@ public final class SemanticStructure {
     internal var _variables = [] as OrderedSet<SemanticVariable>
     
     @inlinable
-    public init(_ name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
-        self.name = name
+    internal init(_name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
+        self.name = _name
         self.accessLevel = accessLevel
         self.location = location
     }
