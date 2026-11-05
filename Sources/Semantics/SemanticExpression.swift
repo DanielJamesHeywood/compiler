@@ -65,11 +65,7 @@ public struct SemanticExpression: Hashable {
         passing arguments: [SemanticExpression],
         at location: SourceLocation?
     ) -> SemanticExpression {
-        precondition(
-            arguments.count == initializer.parameters.count,
-            "Expected exactly \(initializer.parameters.count) arguments, but got \(arguments.count)"
-        )
-        return SemanticExpression(_kind: .call(toInitializer: Weak(initializer), passing: arguments), at: location)
+        SemanticExpression(_kind: .call(toInitializer: Weak(initializer), passing: arguments), at: location)
     }
     
     @inlinable
@@ -96,15 +92,7 @@ public struct SemanticExpression: Hashable {
         constants: [SemanticExpression],
         variables: [SemanticExpression]
     ) -> SemanticExpression {
-        precondition(
-            constants.count == structure.constants.count,
-            "Expected exactly \(structure.constants.count) constants, but got \(constants.count)"
-        )
-        precondition(
-            variables.count == structure.variables.count,
-            "Expected exactly \(structure.variables.count) variables, but got \(variables.count)"
-        )
-        return SemanticExpression(_kind: .structurePrimitive(Weak(structure), constants: constants, variables: variables))
+        SemanticExpression(_kind: .structurePrimitive(Weak(structure), constants: constants, variables: variables))
     }
     
     @inlinable

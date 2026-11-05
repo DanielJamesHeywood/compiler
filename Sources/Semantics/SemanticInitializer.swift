@@ -23,12 +23,6 @@ public final class SemanticInitializer {
     public var body: [SemanticStatement]? {
         get { _body }
         set {
-            if let newValue {
-                precondition(
-                    newValue.allSatisfy { if case .return = $0.kind { false } else { true } },
-                    "The body cannot contain a return statement"
-                )
-            }
             _body = newValue
         }
     }

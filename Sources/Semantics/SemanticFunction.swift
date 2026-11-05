@@ -38,8 +38,8 @@ public final class SemanticFunction {
     @inlinable
     public var body: [SemanticStatement]? {
         get { _body }
-        set(newBody) {
-            _body = newBody
+        set {
+            _body = newValue
         }
     }
 }
