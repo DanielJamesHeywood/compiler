@@ -1,7 +1,12 @@
+import OrderedCollections
 import Syntax
 import Tokens
 
 public final class SemanticModule {
+    
+    public var constants = [] as OrderedSet<SemanticConstant>
+    
+    public var variables = [] as OrderedSet<SemanticVariable>
     
     @inlinable
     public init() {}
