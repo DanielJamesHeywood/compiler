@@ -7,15 +7,24 @@ public final class SemanticInitializer {
     
     public let parameters: [SemanticParameter]
     
-    public var body = nil as [SemanticStatement]?
-    
     public let location: SourceLocation?
+    
+    @usableFromInline
+    internal var _body = nil as [SemanticStatement]?
     
     @inlinable
     internal init(_accessLevel: AccessLevel, parameters: [SemanticParameter], at location: SourceLocation?) {
         self.accessLevel = _accessLevel
         self.parameters = parameters
         self.location = location
+    }
+    
+    @inlinable
+    public var body: [SemanticStatement]? {
+        get { _body }
+        set(newBody) {
+            _body = newBody
+        }
     }
 }
 

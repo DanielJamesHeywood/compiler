@@ -13,9 +13,10 @@ public final class SemanticFunction {
     
     public let returnType: SemanticType
     
-    public var body = nil as [SemanticStatement]?
-    
     public let location: SourceLocation?
+    
+    @usableFromInline
+    internal var _body = nil as [SemanticStatement]?
     
     @inlinable
     internal init(
@@ -32,6 +33,14 @@ public final class SemanticFunction {
         self.parameters = parameters
         self.returnType = returnType
         self.location = location
+    }
+    
+    @inlinable
+    public var body: [SemanticStatement]? {
+        get { _body }
+        set(newBody) {
+            _body = newBody
+        }
     }
 }
 
