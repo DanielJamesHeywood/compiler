@@ -59,6 +59,7 @@ public final class SemanticModule {
         returnType: SemanticType,
         at location: SourceLocation?
     ) -> SemanticFunction {
+        precondition(Set(parameters.map(\.name)).count == parameters.count, "The parameters do not have unique names")
         let function = SemanticFunction(
             _name: name,
             accessLevel: accessLevel,
