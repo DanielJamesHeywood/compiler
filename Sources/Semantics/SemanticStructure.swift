@@ -31,6 +31,21 @@ public final class SemanticStructure {
         self.accessLevel = accessLevel
         self.location = location
     }
+    
+    @inlinable
+    public var constants: OrderedSet<SemanticConstant> { _constants }
+    
+    @inlinable
+    public var functions: OrderedSet<SemanticFunction> { _functions }
+    
+    @inlinable
+    public var initializers: OrderedSet<SemanticInitializer> { _initializers }
+    
+    @inlinable
+    public var structures: OrderedSet<SemanticStructure> { _structures }
+    
+    @inlinable
+    public var variables: OrderedSet<SemanticVariable> { _variables }
 }
 
 extension SemanticStructure: Equatable {

@@ -11,9 +11,6 @@ public final class SemanticModule {
     internal var _functions = [] as OrderedSet<SemanticFunction>
     
     @usableFromInline
-    internal var _initializers = [] as OrderedSet<SemanticInitializer>
-    
-    @usableFromInline
     internal var _structures = [] as OrderedSet<SemanticStructure>
     
     @usableFromInline
@@ -21,6 +18,18 @@ public final class SemanticModule {
     
     @inlinable
     public init() {}
+    
+    @inlinable
+    public var constants: OrderedSet<SemanticConstant> { _constants }
+    
+    @inlinable
+    public var functions: OrderedSet<SemanticFunction> { _functions }
+    
+    @inlinable
+    public var structures: OrderedSet<SemanticStructure> { _structures }
+    
+    @inlinable
+    public var variables: OrderedSet<SemanticVariable> { _variables }
 }
 
 extension SemanticModule: Equatable {
