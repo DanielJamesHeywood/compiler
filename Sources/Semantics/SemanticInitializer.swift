@@ -22,6 +22,14 @@ public final class SemanticInitializer {
         in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
+        precondition(
+            _accessLevel == .private || structure.accessLevel == .public,
+            "The private structure \"\(structure.name)\" cannot contain a public initializer"
+        )
+        precondition(
+            Set(parameters.map(\.name)).count == parameters.count,
+            "The parameters do not have unique names"
+        )
         self.accessLevel = _accessLevel
         self.parameters = parameters
         self.location = location

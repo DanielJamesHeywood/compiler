@@ -72,7 +72,6 @@ public final class SemanticStructure {
         returnType: SemanticType,
         at location: SourceLocation?
     ) -> SemanticFunction {
-        precondition(Set(parameters.map(\.name)).count == parameters.count, "The parameters do not have unique names")
         let function = SemanticFunction(
             _name: name,
             accessLevel: accessLevel,
@@ -91,7 +90,6 @@ public final class SemanticStructure {
         parameters: [SemanticParameter],
         at location: SourceLocation?
     ) -> SemanticInitializer {
-        precondition(Set(parameters.map(\.name)).count == parameters.count, "The parameters do not have unique names")
         let initializer = SemanticInitializer(
             _accessLevel: accessLevel,
             parameters: parameters,

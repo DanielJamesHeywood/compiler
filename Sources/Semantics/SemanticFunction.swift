@@ -30,6 +30,10 @@ public final class SemanticFunction {
         returnType: SemanticType,
         at location: SourceLocation?
     ) {
+        precondition(
+            Set(parameters.map(\.name)).count == parameters.count,
+            "The parameters do not have unique names"
+        )
         self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = isExternal
@@ -48,6 +52,14 @@ public final class SemanticFunction {
         in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
+        precondition(
+            accessLevel == .private || structure.accessLevel == .public,
+            "The private structure \"\(structure.name)\" cannot contain a public function"
+        )
+        precondition(
+            Set(parameters.map(\.name)).count == parameters.count,
+            "The parameters do not have unique names"
+        )
         self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = false

@@ -40,6 +40,10 @@ public final class SemanticConstant {
         in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
+        precondition(
+            accessLevel == .private || structure.accessLevel == .public,
+            "The private structure \"\(structure.name)\" cannot contain a public constant"
+        )
         self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = false
