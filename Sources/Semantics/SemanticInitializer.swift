@@ -22,6 +22,11 @@ public final class SemanticInitializer {
         in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
+        let labels = parameters.map { $0.label ?? $0.name }
+        precondition(
+            !structure._initializerLabels.contains(labels),
+            "The structure \"\(structure.name)\" cannot contain two initializers with the same labels"
+        )
         precondition(
             _accessLevel == .private || structure.accessLevel == .public,
             "The private structure \"\(structure.name)\" cannot contain a public initializer"

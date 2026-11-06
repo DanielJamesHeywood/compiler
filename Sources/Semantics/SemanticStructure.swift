@@ -31,6 +31,9 @@ public final class SemanticStructure {
     internal var _unlabelledNames = [] as Set<Identifier>
     
     @usableFromInline
+    internal var _initializerLabels = [] as Set<[Identifier]>
+    
+    @usableFromInline
     internal var _structureNames = [] as Set<Identifier>
     
     @inlinable
@@ -141,6 +144,8 @@ public final class SemanticStructure {
             at: location
         )
         _initializers.append(initializer)
+        let labels = parameters.map { $0.label ?? $0.name }
+        _initializerLabels.insert(labels)
         return initializer
     }
     
