@@ -31,6 +31,17 @@ public final class SemanticFunction {
         in module: SemanticModule,
         at location: SourceLocation?
     ) {
+        let labels = parameters.map { $0.label ?? $0.name }
+        precondition(
+            !module._compoundNames.contains([_name] + labels),
+            "The module contains another declaration with the same compound name"
+        )
+        precondition(
+            !labels.allSatisfy { $0 == "_" } ||
+            !module._unlabelledNames.contains(_name) ||
+            module._unlabelledFunctionNames.contains(_name),
+            "The module contains another declaration named \"\(_name)\""
+        )
         precondition(
             !isExternal || !module._externalNames.contains(_name),
             "The module contains another external declaration named \"\(_name)\""
@@ -57,6 +68,17 @@ public final class SemanticFunction {
         in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
+        let labels = parameters.map { $0.label ?? $0.name }
+        precondition(
+            !structure._compoundNames.contains([_name] + labels),
+            "The structure \"\(structure.name)\" contains another function named \"\(_name)\" with the same labels"
+        )
+        precondition(
+            !labels.allSatisfy { $0 == "_" } ||
+            !structure._unlabelledNames.contains(_name) ||
+            structure._unlabelledFunctionNames.contains(_name),
+            "The structure \"\(structure.name)\" contains another declaration named \"\(_name)\""
+        )
         precondition(
             accessLevel == .private || structure.accessLevel == .public,
             "The private structure \"\(structure.name)\" cannot contain a public function"
