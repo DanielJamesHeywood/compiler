@@ -155,9 +155,7 @@ public final class SemanticStructure {
         _initializers.append(initializer)
         let labels = parameters.map { $0.label ?? $0.name }
         _initializerLabels.insert(labels)
-        if case let .module(module) = _container {
-            module.object!._compoundNames.insert([name] + labels)
-        }
+        _container.module?._compoundNames.insert([name] + labels)
         return initializer
     }
     

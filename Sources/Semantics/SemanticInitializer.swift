@@ -27,9 +27,9 @@ public final class SemanticInitializer {
             !structure._initializerLabels.contains(labels),
             "The structure \"\(structure.name)\" contains another initializer with the same labels"
         )
-        if case let .module(module) = structure._container {
+        if let module = structure._container.module {
             precondition(
-                !module.object!._compoundNames.contains([structure.name] + labels),
+                !module._compoundNames.contains([structure.name] + labels),
                 "The module contains a function named \"\(structure.name)\" with the same labels"
             )
         }
