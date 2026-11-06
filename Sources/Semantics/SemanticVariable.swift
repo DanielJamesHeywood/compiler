@@ -26,6 +26,10 @@ public final class SemanticVariable {
         at location: SourceLocation?
     ) {
         precondition(
+            !module._unlabelledNames.contains(_name),
+            "The module cannot contain another declaration named \"\(_name)\""
+        )
+        precondition(
             !isExternal || !module._externalNames.contains(_name),
             "The module cannot contain another external declaration named \"\(_name)\""
         )

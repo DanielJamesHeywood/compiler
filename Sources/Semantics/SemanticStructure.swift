@@ -34,6 +34,10 @@ public final class SemanticStructure {
         in module: SemanticModule,
         at location: SourceLocation?
     ) {
+        precondition(
+            !module._unlabelledNames.contains(_name),
+            "The module cannot contain another declaration named \"\(_name)\""
+        )
         self.name = _name
         self.accessLevel = accessLevel
         self.location = location

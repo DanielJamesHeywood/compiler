@@ -16,6 +16,9 @@ public final class SemanticModule {
     internal var _variables = [] as [SemanticVariable]
     
     @usableFromInline
+    internal var _unlabelledNames = [] as Set<Identifier>
+    
+    @usableFromInline
     internal var _externalNames = [] as Set<Identifier>
     
     @inlinable
@@ -50,6 +53,7 @@ public final class SemanticModule {
             at: location
         )
         _constants.append(constant)
+        _unlabelledNames.insert(name)
         if isExternal {
             _externalNames.insert(name)
         }
@@ -75,6 +79,10 @@ public final class SemanticModule {
             at: location
         )
         _functions.append(function)
+        let labels = parameters.map { $0.label ?? $0.name }
+        if labels.allSatisfy({ $0 == "_" }) {
+            _unlabelledNames.insert(name)
+        }
         if isExternal {
             _externalNames.insert(name)
         }
@@ -94,6 +102,7 @@ public final class SemanticModule {
             at: location
         )
         _structures.append(structure)
+        _unlabelledNames.insert(name)
         return structure
     }
     
@@ -114,6 +123,7 @@ public final class SemanticModule {
             at: location
         )
         _variables.append(variable)
+        _unlabelledNames.insert(name)
         if isExternal {
             _externalNames.insert(name)
         }
