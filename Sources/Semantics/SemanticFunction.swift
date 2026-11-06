@@ -16,7 +16,7 @@ public final class SemanticFunction {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal let _container: SemanticContainer?
+    internal let _container: SemanticContainer
     
     @usableFromInline
     internal var _body = nil as [SemanticStatement]?
@@ -28,6 +28,7 @@ public final class SemanticFunction {
         isExternal: Bool,
         parameters: [SemanticParameter],
         returnType: SemanticType,
+        in module: SemanticModule,
         at location: SourceLocation?
     ) {
         precondition(
@@ -40,7 +41,7 @@ public final class SemanticFunction {
         self.parameters = parameters
         self.returnType = returnType
         self.location = location
-        self._container = nil
+        self._container = .module(Weak(module))
     }
     
     @inlinable

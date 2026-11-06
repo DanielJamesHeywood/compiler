@@ -14,7 +14,7 @@ public final class SemanticVariable {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal let _container: SemanticContainer?
+    internal let _container: SemanticContainer
     
     @inlinable
     internal init(
@@ -22,6 +22,7 @@ public final class SemanticVariable {
         accessLevel: AccessLevel,
         isExternal: Bool,
         type: SemanticType,
+        in module: SemanticModule,
         at location: SourceLocation?
     ) {
         self.name = _name
@@ -29,7 +30,7 @@ public final class SemanticVariable {
         self.isExternal = isExternal
         self.type = type
         self.location = location
-        self._container = nil
+        self._container = .module(Weak(module))
     }
     
     @inlinable

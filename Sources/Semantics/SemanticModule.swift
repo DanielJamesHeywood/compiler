@@ -43,6 +43,7 @@ public final class SemanticModule {
             accessLevel: accessLevel,
             isExternal: isExternal,
             type: type,
+            in: self,
             at: location
         )
         _constants.append(constant)
@@ -64,6 +65,7 @@ public final class SemanticModule {
             isExternal: isExternal,
             parameters: parameters,
             returnType: returnType,
+            in: self,
             at: location
         )
         _functions.append(function)
@@ -79,6 +81,7 @@ public final class SemanticModule {
         let structure = SemanticStructure(
             _name: name,
             accessLevel: accessLevel,
+            in: self,
             at: location
         )
         _structures.append(structure)
@@ -98,6 +101,7 @@ public final class SemanticModule {
             accessLevel: accessLevel,
             isExternal: isExternal,
             type: type,
+            in: self,
             at: location
         )
         _variables.append(variable)

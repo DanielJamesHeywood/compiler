@@ -10,6 +10,9 @@ public final class SemanticStructure {
     public let location: SourceLocation?
     
     @usableFromInline
+    internal let _container: SemanticContainer
+    
+    @usableFromInline
     internal var _constants = [] as [SemanticConstant]
     
     @usableFromInline
@@ -25,10 +28,29 @@ public final class SemanticStructure {
     internal var _variables = [] as [SemanticVariable]
     
     @inlinable
-    internal init(_name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
+    internal init(
+        _name: Identifier,
+        accessLevel: AccessLevel,
+        in module: SemanticModule,
+        at location: SourceLocation?
+    ) {
         self.name = _name
         self.accessLevel = accessLevel
         self.location = location
+        self._container = .module(Weak(module))
+    }
+    
+    @inlinable
+    internal init(
+        _name: Identifier,
+        accessLevel: AccessLevel,
+        in structure: SemanticStructure,
+        at location: SourceLocation?
+    ) {
+        self.name = _name
+        self.accessLevel = accessLevel
+        self.location = location
+        self._container = .structure(Weak(structure))
     }
     
     @inlinable
