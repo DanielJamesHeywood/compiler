@@ -33,7 +33,10 @@ public struct SemanticExpression: Hashable {
         _ constant: SemanticConstant,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .constant(Weak(constant)), at: location)
+        guard case .module = constant._container else {
+            preconditionFailure("The constant \"\(constant.name)\" is a member of a structure")
+        }
+        return SemanticExpression(_kind: .constant(Weak(constant)), at: location)
     }
     
     @inlinable
@@ -49,7 +52,10 @@ public struct SemanticExpression: Hashable {
         _ variable: SemanticVariable,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .variable(Weak(variable)), at: location)
+        guard case .module = variable._container else {
+            preconditionFailure("The variable \"\(variable.name)\" is a member of a structure")
+        }
+        return SemanticExpression(_kind: .variable(Weak(variable)), at: location)
     }
     
     @inlinable
