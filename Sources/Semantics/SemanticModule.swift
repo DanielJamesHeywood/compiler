@@ -15,6 +15,9 @@ public final class SemanticModule {
     @usableFromInline
     internal var _variables = [] as [SemanticVariable]
     
+    @usableFromInline
+    internal var _externalNames = [] as Set<Identifier>
+    
     @inlinable
     public init() {}
     
@@ -47,6 +50,9 @@ public final class SemanticModule {
             at: location
         )
         _constants.append(constant)
+        if isExternal {
+            _externalNames.insert(name)
+        }
         return constant
     }
     
@@ -69,6 +75,9 @@ public final class SemanticModule {
             at: location
         )
         _functions.append(function)
+        if isExternal {
+            _externalNames.insert(name)
+        }
         return function
     }
     
@@ -105,6 +114,9 @@ public final class SemanticModule {
             at: location
         )
         _variables.append(variable)
+        if isExternal {
+            _externalNames.insert(name)
+        }
         return variable
     }
 }

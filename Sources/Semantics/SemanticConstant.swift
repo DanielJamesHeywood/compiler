@@ -25,6 +25,10 @@ public final class SemanticConstant {
         in module: SemanticModule,
         at location: SourceLocation?
     ) {
+        precondition(
+            !isExternal || !module._externalNames.contains(_name),
+            "The module cannot contain another external declaration named \"\(_name)\""
+        )
         self.name = _name
         self.accessLevel = accessLevel
         self.isExternal = isExternal

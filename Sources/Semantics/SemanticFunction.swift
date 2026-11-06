@@ -32,6 +32,10 @@ public final class SemanticFunction {
         at location: SourceLocation?
     ) {
         precondition(
+            !isExternal || !module._externalNames.contains(_name),
+            "The module cannot contain another external declaration named \"\(_name)\""
+        )
+        precondition(
             Set(parameters.map(\.name)).count == parameters.count,
             "The parameters do not have unique names"
         )
