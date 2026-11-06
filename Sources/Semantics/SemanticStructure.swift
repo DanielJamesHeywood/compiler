@@ -31,13 +31,13 @@ public final class SemanticStructure {
     internal var _unlabelledNames = [] as Set<Identifier>
     
     @usableFromInline
+    internal var _staticUnlabelledNames = [] as Set<Identifier>
+    
+    @usableFromInline
     internal var _unlabelledFunctionNames = [] as Set<Identifier>
     
     @usableFromInline
     internal var _initializerLabels = [] as Set<[Identifier]>
-    
-    @usableFromInline
-    internal var _structureNames = [] as Set<Identifier>
     
     @inlinable
     internal init(
@@ -64,7 +64,7 @@ public final class SemanticStructure {
         at location: SourceLocation?
     ) {
         precondition(
-            !structure._structureNames.contains(_name),
+            !structure._staticUnlabelledNames.contains(_name),
             "The structure \"\(structure.name)\" contains another structure named \"\(_name)\""
         )
         precondition(
@@ -128,7 +128,8 @@ public final class SemanticStructure {
             at: location
         )
         _functions.append(function)
-        if parameters.allSatisfy({ $0.label ?? $0.name == "_" }) {
+        let labels = parameters.map { $0.label ?? $0.name }
+        if labels.allSatisfy({ $0 == "_" }) {
             _unlabelledNames.insert(name)
             _unlabelledFunctionNames.insert(name)
         }
@@ -166,7 +167,7 @@ public final class SemanticStructure {
             at: location
         )
         _structures.append(structure)
-        _structureNames.insert(name)
+        _staticUnlabelledNames.insert(name)
         return structure
     }
     

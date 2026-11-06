@@ -82,7 +82,8 @@ public final class SemanticModule {
             at: location
         )
         _functions.append(function)
-        if parameters.allSatisfy({ $0.label ?? $0.name == "_" }) {
+        let labels = parameters.map { $0.label ?? $0.name }
+        if labels.allSatisfy({ $0 == "_" }) {
             _unlabelledNames.insert(name)
             _unlabelledFunctionNames.insert(name)
         }
