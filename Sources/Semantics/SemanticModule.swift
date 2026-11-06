@@ -22,6 +22,9 @@ public final class SemanticModule {
     internal var _unlabelledFunctionNames = [] as Set<Identifier>
     
     @usableFromInline
+    internal var _compoundNames = [] as Set<[Identifier]>
+    
+    @usableFromInline
     internal var _externalNames = [] as Set<Identifier>
     
     @inlinable
@@ -83,6 +86,7 @@ public final class SemanticModule {
         )
         _functions.append(function)
         let labels = parameters.map { $0.label ?? $0.name }
+        _compoundNames.insert([name] + labels)
         if labels.allSatisfy({ $0 == "_" }) {
             _unlabelledNames.insert(name)
             _unlabelledFunctionNames.insert(name)
