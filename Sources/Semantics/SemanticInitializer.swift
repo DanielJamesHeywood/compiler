@@ -10,7 +10,7 @@ public final class SemanticInitializer {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal let _container: SemanticContainer?
+    internal let _container: SemanticContainer
     
     @usableFromInline
     internal var _body = nil as [SemanticStatement]?
