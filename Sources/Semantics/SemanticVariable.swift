@@ -27,11 +27,11 @@ public final class SemanticVariable {
     ) {
         precondition(
             !module._unlabelledNames.contains(_name),
-            "The module cannot contain another declaration named \"\(_name)\""
+            "The module contains another declaration named \"\(_name)\""
         )
         precondition(
             !isExternal || !module._externalNames.contains(_name),
-            "The module cannot contain another external declaration named \"\(_name)\""
+            "The module contains another external declaration named \"\(_name)\""
         )
         self.name = _name
         self.accessLevel = accessLevel
@@ -51,7 +51,7 @@ public final class SemanticVariable {
     ) {
         precondition(
             !structure._unlabelledNames.contains(_name),
-            "The structure \"\(structure.name)\" cannot contain another declaration named \"\(_name)\""
+            "The structure \"\(structure.name)\" contains another declaration named \"\(_name)\""
         )
         precondition(
             accessLevel == .private || structure.accessLevel == .public,

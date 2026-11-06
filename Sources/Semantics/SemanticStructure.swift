@@ -45,7 +45,7 @@ public final class SemanticStructure {
     ) {
         precondition(
             !module._unlabelledNames.contains(_name),
-            "The module cannot contain another declaration named \"\(_name)\""
+            "The module contains another declaration named \"\(_name)\""
         )
         self.name = _name
         self.accessLevel = accessLevel
@@ -62,7 +62,7 @@ public final class SemanticStructure {
     ) {
         precondition(
             !structure._structureNames.contains(_name),
-            "The structure \"\(structure.name)\" cannot contain another structure named \"\(_name)\""
+            "The structure \"\(structure.name)\" contains another structure named \"\(_name)\""
         )
         precondition(
             accessLevel == .private || structure.accessLevel == .public,

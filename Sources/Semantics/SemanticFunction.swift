@@ -33,7 +33,7 @@ public final class SemanticFunction {
     ) {
         precondition(
             !isExternal || !module._externalNames.contains(_name),
-            "The module cannot contain another external declaration named \"\(_name)\""
+            "The module contains another external declaration named \"\(_name)\""
         )
         precondition(
             Set(parameters.map(\.name)).count == parameters.count,
