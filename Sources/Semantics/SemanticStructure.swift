@@ -27,6 +27,12 @@ public final class SemanticStructure {
     @usableFromInline
     internal var _variables = [] as [SemanticVariable]
     
+    @usableFromInline
+    internal var _unlabelledNames = [] as Set<Identifier>
+    
+    @usableFromInline
+    internal var _structureNames = [] as Set<Identifier>
+    
     @inlinable
     internal init(
         _name: Identifier,
@@ -51,6 +57,10 @@ public final class SemanticStructure {
         in structure: SemanticStructure,
         at location: SourceLocation?
     ) {
+        precondition(
+            !structure._structureNames.contains(_name),
+            "The structure \"\(structure.name)\" cannot contain another structure named \"\(_name)\""
+        )
         precondition(
             accessLevel == .private || structure.accessLevel == .public,
             "The private structure \"\(structure.name)\" cannot contain a public structure"
@@ -91,6 +101,7 @@ public final class SemanticStructure {
             at: location
         )
         _constants.append(constant)
+        _unlabelledNames.insert(name)
         return constant
     }
     
@@ -111,6 +122,9 @@ public final class SemanticStructure {
             at: location
         )
         _functions.append(function)
+        if parameters.allSatisfy({ $0.label ?? $0.name == "_" }) {
+            _unlabelledNames.insert(name)
+        }
         return function
     }
     
@@ -143,6 +157,7 @@ public final class SemanticStructure {
             at: location
         )
         _structures.append(structure)
+        _structureNames.insert(name)
         return structure
     }
     
@@ -161,6 +176,7 @@ public final class SemanticStructure {
             at: location
         )
         _variables.append(variable)
+        _unlabelledNames.insert(name)
         return variable
     }
 }

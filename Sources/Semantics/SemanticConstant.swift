@@ -50,6 +50,10 @@ public final class SemanticConstant {
         at location: SourceLocation?
     ) {
         precondition(
+            !structure._unlabelledNames.contains(_name),
+            "The structure \"\(structure.name)\" cannot contain another declaration named \"\(_name)\""
+        )
+        precondition(
             accessLevel == .private || structure.accessLevel == .public,
             "The private structure \"\(structure.name)\" cannot contain a public constant"
         )
