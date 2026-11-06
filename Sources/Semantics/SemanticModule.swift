@@ -19,6 +19,9 @@ public final class SemanticModule {
     internal var _unlabelledNames = [] as Set<Identifier>
     
     @usableFromInline
+    internal var _unlabelledFunctionNames = [] as Set<Identifier>
+    
+    @usableFromInline
     internal var _externalNames = [] as Set<Identifier>
     
     @inlinable
@@ -81,6 +84,7 @@ public final class SemanticModule {
         _functions.append(function)
         if parameters.allSatisfy({ $0.label ?? $0.name == "_" }) {
             _unlabelledNames.insert(name)
+            _unlabelledFunctionNames.insert(name)
         }
         if isExternal {
             _externalNames.insert(name)

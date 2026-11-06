@@ -31,6 +31,9 @@ public final class SemanticStructure {
     internal var _unlabelledNames = [] as Set<Identifier>
     
     @usableFromInline
+    internal var _unlabelledFunctionNames = [] as Set<Identifier>
+    
+    @usableFromInline
     internal var _initializerLabels = [] as Set<[Identifier]>
     
     @usableFromInline
@@ -127,6 +130,7 @@ public final class SemanticStructure {
         _functions.append(function)
         if parameters.allSatisfy({ $0.label ?? $0.name == "_" }) {
             _unlabelledNames.insert(name)
+            _unlabelledFunctionNames.insert(name)
         }
         return function
     }
