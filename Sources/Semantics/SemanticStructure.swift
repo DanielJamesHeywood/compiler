@@ -10,7 +10,7 @@ public final class SemanticStructure {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal let _container: SemanticContainer
+    internal let _container: _Container
     
     @usableFromInline
     internal var _constants = [] as [SemanticConstant]

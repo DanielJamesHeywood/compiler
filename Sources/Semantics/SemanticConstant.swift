@@ -14,7 +14,7 @@ public final class SemanticConstant {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal let _container: SemanticContainer
+    internal let _container: _Container
     
     @inlinable
     internal init(
