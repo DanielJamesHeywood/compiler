@@ -131,6 +131,7 @@ public final class SemanticStructure {
         let structure = SemanticStructure(
             _name: name,
             accessLevel: accessLevel,
+            in: self,
             at: location
         )
         _structures.append(structure)
