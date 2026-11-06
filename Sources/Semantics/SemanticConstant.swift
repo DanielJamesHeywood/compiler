@@ -13,11 +13,14 @@ public final class SemanticConstant {
     
     public let location: SourceLocation?
     
+    @usableFromInline
+    internal let _container: SemanticContainer?
+    
     @inlinable
     internal init(
         _name: Identifier,
         accessLevel: AccessLevel,
-        isExternal: Bool = false,
+        isExternal: Bool,
         type: SemanticType,
         at location: SourceLocation?
     ) {
@@ -26,6 +29,23 @@ public final class SemanticConstant {
         self.isExternal = isExternal
         self.type = type
         self.location = location
+        self._container = nil
+    }
+    
+    @inlinable
+    internal init(
+        _name: Identifier,
+        accessLevel: AccessLevel,
+        type: SemanticType,
+        in structure: SemanticStructure,
+        at location: SourceLocation?
+    ) {
+        self.name = _name
+        self.accessLevel = accessLevel
+        self.isExternal = false
+        self.type = type
+        self.location = location
+        self._container = .structure(Weak(structure))
     }
 }
 

@@ -53,14 +53,11 @@ public final class SemanticStructure {
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticConstant {
-        precondition(
-            accessLevel == .private || self.accessLevel == .public,
-            "The private structure \"\(self.name)\" cannot contain a public constant"
-        )
         let constant = SemanticConstant(
             _name: name,
             accessLevel: accessLevel,
             type: type,
+            in: self,
             at: location
         )
         _constants.append(constant)
@@ -75,19 +72,13 @@ public final class SemanticStructure {
         returnType: SemanticType,
         at location: SourceLocation?
     ) -> SemanticFunction {
-        precondition(
-            accessLevel == .private || self.accessLevel == .public,
-            "The private structure \"\(self.name)\" cannot contain a public function"
-        )
-        precondition(
-            Set(parameters.map(\.name)).count == parameters.count,
-            "The parameters do not have unique names"
-        )
+        precondition(Set(parameters.map(\.name)).count == parameters.count, "The parameters do not have unique names")
         let function = SemanticFunction(
             _name: name,
             accessLevel: accessLevel,
             parameters: parameters,
             returnType: returnType,
+            in: self,
             at: location
         )
         _functions.append(function)
@@ -100,17 +91,11 @@ public final class SemanticStructure {
         parameters: [SemanticParameter],
         at location: SourceLocation?
     ) -> SemanticInitializer {
-        precondition(
-            accessLevel == .private || self.accessLevel == .public,
-            "The private structure \"\(self.name)\" cannot contain a public initializer"
-        )
-        precondition(
-            Set(parameters.map(\.name)).count == parameters.count,
-            "The parameters do not have unique names"
-        )
+        precondition(Set(parameters.map(\.name)).count == parameters.count, "The parameters do not have unique names")
         let initializer = SemanticInitializer(
             _accessLevel: accessLevel,
             parameters: parameters,
+            in: self,
             at: location
         )
         _initializers.append(initializer)
@@ -123,10 +108,6 @@ public final class SemanticStructure {
         accessLevel: AccessLevel,
         at location: SourceLocation?
     ) -> SemanticStructure {
-        precondition(
-            accessLevel == .private || self.accessLevel == .public,
-            "The private structure \"\(self.name)\" cannot contain a public structure"
-        )
         let structure = SemanticStructure(
             _name: name,
             accessLevel: accessLevel,
@@ -143,14 +124,11 @@ public final class SemanticStructure {
         type: SemanticType,
         at location: SourceLocation?
     ) -> SemanticVariable {
-        precondition(
-            accessLevel == .private || self.accessLevel == .public,
-            "The private structure \"\(self.name)\" cannot contain a public variable"
-        )
         let variable = SemanticVariable(
             _name: name,
             accessLevel: accessLevel,
             type: type,
+            in: self,
             at: location
         )
         _variables.append(variable)

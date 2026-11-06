@@ -16,13 +16,16 @@ public final class SemanticFunction {
     public let location: SourceLocation?
     
     @usableFromInline
+    internal let _container: SemanticContainer?
+    
+    @usableFromInline
     internal var _body = nil as [SemanticStatement]?
     
     @inlinable
     internal init(
         _name: Identifier,
         accessLevel: AccessLevel,
-        isExternal: Bool = false,
+        isExternal: Bool,
         parameters: [SemanticParameter],
         returnType: SemanticType,
         at location: SourceLocation?
@@ -33,6 +36,25 @@ public final class SemanticFunction {
         self.parameters = parameters
         self.returnType = returnType
         self.location = location
+        self._container = nil
+    }
+    
+    @inlinable
+    internal init(
+        _name: Identifier,
+        accessLevel: AccessLevel,
+        parameters: [SemanticParameter],
+        returnType: SemanticType,
+        in structure: SemanticStructure,
+        at location: SourceLocation?
+    ) {
+        self.name = _name
+        self.accessLevel = accessLevel
+        self.isExternal = false
+        self.parameters = parameters
+        self.returnType = returnType
+        self.location = location
+        self._container = .structure(Weak(structure))
     }
     
     @inlinable
