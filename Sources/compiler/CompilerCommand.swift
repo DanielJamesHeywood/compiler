@@ -1,5 +1,6 @@
 import ArgumentParser
 import SystemPackage
+import LLVM
 
 import Lexing
 import Parsing
@@ -89,6 +90,8 @@ struct CompilerCommand: ParsableCommand {
             }
         }
         _ = syntacticDeclarationsForSourceFiles
+        let llvmContext = LLVMContext()
+        _ = llvmContext
     }
     
     func validate() throws {
