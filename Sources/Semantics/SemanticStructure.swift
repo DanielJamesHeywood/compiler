@@ -104,6 +104,10 @@ public final class SemanticStructure {
         get { _structures }
         set {
             precondition(
+                Set(newValue.map(\.name)).count == newValue.count,
+                "The structures do not have unique names"
+            )
+            precondition(
                 accessLevel == .public || newValue.allSatisfy { $0.accessLevel == .private },
                 "A public structure cannot be a member of a private structure"
             )
