@@ -21,16 +21,12 @@ public struct SemanticStatement: Hashable {
     public static func `return`(
         of value: SemanticExpression?,
         at location: SourceLocation?
-    ) -> SemanticStatement {
-        SemanticStatement(_kind: .return(of: value), at: location)
-    }
+    ) -> SemanticStatement { SemanticStatement(_kind: .return(of: value), at: location) }
     
     @inlinable
     public static func assignment(
         of source: SemanticExpression,
         to destination: SemanticExpression,
         at location: SourceLocation?
-    ) -> SemanticStatement {
-        return SemanticStatement(_kind: .assignment(of: source, to: destination), at: location)
-    }
+    ) -> SemanticStatement { SemanticStatement(_kind: .assignment(of: source, to: destination), at: location) }
 }
