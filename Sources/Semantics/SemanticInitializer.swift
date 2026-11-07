@@ -22,7 +22,7 @@ public final class SemanticInitializer {
         self.parameters = parameters
         self.location = location
         for parameter in parameters {
-            precondition(parameter._container == nil, "The parameter is already in the signature of a function or initializer")
+            precondition(parameter._container == nil, "The parameter is already in a function or initializer")
             parameter._container = _Container(self)
         }
     }
