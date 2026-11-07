@@ -1,6 +1,3 @@
-import Syntax
-import Tokens
-
 public final class SemanticModule {
     
     @usableFromInline
