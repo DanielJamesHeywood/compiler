@@ -10,41 +10,21 @@ public final class SemanticInitializer {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal let _container: _Container
+    internal var _body: [SemanticStatement]?
     
     @usableFromInline
-    internal var _body = nil as [SemanticStatement]?
+    internal var _container: _Container?
     
     @inlinable
-    internal init(
-        _accessLevel: AccessLevel,
-        parameters: [SemanticParameter],
-        in structure: SemanticStructure,
-        at location: SourceLocation?
-    ) {
-        let labels = parameters.map { $0.label ?? $0.name }
-        precondition(
-            !structure._initializerLabels.contains(labels),
-            "The structure \"\(structure.name)\" contains another initializer with the same labels"
-        )
-        if let module = structure._container.module {
-            precondition(
-                !module._compoundNames.contains([structure.name] + labels),
-                "The module contains a function named \"\(structure.name)\" with the same labels"
-            )
-        }
-        precondition(
-            _accessLevel == .private || structure.accessLevel == .public,
-            "The private structure \"\(structure.name)\" cannot contain a public initializer"
-        )
-        precondition(
-            Set(parameters.map(\.name)).count == parameters.count,
-            "The parameters do not have unique names"
-        )
-        self.accessLevel = _accessLevel
+    public init(accessLevel: AccessLevel, parameters: [SemanticParameter], at location: SourceLocation?) {
+        precondition(Set(parameters.map(\.name)).count == parameters.count, "The parameters do not have unique names")
+        self.accessLevel = accessLevel
         self.parameters = parameters
         self.location = location
-        self._container = .structure(Weak(structure))
+        for parameter in parameters {
+            precondition(parameter._container == nil, "The parameter is already in the signature of a function or initializer")
+            parameter._container = _Container(self)
+        }
     }
     
     @inlinable

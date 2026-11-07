@@ -15,127 +15,63 @@ public final class SemanticModule {
     @usableFromInline
     internal var _variables = [] as [SemanticVariable]
     
-    @usableFromInline
-    internal var _unlabelledNames = [] as Set<Identifier>
-    
-    @usableFromInline
-    internal var _unlabelledFunctionNames = [] as Set<Identifier>
-    
-    @usableFromInline
-    internal var _compoundNames = [] as Set<[Identifier]>
-    
-    @usableFromInline
-    internal var _externalNames = [] as Set<Identifier>
-    
     @inlinable
     public init() {}
     
     @inlinable
-    public var constants: [SemanticConstant] { _constants }
-    
-    @inlinable
-    public var functions: [SemanticFunction] { _functions }
-    
-    @inlinable
-    public var structures: [SemanticStructure] { _structures }
-    
-    @inlinable
-    public var variables: [SemanticVariable] { _variables }
-    
-    @inlinable
-    public func appendConstant(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        isExternal: Bool,
-        type: SemanticType,
-        at location: SourceLocation?
-    ) -> SemanticConstant {
-        let constant = SemanticConstant(
-            _name: name,
-            accessLevel: accessLevel,
-            isExternal: isExternal,
-            type: type,
-            in: self,
-            at: location
-        )
-        _constants.append(constant)
-        _unlabelledNames.insert(name)
-        if isExternal {
-            _externalNames.insert(name)
+    public var constants: [SemanticConstant] {
+        get { _constants }
+        set {
+            for constant in _constants {
+                constant._container = nil
+            }
+            for constant in newValue {
+                constant._container = _Container(self)
+            }
+            _constants = newValue
         }
-        return constant
     }
     
     @inlinable
-    public func appendFunction(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        isExternal: Bool,
-        parameters: [SemanticParameter],
-        returnType: SemanticType,
-        at location: SourceLocation?
-    ) -> SemanticFunction {
-        let function = SemanticFunction(
-            _name: name,
-            accessLevel: accessLevel,
-            isExternal: isExternal,
-            parameters: parameters,
-            returnType: returnType,
-            in: self,
-            at: location
-        )
-        _functions.append(function)
-        let labels = parameters.map { $0.label ?? $0.name }
-        _compoundNames.insert([name] + labels)
-        if labels.allSatisfy({ $0 == "_" }) {
-            _unlabelledNames.insert(name)
-            _unlabelledFunctionNames.insert(name)
+    public var functions: [SemanticFunction] {
+        get { _functions }
+        set {
+            for function in _functions {
+                function._container = nil
+            }
+            for function in newValue {
+                function._container = _Container(self)
+            }
+            _functions = newValue
         }
-        if isExternal {
-            _externalNames.insert(name)
-        }
-        return function
     }
     
     @inlinable
-    public func appendStructure(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        at location: SourceLocation?
-    ) -> SemanticStructure {
-        let structure = SemanticStructure(
-            _name: name,
-            accessLevel: accessLevel,
-            in: self,
-            at: location
-        )
-        _structures.append(structure)
-        _unlabelledNames.insert(name)
-        return structure
+    public var structures: [SemanticStructure] {
+        get { _structures }
+        set {
+            for structure in _structures {
+                structure._container = nil
+            }
+            for structure in newValue {
+                structure._container = _Container(self)
+            }
+            _structures = newValue
+        }
     }
     
     @inlinable
-    public func appendVariable(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        isExternal: Bool,
-        type: SemanticType,
-        at location: SourceLocation?
-    ) -> SemanticVariable {
-        let variable = SemanticVariable(
-            _name: name,
-            accessLevel: accessLevel,
-            isExternal: isExternal,
-            type: type,
-            in: self,
-            at: location
-        )
-        _variables.append(variable)
-        _unlabelledNames.insert(name)
-        if isExternal {
-            _externalNames.insert(name)
+    public var variables: [SemanticVariable] {
+        get { _variables }
+        set {
+            for variable in _variables {
+                variable._container = nil
+            }
+            for variable in newValue {
+                variable._container = _Container(self)
+            }
+            _variables = newValue
         }
-        return variable
     }
 }
 

@@ -10,9 +10,6 @@ public final class SemanticStructure {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal let _container: _Container
-    
-    @usableFromInline
     internal var _constants = [] as [SemanticConstant]
     
     @usableFromInline
@@ -28,171 +25,83 @@ public final class SemanticStructure {
     internal var _variables = [] as [SemanticVariable]
     
     @usableFromInline
-    internal var _unlabelledNames = [] as Set<Identifier>
-    
-    @usableFromInline
-    internal var _staticUnlabelledNames = [] as Set<Identifier>
-    
-    @usableFromInline
-    internal var _unlabelledFunctionNames = [] as Set<Identifier>
-    
-    @usableFromInline
-    internal var _compoundNames = [] as Set<[Identifier]>
-    
-    @usableFromInline
-    internal var _initializerLabels = [] as Set<[Identifier]>
+    internal var _container: _Container?
     
     @inlinable
-    internal init(
-        _name: Identifier,
-        accessLevel: AccessLevel,
-        in module: SemanticModule,
-        at location: SourceLocation?
-    ) {
-        precondition(
-            !module._unlabelledNames.contains(_name),
-            "The module contains another declaration named \"\(_name)\""
-        )
-        self.name = _name
+    public init(_ name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
+        self.name = name
         self.accessLevel = accessLevel
         self.location = location
-        self._container = .module(Weak(module))
     }
     
     @inlinable
-    internal init(
-        _name: Identifier,
-        accessLevel: AccessLevel,
-        in structure: SemanticStructure,
-        at location: SourceLocation?
-    ) {
-        precondition(
-            !structure._staticUnlabelledNames.contains(_name),
-            "The structure \"\(structure.name)\" contains another structure named \"\(_name)\""
-        )
-        precondition(
-            accessLevel == .private || structure.accessLevel == .public,
-            "The private structure \"\(structure.name)\" cannot contain a public structure"
-        )
-        self.name = _name
-        self.accessLevel = accessLevel
-        self.location = location
-        self._container = .structure(Weak(structure))
-    }
-    
-    @inlinable
-    public var constants: [SemanticConstant] { _constants }
-    
-    @inlinable
-    public var functions: [SemanticFunction] { _functions }
-    
-    @inlinable
-    public var initializers: [SemanticInitializer] { _initializers }
-    
-    @inlinable
-    public var structures: [SemanticStructure] { _structures }
-    
-    @inlinable
-    public var variables: [SemanticVariable] { _variables }
-    
-    @inlinable
-    public func appendConstant(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        type: SemanticType,
-        at location: SourceLocation?
-    ) -> SemanticConstant {
-        let constant = SemanticConstant(
-            _name: name,
-            accessLevel: accessLevel,
-            type: type,
-            in: self,
-            at: location
-        )
-        _constants.append(constant)
-        _unlabelledNames.insert(name)
-        return constant
-    }
-    
-    @inlinable
-    public func appendFunction(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        parameters: [SemanticParameter],
-        returnType: SemanticType,
-        at location: SourceLocation?
-    ) -> SemanticFunction {
-        let function = SemanticFunction(
-            _name: name,
-            accessLevel: accessLevel,
-            parameters: parameters,
-            returnType: returnType,
-            in: self,
-            at: location
-        )
-        _functions.append(function)
-        let labels = parameters.map { $0.label ?? $0.name }
-        _compoundNames.insert([name] + labels)
-        if labels.allSatisfy({ $0 == "_" }) {
-            _unlabelledNames.insert(name)
-            _unlabelledFunctionNames.insert(name)
+    public var constants: [SemanticConstant] {
+        get { _constants }
+        set {
+            for constant in _constants {
+                constant._container = nil
+            }
+            for constant in newValue {
+                constant._container = _Container(self)
+            }
+            _constants = newValue
         }
-        return function
     }
     
     @inlinable
-    public func appendInitializer(
-        accessLevel: AccessLevel,
-        parameters: [SemanticParameter],
-        at location: SourceLocation?
-    ) -> SemanticInitializer {
-        let initializer = SemanticInitializer(
-            _accessLevel: accessLevel,
-            parameters: parameters,
-            in: self,
-            at: location
-        )
-        _initializers.append(initializer)
-        let labels = parameters.map { $0.label ?? $0.name }
-        _initializerLabels.insert(labels)
-        _container.module?._compoundNames.insert([name] + labels)
-        return initializer
+    public var functions: [SemanticFunction] {
+        get { _functions }
+        set {
+            for function in _functions {
+                function._container = nil
+            }
+            for function in newValue {
+                function._container = _Container(self)
+            }
+            _functions = newValue
+        }
     }
     
     @inlinable
-    public func appendStructure(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        at location: SourceLocation?
-    ) -> SemanticStructure {
-        let structure = SemanticStructure(
-            _name: name,
-            accessLevel: accessLevel,
-            in: self,
-            at: location
-        )
-        _structures.append(structure)
-        _staticUnlabelledNames.insert(name)
-        return structure
+    public var initializers: [SemanticInitializer] {
+        get { _initializers }
+        set {
+            for initializer in _initializers {
+                initializer._container = nil
+            }
+            for initializer in newValue {
+                initializer._container = _Container(self)
+            }
+            _initializers = newValue
+        }
     }
     
     @inlinable
-    public func appendVariable(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        type: SemanticType,
-        at location: SourceLocation?
-    ) -> SemanticVariable {
-        let variable = SemanticVariable(
-            _name: name,
-            accessLevel: accessLevel,
-            type: type,
-            in: self,
-            at: location
-        )
-        _variables.append(variable)
-        _unlabelledNames.insert(name)
-        return variable
+    public var structures: [SemanticStructure] {
+        get { _structures }
+        set {
+            for structure in _structures {
+                structure._container = nil
+            }
+            for structure in newValue {
+                structure._container = _Container(self)
+            }
+            _structures = newValue
+        }
+    }
+    
+    @inlinable
+    public var variables: [SemanticVariable] {
+        get { _variables }
+        set {
+            for variable in _variables {
+                variable._container = nil
+            }
+            for variable in newValue {
+                variable._container = _Container(self)
+            }
+            _variables = newValue
+        }
     }
 }
 

@@ -10,6 +10,9 @@ public final class SemanticParameter {
     
     public let location: SourceLocation?
     
+    @usableFromInline
+    internal var _container: _Container?
+    
     @inlinable
     public init(_ name: Identifier, label: Identifier?, type: SemanticType, at location: SourceLocation?) {
         self.name = name

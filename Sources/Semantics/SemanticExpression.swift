@@ -33,8 +33,7 @@ public struct SemanticExpression: Hashable {
         _ constant: SemanticConstant,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        precondition(constant._container.module != nil, "The constant \"\(constant.name)\" is a member of a structure")
-        return SemanticExpression(_kind: .constant(Weak(constant)), at: location)
+        SemanticExpression(_kind: .constant(Weak(constant)), at: location)
     }
     
     @inlinable
@@ -50,8 +49,7 @@ public struct SemanticExpression: Hashable {
         _ variable: SemanticVariable,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        precondition(variable._container.module != nil, "The variable \"\(variable.name)\" is a member of a structure")
-        return SemanticExpression(_kind: .variable(Weak(variable)), at: location)
+        SemanticExpression(_kind: .variable(Weak(variable)), at: location)
     }
     
     @inlinable
