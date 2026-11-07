@@ -22,6 +22,13 @@ public final class SemanticModule {
     public var constants: [SemanticConstant] {
         get { _constants }
         set {
+            let externalNames = newValue.filter(\.isExternal).map(\.name)
+                + _functions.filter(\.isExternal).map(\.name)
+                + _variables.filter(\.isExternal).map(\.name)
+            precondition(
+                Set(externalNames).count == externalNames.count,
+                "The module cannot contain multiple external declarations with the same name"
+            )
             for constant in _constants {
                 constant._container = nil
             }
@@ -37,6 +44,13 @@ public final class SemanticModule {
     public var functions: [SemanticFunction] {
         get { _functions }
         set {
+            let externalNames = _constants.filter(\.isExternal).map(\.name)
+                + newValue.filter(\.isExternal).map(\.name)
+                + _variables.filter(\.isExternal).map(\.name)
+            precondition(
+                Set(externalNames).count == externalNames.count,
+                "The module cannot contain multiple external declarations with the same name"
+            )
             for function in _functions {
                 function._container = nil
             }
@@ -67,6 +81,13 @@ public final class SemanticModule {
     public var variables: [SemanticVariable] {
         get { _variables }
         set {
+            let externalNames = _constants.filter(\.isExternal).map(\.name)
+                + _functions.filter(\.isExternal).map(\.name)
+                + newValue.filter(\.isExternal).map(\.name)
+            precondition(
+                Set(externalNames).count == externalNames.count,
+                "The module cannot contain multiple external declarations with the same name"
+            )
             for variable in _variables {
                 variable._container = nil
             }
