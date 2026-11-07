@@ -33,7 +33,7 @@ public final class SemanticModule {
                 constant._container = nil
             }
             for constant in newValue {
-                precondition(constant._container == nil, "The constant is already in a module or structure")
+                precondition(constant._container == nil, "A constant is already declared in a module or structure")
                 constant._container = _Container(self)
             }
             _constants = newValue
@@ -55,7 +55,7 @@ public final class SemanticModule {
                 function._container = nil
             }
             for function in newValue {
-                precondition(function._container == nil, "The function is already in a module or structure")
+                precondition(function._container == nil, "A function is already declared in a module or structure")
                 function._container = _Container(self)
             }
             _functions = newValue
@@ -70,7 +70,7 @@ public final class SemanticModule {
                 structure._container = nil
             }
             for structure in newValue {
-                precondition(structure._container == nil, "The structure is already in a module or structure")
+                precondition(structure._container == nil, "A structure is already declared in a module or structure")
                 structure._container = _Container(self)
             }
             _structures = newValue
@@ -92,7 +92,7 @@ public final class SemanticModule {
                 variable._container = nil
             }
             for variable in newValue {
-                precondition(variable._container == nil, "The variable is already in a module or structure")
+                precondition(variable._container == nil, "A variable is already declared in a module or structure")
                 variable._container = _Container(self)
             }
             _variables = newValue

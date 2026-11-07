@@ -38,7 +38,7 @@ public final class SemanticFunction {
         self.returnType = returnType
         self.location = location
         for parameter in parameters {
-            precondition(parameter._container == nil, "The parameter is already in a function or initializer")
+            precondition(parameter._container == nil, "A parameter is already declared by a function or initializer")
             parameter._container = _Container(self)
         }
     }
