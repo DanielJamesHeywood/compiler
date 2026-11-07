@@ -86,7 +86,7 @@ public final class SemanticStructure {
         set {
             precondition(
                 accessLevel == .public || newValue.allSatisfy { $0.accessLevel == .private },
-                "The private structure \"\(name)\" cannot contain a public initializer"
+                "A private structure cannot contain a public initializer"
             )
             for initializer in _initializers {
                 initializer._container = nil
@@ -105,7 +105,7 @@ public final class SemanticStructure {
         set {
             precondition(
                 accessLevel == .public || newValue.allSatisfy { $0.accessLevel == .private },
-                "The private structure \"\(name)\" cannot contain a public structure"
+                "A private structure cannot contain a public structure"
             )
             for structure in _structures {
                 structure._container = nil
