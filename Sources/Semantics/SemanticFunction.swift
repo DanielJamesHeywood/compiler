@@ -30,7 +30,6 @@ public final class SemanticFunction {
         returnType: SemanticType,
         at location: SourceLocation?
     ) {
-        precondition(Set(parameters.map(\.name)).count == parameters.count, "The parameters do not have unique names")
         self.name = name
         self.accessLevel = accessLevel
         self.isExternal = isExternal

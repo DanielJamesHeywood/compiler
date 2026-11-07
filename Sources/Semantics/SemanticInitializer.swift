@@ -17,7 +17,6 @@ public final class SemanticInitializer {
     
     @inlinable
     public init(accessLevel: AccessLevel, parameters: [SemanticParameter], at location: SourceLocation?) {
-        precondition(Set(parameters.map(\.name)).count == parameters.count, "The parameters do not have unique names")
         self.accessLevel = accessLevel
         self.parameters = parameters
         self.location = location
