@@ -40,11 +40,11 @@ public final class SemanticStructure {
         set {
             precondition(
                 accessLevel == .public || newValue.allSatisfy { $0.accessLevel == .private },
-                "A private structure cannot contain a public constant"
+                "A public constant cannot be a member of a private structure"
             )
             precondition(
                 newValue.allSatisfy { !$0.isExternal },
-                "A structure cannot contain an external constant"
+                "An external constant cannot be a member of a structure"
             )
             for constant in _constants {
                 constant._container = nil
@@ -63,11 +63,11 @@ public final class SemanticStructure {
         set {
             precondition(
                 accessLevel == .public || newValue.allSatisfy { $0.accessLevel == .private },
-                "A private structure cannot contain a public function"
+                "A public function cannot be a member of a private structure"
             )
             precondition(
                 newValue.allSatisfy { !$0.isExternal },
-                "A structure cannot contain an external function"
+                "An external function cannot be a member of a structure"
             )
             for function in _functions {
                 function._container = nil
@@ -86,7 +86,7 @@ public final class SemanticStructure {
         set {
             precondition(
                 accessLevel == .public || newValue.allSatisfy { $0.accessLevel == .private },
-                "A private structure cannot contain a public initializer"
+                "A public initializer cannot be a member of a private structure"
             )
             for initializer in _initializers {
                 initializer._container = nil
@@ -105,7 +105,7 @@ public final class SemanticStructure {
         set {
             precondition(
                 accessLevel == .public || newValue.allSatisfy { $0.accessLevel == .private },
-                "A private structure cannot contain a public structure"
+                "A public structure cannot be a member of a private structure"
             )
             for structure in _structures {
                 structure._container = nil
@@ -124,11 +124,11 @@ public final class SemanticStructure {
         set {
             precondition(
                 accessLevel == .public || newValue.allSatisfy { $0.accessLevel == .private },
-                "A private structure cannot contain a public variable"
+                "A public variable cannot be a member of a private structure"
             )
             precondition(
                 newValue.allSatisfy { !$0.isExternal },
-                "A structure cannot contain an external variable"
+                "An external variable cannot be a member of a structure"
             )
             for variable in _variables {
                 variable._container = nil
