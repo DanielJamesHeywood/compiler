@@ -9,15 +9,17 @@ extension SemanticModule {
     @inlinable
     public func makeLLVMModule(in llvmContext: LLVMContext) -> LLVMModule {
         let llvmModule = LLVMModule(in: llvmContext)
+        var llvmGlobalVariablesForConstants = [:] as [SemanticConstant: LLVMGlobalVariable]
         for constant in constants {
-            _ = llvmModule.addGlobal(
+            llvmGlobalVariablesForConstants[constant] = llvmModule.addGlobal(
                 constant.isExternal ? constant.name.text : "",
                 type: constant.type.llvmType(in: llvmContext),
                 linkage: constant.isExternal ? .external : .private
             )
         }
+        var llvmGlobalVariablesForVariables = [:] as [SemanticVariable: LLVMGlobalVariable]
         for variable in variables {
-            _ = llvmModule.addGlobal(
+            llvmGlobalVariablesForVariables[variable] = llvmModule.addGlobal(
                 variable.isExternal ? variable.name.text : "",
                 type: variable.type.llvmType(in: llvmContext),
                 linkage: variable.isExternal ? .external : .private
