@@ -2,28 +2,46 @@ import LLVM
 
 import Semantics
 import Syntax
+import Tokens
 
 extension SemanticModule {
     
     @inlinable
-    public func makeLLVMModule(in context: LLVMContext) -> LLVMModule { LLVMModule(in: context) }
+    public func makeLLVMModule(in llvmContext: LLVMContext) -> LLVMModule {
+        let llvmModule = LLVMModule(in: llvmContext)
+        for constant in constants {
+            _ = llvmModule.addGlobal(
+                constant.isExternal ? constant.name.text : "",
+                type: constant.type.llvmType(in: llvmContext),
+                linkage: constant.isExternal ? .external : .private
+            )
+        }
+        for variable in variables {
+            _ = llvmModule.addGlobal(
+                variable.isExternal ? variable.name.text : "",
+                type: variable.type.llvmType(in: llvmContext),
+                linkage: variable.isExternal ? .external : .private
+            )
+        }
+        return llvmModule
+    }
 }
 
 extension SemanticType {
     
     @inlinable
-    public func llvmType(in context: LLVMContext) -> LLVMType {
+    public func llvmType(in llvmContext: LLVMContext) -> LLVMType {
         switch kind {
         case let .structure(weakStructure):
             guard let structure = weakStructure.object else {
                 preconditionFailure("The structure has been deallocated")
             }
             let propertyTypes = structure.constants.map(\.type) + structure.variables.map(\.type)
-            return LLVMStructureType(elementTypes: propertyTypes.map { $0.llvmType(in: context) }, in: context)
+            return LLVMStructureType(elementTypes: propertyTypes.map { $0.llvmType(in: llvmContext) }, in: llvmContext)
         case let .integerPrimitive(bitWidth: bitWidth):
-            return LLVMIntegerType(bitWidth: bitWidth.value, in: context)
+            return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmContext)
         case let .bytePrimitive(bitWidth: bitWidth):
-            return LLVMByteType(bitWidth: bitWidth.value, in: context)
+            return LLVMByteType(bitWidth: bitWidth.value, in: llvmContext)
         }
     }
 }
