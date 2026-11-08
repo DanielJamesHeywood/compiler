@@ -123,3 +123,24 @@ extension SemanticStructure: Hashable {
         hasher.combine(ObjectIdentifier(self))
     }
 }
+
+extension SemanticStructure: CustomReflectable {
+    
+    @inlinable
+    public var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "name": name,
+                "accessLevel": accessLevel,
+                "location": location as Any,
+                "constants": constants,
+                "functions": functions,
+                "initializers": initializers,
+                "structures": structures,
+                "variables": variables
+            ],
+            displayStyle: .class
+        )
+    }
+}

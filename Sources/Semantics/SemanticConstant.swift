@@ -45,3 +45,21 @@ extension SemanticConstant: Hashable {
         hasher.combine(ObjectIdentifier(self))
     }
 }
+
+extension SemanticConstant: CustomReflectable {
+    
+    @inlinable
+    public var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "name": name,
+                "accessLevel": accessLevel,
+                "isExternal": isExternal,
+                "type": type,
+                "location": location as Any
+            ],
+            displayStyle: .class
+        )
+    }
+}

@@ -64,3 +64,23 @@ extension SemanticFunction: Hashable {
         hasher.combine(ObjectIdentifier(self))
     }
 }
+
+extension SemanticFunction: CustomReflectable {
+    
+    @inlinable
+    public var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "name": name,
+                "accessLevel": accessLevel,
+                "isExternal": isExternal,
+                "parameters": parameters,
+                "returnType": returnType,
+                "location": location as Any,
+                "body": body as Any
+            ],
+            displayStyle: .class
+        )
+    }
+}

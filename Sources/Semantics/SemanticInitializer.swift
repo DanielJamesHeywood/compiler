@@ -48,3 +48,20 @@ extension SemanticInitializer: Hashable {
         hasher.combine(ObjectIdentifier(self))
     }
 }
+
+extension SemanticInitializer: CustomReflectable {
+    
+    @inlinable
+    public var customMirror: Mirror {
+        Mirror(
+            self,
+            children: [
+                "accessLevel": accessLevel,
+                "parameters": parameters,
+                "location": location as Any,
+                "body": body as Any
+            ],
+            displayStyle: .class
+        )
+    }
+}

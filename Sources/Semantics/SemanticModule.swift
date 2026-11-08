@@ -89,3 +89,15 @@ extension SemanticModule: Hashable {
         hasher.combine(ObjectIdentifier(self))
     }
 }
+
+extension SemanticModule: CustomReflectable {
+    
+    @inlinable
+    public var customMirror: Mirror {
+        Mirror(
+            self,
+            children: ["constants": constants, "functions": functions, "structures": structures, "variables": variables],
+            displayStyle: .class
+        )
+    }
+}

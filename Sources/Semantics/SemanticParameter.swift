@@ -35,3 +35,15 @@ extension SemanticParameter: Hashable {
         hasher.combine(ObjectIdentifier(self))
     }
 }
+
+extension SemanticParameter: CustomReflectable {
+    
+    @inlinable
+    public var customMirror: Mirror {
+        Mirror(
+            self,
+            children: ["name": name, "label": label as Any, "type": type, "location": location as Any],
+            displayStyle: .class
+        )
+    }
+}
