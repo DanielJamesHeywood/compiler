@@ -23,12 +23,36 @@ let package = Package(
                 "SemanticAnalysis"
             ]
         ),
-        .target(name: "Lexing", dependencies: ["Tokens"]),
-        .target(name: "Parsing", dependencies: ["Syntax", "Tokens"]),
-        .target(name: "SemanticAnalysis", dependencies: ["Semantics"]),
-        .target(name: "Semantics", dependencies: ["Syntax", "Tokens"]),
-        .target(name: "StandardLibrary", dependencies: ["Syntax", "Tokens"]),
-        .target(name: "Syntax", dependencies: ["Tokens"]),
-        .target(name: "Tokens")
+        .target(
+            name: "IRGeneration",
+            dependencies: [.product(name: "LLVM", package: "llvm-swift"), "Semantics", "Syntax", "Tokens"]
+        ),
+        .target(
+            name: "Lexing",
+            dependencies: ["Tokens"]
+        ),
+        .target(
+            name: "Parsing",
+            dependencies: ["Syntax", "Tokens"]
+        ),
+        .target(
+            name: "SemanticAnalysis",
+            dependencies: ["Semantics"]
+        ),
+        .target(
+            name: "Semantics",
+            dependencies: ["Syntax", "Tokens"]
+        ),
+        .target(
+            name: "StandardLibrary",
+            dependencies: ["Syntax", "Tokens"]
+        ),
+        .target(
+            name: "Syntax",
+            dependencies: ["Tokens"]
+        ),
+        .target(
+            name: "Tokens"
+        )
     ]
 )
