@@ -9,6 +9,12 @@ public struct BitWidth: Hashable, Sendable {
     }
 }
 
+extension BitWidth: Comparable {
+    
+    @inlinable
+    public static func < (lhs: BitWidth, rhs: BitWidth) -> Bool { lhs.value < rhs.value }
+}
+
 extension BitWidth: CustomStringConvertible {
 
     @inlinable
