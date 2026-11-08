@@ -3,6 +3,12 @@ import LLVM
 import Semantics
 import Syntax
 
+extension SemanticModule {
+    
+    @inlinable
+    public func makeLLVMModule(in context: LLVMContext) -> LLVMModule { LLVMModule(in: context) }
+}
+
 extension SemanticType {
     
     @inlinable
