@@ -25,6 +25,16 @@ extension SemanticModule {
                 linkage: variable.isExternal ? .external : .private
             )
         }
+        for function in functions {
+            _ = llvmModule.addFunction(
+                function.isExternal ? function.name.text : "",
+                type: LLVMFunctionType(
+                    returnType: function.returnType.llvmType(in: llvmContext),
+                    parameterTypes: function.parameters.map { $0.type.llvmType(in: llvmContext) }
+                ),
+                linkage: function.isExternal ? .external : .private
+            )
+        }
         return llvmModule
     }
 }
