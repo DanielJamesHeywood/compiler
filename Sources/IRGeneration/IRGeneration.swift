@@ -51,17 +51,29 @@ extension SemanticType {
     
     @inlinable
     internal func _llvmType(in llvmContext: LLVMContext) -> LLVMType {
-        switch kind {
-        case let .structure(weakStructure):
-            guard let structure = weakStructure.object else {
-                preconditionFailure("The structure has been deallocated")
+        var structuresBeingLowered = [] as Set<SemanticStructure>
+        func llvmType(for type: SemanticType) -> LLVMType {
+            switch type.kind {
+            case let .structure(weakStructure):
+                guard let structure = weakStructure.object else {
+                    preconditionFailure("The structure has been deallocated")
+                }
+                precondition(
+                    !structuresBeingLowered.contains(structure),
+                    "The structure \"\(structure.name)\" recursively contains itself"
+                )
+                structuresBeingLowered.insert(structure)
+                defer {
+                    structuresBeingLowered.remove(structure)
+                }
+                let propertyTypes = structure.constants.map(\.type) + structure.variables.map(\.type)
+                return LLVMStructureType(elementTypes: propertyTypes.map(llvmType(for:)), in: llvmContext)
+            case let .integerPrimitive(bitWidth: bitWidth):
+                return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmContext)
+            case let .bytePrimitive(bitWidth: bitWidth):
+                return LLVMByteType(bitWidth: bitWidth.value, in: llvmContext)
             }
-            let propertyTypes = structure.constants.map(\.type) + structure.variables.map(\.type)
-            return LLVMStructureType(elementTypes: propertyTypes.map { $0.llvmType(in: llvmContext) }, in: llvmContext)
-        case let .integerPrimitive(bitWidth: bitWidth):
-            return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmContext)
-        case let .bytePrimitive(bitWidth: bitWidth):
-            return LLVMByteType(bitWidth: bitWidth.value, in: llvmContext)
         }
+        return llvmType(for: self)
     }
 }
