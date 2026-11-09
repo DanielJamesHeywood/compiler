@@ -11,18 +11,20 @@ extension SemanticModule {
         let llvmModule = LLVMModule(in: llvmContext)
         var llvmGlobalVariablesForConstants = [:] as [SemanticConstant: LLVMGlobalVariable]
         for constant in constants {
+            precondition(constant.isExternal, "The constant is not external")
             llvmGlobalVariablesForConstants[constant] = llvmModule.addGlobal(
-                constant.isExternal ? constant.name.text : "",
+                constant.name.text,
                 type: constant.type.llvmType(in: llvmContext),
-                linkage: constant.isExternal ? .external : .private
+                linkage: .external
             )
         }
         var llvmGlobalVariablesForVariables = [:] as [SemanticVariable: LLVMGlobalVariable]
         for variable in variables {
+            precondition(variable.isExternal, "The variable is not external")
             llvmGlobalVariablesForVariables[variable] = llvmModule.addGlobal(
-                variable.isExternal ? variable.name.text : "",
+                variable.name.text,
                 type: variable.type.llvmType(in: llvmContext),
-                linkage: variable.isExternal ? .external : .private
+                linkage: .external
             )
         }
         for function in functions {
