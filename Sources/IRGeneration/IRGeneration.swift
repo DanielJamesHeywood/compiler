@@ -17,7 +17,7 @@ extension SemanticModule {
             )
             llvmGlobalVariablesForConstants[constant] = llvmModule.addGlobal(
                 constant.name.text,
-                type: constant.type.llvmType(in: llvmContext),
+                type: constant.type._llvmType(in: llvmContext),
                 linkage: .external
             )
         }
@@ -29,7 +29,7 @@ extension SemanticModule {
             )
             llvmGlobalVariablesForVariables[variable] = llvmModule.addGlobal(
                 variable.name.text,
-                type: variable.type.llvmType(in: llvmContext),
+                type: variable.type._llvmType(in: llvmContext),
                 linkage: .external
             )
         }
@@ -37,8 +37,8 @@ extension SemanticModule {
             _ = llvmModule.addFunction(
                 function.isExternal ? function.name.text : "",
                 type: LLVMFunctionType(
-                    returnType: function.returnType.llvmType(in: llvmContext),
-                    parameterTypes: function.parameters.map { $0.type.llvmType(in: llvmContext) }
+                    returnType: function.returnType._llvmType(in: llvmContext),
+                    parameterTypes: function.parameters.map { $0.type._llvmType(in: llvmContext) }
                 ),
                 linkage: function.isExternal ? .external : .private
             )
@@ -50,7 +50,7 @@ extension SemanticModule {
 extension SemanticType {
     
     @inlinable
-    public func llvmType(in llvmContext: LLVMContext) -> LLVMType {
+    internal func _llvmType(in llvmContext: LLVMContext) -> LLVMType {
         switch kind {
         case let .structure(weakStructure):
             guard let structure = weakStructure.object else {
