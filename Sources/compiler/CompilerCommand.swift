@@ -16,10 +16,22 @@ struct CompilerCommand: ParsableCommand {
     )
     var sourcePaths: [FilePath]
     
+    @Option(
+        name: [.short, .customLong("output")],
+        help: ArgumentHelp("The path where the LLVM IR is written.", valueName: "path"),
+        completion: .file(extensions: ["ll"]),
+        transform: FilePath.init(_:)
+    )
+    var outputPath: FilePath
+    
     func run() throws {
         precondition(
             sourcePaths.allSatisfy { $0.extension == "source" },
             "The validated source paths do not all have extension \"source\""
+        )
+        precondition(
+            outputPath.extension == "ll",
+            "The validated output path does not have extension \"ll\""
         )
         let contentsOfSourceFiles = try sourcePaths.map { path in
             do {
@@ -106,6 +118,16 @@ struct CompilerCommand: ParsableCommand {
                     "Expected '\(path)' to have extension 'source', but it has extension '\(`extension`)'"
                 )
             }
+        }
+        guard let `extension` = outputPath.extension else {
+            throw ValidationError(
+                "Expected '\(outputPath)' to have extension 'll', but it has no extension"
+            )
+        }
+        guard `extension` == "ll" else {
+            throw ValidationError(
+                "Expected '\(outputPath)' to have extension 'll', but it has extension '\(`extension`)'"
+            )
         }
     }
     
