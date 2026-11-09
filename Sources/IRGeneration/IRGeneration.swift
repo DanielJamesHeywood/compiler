@@ -33,6 +33,8 @@ extension SemanticModule {
                 linkage: .external
             )
         }
+        let externalNames = constants.map(\.name) + variables.map(\.name) + functions.filter(\.isExternal).map(\.name)
+        precondition(Set(externalNames).count == externalNames.count, "The external names in the module are not unique")
         for function in functions {
             _ = llvmModule.addFunction(
                 function.isExternal ? function.name.text : "",
