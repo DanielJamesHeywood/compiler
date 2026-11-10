@@ -10,19 +10,16 @@ public final class SemanticStructure {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal var _constants = [] as [SemanticConstant]
-    
-    @usableFromInline
     internal var _functions = [] as [SemanticFunction]
     
     @usableFromInline
     internal var _initializers = [] as [SemanticInitializer]
     
     @usableFromInline
-    internal var _structures = [] as [SemanticStructure]
+    internal var _properties = [] as [SemanticProperty]
     
     @usableFromInline
-    internal var _variables = [] as [SemanticVariable]
+    internal var _structures = [] as [SemanticStructure]
     
     @usableFromInline
     internal var _container: _Container?
@@ -32,21 +29,6 @@ public final class SemanticStructure {
         self.name = name
         self.accessLevel = accessLevel
         self.location = location
-    }
-    
-    @inlinable
-    public var constants: [SemanticConstant] {
-        get { _constants }
-        set {
-            for constant in _constants {
-                constant._container = nil
-            }
-            for constant in newValue {
-                precondition(constant._container == nil, "A constant is already declared in a module or structure")
-                constant._container = _Container(self)
-            }
-            _constants = newValue
-        }
     }
     
     @inlinable
@@ -80,6 +62,21 @@ public final class SemanticStructure {
     }
     
     @inlinable
+    public var properties: [SemanticProperty] {
+        get { _properties }
+        set {
+            for property in _properties {
+                property._container = nil
+            }
+            for property in newValue {
+                precondition(property._container == nil, "A property is already declared in a module or structure")
+                property._container = _Container(self)
+            }
+            _properties = newValue
+        }
+    }
+    
+    @inlinable
     public var structures: [SemanticStructure] {
         get { _structures }
         set {
@@ -91,21 +88,6 @@ public final class SemanticStructure {
                 structure._container = _Container(self)
             }
             _structures = newValue
-        }
-    }
-    
-    @inlinable
-    public var variables: [SemanticVariable] {
-        get { _variables }
-        set {
-            for variable in _variables {
-                variable._container = nil
-            }
-            for variable in newValue {
-                precondition(variable._container == nil, "A variable is already declared in a module or structure")
-                variable._container = _Container(self)
-            }
-            _variables = newValue
         }
     }
 }
@@ -134,11 +116,10 @@ extension SemanticStructure: CustomReflectable {
                 "name": name,
                 "accessLevel": accessLevel,
                 "location": location as Any,
-                "constants": constants,
                 "functions": functions,
                 "initializers": initializers,
-                "structures": structures,
-                "variables": variables
+                "properties": properties,
+                "structures": structures
             ],
             displayStyle: .class
         )

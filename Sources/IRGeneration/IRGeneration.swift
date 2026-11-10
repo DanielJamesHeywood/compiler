@@ -74,8 +74,10 @@ extension SemanticType {
                 defer {
                     structuresBeingLowered.remove(structure)
                 }
-                let propertyTypes = structure.constants.map(\.type) + structure.variables.map(\.type)
-                return LLVMStructureType(elementTypes: propertyTypes.map(llvmType(for:)), in: llvmContext)
+                return LLVMStructureType(
+                    elementTypes: structure.properties.map { llvmType(for: $0.type) },
+                    in: llvmContext
+                )
             case let .integerPrimitive(bitWidth: bitWidth):
                 return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmContext)
             case let .bytePrimitive(bitWidth: bitWidth):
