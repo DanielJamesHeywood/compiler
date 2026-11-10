@@ -44,7 +44,9 @@ extension SemanticModule {
                 ),
                 linkage: function.isExternal ? .external : .private
             )
-            _ = llvmFunction
+            if let body = function.body {
+                _ = body
+            }
         }
         return llvmModule
     }
