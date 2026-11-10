@@ -9,7 +9,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-system", from: "1.7.0"),
-        .package(path: "../llvm-swift")
+        .package(url: "https://github.com/DanielJamesHeywood/llvm-swift", from: "1.0.0")
     ],
     targets: [
         .executableTarget(
