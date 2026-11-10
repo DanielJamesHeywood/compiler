@@ -45,6 +45,7 @@ extension SemanticModule {
                 linkage: function.isExternal ? .external : .private
             )
             if let body = function.body {
+                _ = llvmFunction.appendBasicBlock()
                 _ = body
             } else {
                 precondition(function.isExternal, "The function \"\(function.name)\" has no body but is not external")
