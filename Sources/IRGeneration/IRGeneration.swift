@@ -46,6 +46,8 @@ extension SemanticModule {
             )
             if let body = function.body {
                 _ = body
+            } else {
+                precondition(function.isExternal, "The function \"\(function.name)\" has no body but is not external")
             }
         }
         return llvmModule
