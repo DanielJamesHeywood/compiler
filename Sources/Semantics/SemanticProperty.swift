@@ -1,9 +1,21 @@
+import Tokens
+
 public enum SemanticProperty: Hashable {
     case constant(SemanticConstant)
     case variable(SemanticVariable)
 }
 
 extension SemanticProperty {
+    
+    @inlinable
+    public var name: Identifier {
+        switch self {
+        case let .constant(constant):
+            constant.name
+        case let .variable(variable):
+            variable.name
+        }
+    }
     
     @inlinable
     public var type: SemanticType {
