@@ -1,9 +1,9 @@
-import Syntax
 import Tokens
+import Syntax
 
 @inlinable
 @ArrayBuilder<SyntacticDeclaration>
-public var syntacticDeclarationsForStandardLibrary: [SyntacticDeclaration] {
+internal var _syntacticDeclarationsForStandardLibrary: [SyntacticDeclaration] {
     SyntacticDeclaration.structure("Integer32", accessLevel: .public) {
         SyntacticDeclaration.variable("value", accessLevel: .private, type: .integerPrimitive(bitWidth: 32))
         SyntacticDeclaration.initializer(

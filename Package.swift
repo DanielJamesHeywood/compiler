@@ -16,16 +16,13 @@ let package = Package(
             name: "compiler",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                .product(name: "LLVM", package: "llvm-swift"),
                 .product(name: "SystemPackage", package: "swift-system"),
+                .product(name: "LLVM", package: "llvm-swift"),
                 "Lexing",
                 "Parsing",
-                "SemanticAnalysis"
+                "SemanticAnalysis",
+                "IRGeneration"
             ]
-        ),
-        .target(
-            name: "IRGeneration",
-            dependencies: [.product(name: "LLVM", package: "llvm-swift"), "Semantics", "Syntax", "Tokens"]
         ),
         .target(
             name: "Lexing",
@@ -33,26 +30,26 @@ let package = Package(
         ),
         .target(
             name: "Parsing",
-            dependencies: ["Syntax", "Tokens"]
+            dependencies: ["Tokens", "Syntax"]
         ),
         .target(
             name: "SemanticAnalysis",
-            dependencies: ["Semantics"]
+            dependencies: ["Tokens", "Syntax", "Semantics"]
         ),
         .target(
-            name: "Semantics",
-            dependencies: ["Syntax", "Tokens"]
+            name: "IRGeneration",
+            dependencies: [.product(name: "LLVM", package: "llvm-swift"), "Tokens", "Syntax", "Semantics"]
         ),
         .target(
-            name: "StandardLibrary",
-            dependencies: ["Syntax", "Tokens"]
+            name: "Tokens"
         ),
         .target(
             name: "Syntax",
             dependencies: ["Tokens"]
         ),
         .target(
-            name: "Tokens"
+            name: "Semantics",
+            dependencies: ["Tokens", "Syntax"]
         )
     ]
 )

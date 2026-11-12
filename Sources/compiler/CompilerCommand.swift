@@ -5,6 +5,7 @@ import LLVM
 import Lexing
 import Parsing
 import SemanticAnalysis
+import IRGeneration
 
 @main
 struct CompilerCommand: ParsableCommand {

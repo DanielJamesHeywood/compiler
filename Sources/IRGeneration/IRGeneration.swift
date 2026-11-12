@@ -1,8 +1,8 @@
 import LLVM
 
-import Semantics
-import Syntax
 import Tokens
+import Syntax
+import Semantics
 
 extension SemanticModule {
     

@@ -1,7 +1,7 @@
 import LLVM
 
-import Semantics
 import Tokens
+import Semantics
 
 @usableFromInline
 internal struct _IRGenerator: ~Copyable {

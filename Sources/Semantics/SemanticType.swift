@@ -1,5 +1,5 @@
-import Syntax
 import Tokens
+import Syntax
 
 public struct SemanticType: Hashable {
     

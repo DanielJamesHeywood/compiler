@@ -1,5 +1,5 @@
-import Syntax
 import Tokens
+import Syntax
 
 @inlinable
 public func syntacticDeclarations(for tokens: [Token]) throws(ParsingError) -> [SyntacticDeclaration] {
