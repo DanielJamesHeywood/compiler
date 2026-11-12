@@ -1,9 +1,9 @@
 @usableFromInline
 internal enum _Container: Hashable {
     case module(Weak<SemanticModule>)
-    case function(Weak<SemanticFunction>)
-    case initializer(Weak<SemanticInitializer>)
     case structure(Weak<SemanticStructure>)
+    case initializer(Weak<SemanticInitializer>)
+    case function(Weak<SemanticFunction>)
 }
 
 extension _Container {
@@ -14,8 +14,8 @@ extension _Container {
     }
     
     @inlinable
-    internal init(_ function: SemanticFunction) {
-        self = .function(Weak(function))
+    internal init(_ structure: SemanticStructure) {
+        self = .structure(Weak(structure))
     }
     
     @inlinable
@@ -24,7 +24,7 @@ extension _Container {
     }
     
     @inlinable
-    internal init(_ structure: SemanticStructure) {
-        self = .structure(Weak(structure))
+    internal init(_ function: SemanticFunction) {
+        self = .function(Weak(function))
     }
 }

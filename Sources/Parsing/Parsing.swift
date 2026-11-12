@@ -169,10 +169,10 @@ extension ArraySlice<Token> {
             throw .unexpectedEndOfFile(expected: .declaration)
         }
         let accessLevel = switch firstToken.kind {
-        case .publicKeyword:
-            .public
         case .privateKeyword:
             .private
+        case .publicKeyword:
+            .public
         default:
             throw .unexpectedToken(firstToken, expected: .accessLevel)
         } as AccessLevel
@@ -184,6 +184,15 @@ extension ArraySlice<Token> {
             throw .unexpectedEndOfFile(expected: isExternal ? .externalDeclaration : .declaration)
         }
         switch token.kind {
+        case .structureKeyword where !isExternal:
+            let name = try _parseIdentifier()
+            let members = try _parseMembers()
+            return .structure(
+                name,
+                accessLevel: accessLevel,
+                members: members,
+                at: firstToken.location
+            )
         case .constantKeyword:
             let name = try _parseIdentifier()
             try _parseColon()
@@ -193,6 +202,26 @@ extension ArraySlice<Token> {
                 accessLevel: accessLevel,
                 isExternal: isExternal,
                 type: type,
+                at: firstToken.location
+            )
+        case .variableKeyword:
+            let name = try _parseIdentifier()
+            try _parseColon()
+            let type = try _parseType()
+            return .variable(
+                name,
+                accessLevel: accessLevel,
+                isExternal: isExternal,
+                type: type,
+                at: firstToken.location
+            )
+        case .initializerKeyword where !isExternal:
+            let parameters = try _parseParameters()
+            let body = first?.kind == .openingBrace ? try _parseBody() : nil
+            return .initializer(
+                accessLevel: accessLevel,
+                parameters: parameters,
+                body: body,
                 at: firstToken.location
             )
         case .functionKeyword:
@@ -208,35 +237,6 @@ extension ArraySlice<Token> {
                 parameters: parameters,
                 returnType: returnType,
                 body: body,
-                at: firstToken.location
-            )
-        case .initializerKeyword where !isExternal:
-            let parameters = try _parseParameters()
-            let body = first?.kind == .openingBrace ? try _parseBody() : nil
-            return .initializer(
-                accessLevel: accessLevel,
-                parameters: parameters,
-                body: body,
-                at: firstToken.location
-            )
-        case .structureKeyword where !isExternal:
-            let name = try _parseIdentifier()
-            let members = try _parseMembers()
-            return .structure(
-                name,
-                accessLevel: accessLevel,
-                members: members,
-                at: firstToken.location
-            )
-        case .variableKeyword:
-            let name = try _parseIdentifier()
-            try _parseColon()
-            let type = try _parseType()
-            return .variable(
-                name,
-                accessLevel: accessLevel,
-                isExternal: isExternal,
-                type: type,
                 at: firstToken.location
             )
         default:

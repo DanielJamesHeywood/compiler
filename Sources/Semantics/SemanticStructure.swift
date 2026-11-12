@@ -10,16 +10,16 @@ public final class SemanticStructure {
     public let location: SourceLocation?
     
     @usableFromInline
-    internal var _functions = [] as [SemanticFunction]
-    
-    @usableFromInline
-    internal var _initializers = [] as [SemanticInitializer]
+    internal var _structures = [] as [SemanticStructure]
     
     @usableFromInline
     internal var _properties = [] as [SemanticProperty]
     
     @usableFromInline
-    internal var _structures = [] as [SemanticStructure]
+    internal var _initializers = [] as [SemanticInitializer]
+    
+    @usableFromInline
+    internal var _functions = [] as [SemanticFunction]
     
     @usableFromInline
     internal var _container: _Container?
@@ -32,32 +32,17 @@ public final class SemanticStructure {
     }
     
     @inlinable
-    public var functions: [SemanticFunction] {
-        get { _functions }
+    public var structures: [SemanticStructure] {
+        get { _structures }
         set {
-            for function in _functions {
-                function._container = nil
+            for structure in _structures {
+                structure._container = nil
             }
-            for function in newValue {
-                precondition(function._container == nil, "A function is already declared in a module or structure")
-                function._container = _Container(self)
+            for structure in newValue {
+                precondition(structure._container == nil, "A structure is already declared in a module or structure")
+                structure._container = _Container(self)
             }
-            _functions = newValue
-        }
-    }
-    
-    @inlinable
-    public var initializers: [SemanticInitializer] {
-        get { _initializers }
-        set {
-            for initializer in _initializers {
-                initializer._container = nil
-            }
-            for initializer in newValue {
-                precondition(initializer._container == nil, "An initializer is already declared in a structure")
-                initializer._container = _Container(self)
-            }
-            _initializers = newValue
+            _structures = newValue
         }
     }
     
@@ -77,17 +62,32 @@ public final class SemanticStructure {
     }
     
     @inlinable
-    public var structures: [SemanticStructure] {
-        get { _structures }
+    public var initializers: [SemanticInitializer] {
+        get { _initializers }
         set {
-            for structure in _structures {
-                structure._container = nil
+            for initializer in _initializers {
+                initializer._container = nil
             }
-            for structure in newValue {
-                precondition(structure._container == nil, "A structure is already declared in a module or structure")
-                structure._container = _Container(self)
+            for initializer in newValue {
+                precondition(initializer._container == nil, "An initializer is already declared in a structure")
+                initializer._container = _Container(self)
             }
-            _structures = newValue
+            _initializers = newValue
+        }
+    }
+    
+    @inlinable
+    public var functions: [SemanticFunction] {
+        get { _functions }
+        set {
+            for function in _functions {
+                function._container = nil
+            }
+            for function in newValue {
+                precondition(function._container == nil, "A function is already declared in a module or structure")
+                function._container = _Container(self)
+            }
+            _functions = newValue
         }
     }
 }
@@ -116,10 +116,10 @@ extension SemanticStructure: CustomReflectable {
                 "name": name,
                 "accessLevel": accessLevel,
                 "location": location as Any,
-                "functions": functions,
-                "initializers": initializers,
+                "structures": structures,
                 "properties": properties,
-                "structures": structures
+                "initializers": initializers,
+                "functions": functions
             ],
             displayStyle: .class
         )

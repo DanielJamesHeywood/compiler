@@ -5,8 +5,8 @@ public struct SemanticExpression: Hashable {
     
     public enum Kind: Hashable {
         case constant(Weak<SemanticConstant>)
-        case parameter(Weak<SemanticParameter>)
         case variable(Weak<SemanticVariable>)
+        case parameter(Weak<SemanticParameter>)
         case `self`
         case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
         indirect case constantMember(Weak<SemanticConstant>, of: SemanticExpression)
@@ -37,19 +37,19 @@ public struct SemanticExpression: Hashable {
     }
     
     @inlinable
-    public static func parameter(
-        _ parameter: SemanticParameter,
-        at location: SourceLocation?
-    ) -> SemanticExpression {
-        SemanticExpression(_kind: .parameter(Weak(parameter)), at: location)
-    }
-    
-    @inlinable
     public static func variable(
         _ variable: SemanticVariable,
         at location: SourceLocation?
     ) -> SemanticExpression {
         SemanticExpression(_kind: .variable(Weak(variable)), at: location)
+    }
+    
+    @inlinable
+    public static func parameter(
+        _ parameter: SemanticParameter,
+        at location: SourceLocation?
+    ) -> SemanticExpression {
+        SemanticExpression(_kind: .parameter(Weak(parameter)), at: location)
     }
     
     @inlinable

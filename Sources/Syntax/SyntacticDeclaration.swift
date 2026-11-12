@@ -3,10 +3,23 @@ import Tokens
 public struct SyntacticDeclaration: Hashable, Sendable {
     
     public enum Kind: Hashable, Sendable {
+        case structure(
+            Identifier,
+            members: [SyntacticDeclaration]
+        )
         case constant(
             Identifier,
             isExternal: Bool,
             type: SyntacticType
+        )
+        case variable(
+            Identifier,
+            isExternal: Bool,
+            type: SyntacticType
+        )
+        case initializer(
+            parameters: [SyntacticParameter],
+            body: [SyntacticStatement]?
         )
         case function(
             Identifier,
@@ -14,19 +27,6 @@ public struct SyntacticDeclaration: Hashable, Sendable {
             parameters: [SyntacticParameter],
             returnType: SyntacticType,
             body: [SyntacticStatement]?
-        )
-        case initializer(
-            parameters: [SyntacticParameter],
-            body: [SyntacticStatement]?
-        )
-        case structure(
-            Identifier,
-            members: [SyntacticDeclaration]
-        )
-        case variable(
-            Identifier,
-            isExternal: Bool,
-            type: SyntacticType
         )
     }
     
@@ -44,6 +44,33 @@ public struct SyntacticDeclaration: Hashable, Sendable {
     }
     
     @inlinable
+    public static func structure(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        members: [SyntacticDeclaration],
+        at location: SourceLocation? = nil
+    ) -> SyntacticDeclaration {
+        SyntacticDeclaration(
+            _kind: .structure(name, members: members),
+            accessLevel: accessLevel,
+            at: location
+        )
+    }
+    
+    @inlinable
+    public static func structure(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        @ArrayBuilder<SyntacticDeclaration> makeMembers: () -> [SyntacticDeclaration]
+    ) -> SyntacticDeclaration {
+        .structure(
+            name,
+            accessLevel: accessLevel,
+            members: makeMembers()
+        )
+    }
+    
+    @inlinable
     public static func constant(
         _ name: Identifier,
         accessLevel: AccessLevel,
@@ -55,6 +82,48 @@ public struct SyntacticDeclaration: Hashable, Sendable {
             _kind: .constant(name, isExternal: isExternal, type: type),
             accessLevel: accessLevel,
             at: location
+        )
+    }
+    
+    @inlinable
+    public static func variable(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        isExternal: Bool = false,
+        type: SyntacticType,
+        at location: SourceLocation? = nil
+    ) -> SyntacticDeclaration {
+        SyntacticDeclaration(
+            _kind: .variable(name, isExternal: isExternal, type: type),
+            accessLevel: accessLevel,
+            at: location
+        )
+    }
+    
+    @inlinable
+    public static func initializer(
+        accessLevel: AccessLevel,
+        parameters: [SyntacticParameter],
+        body: [SyntacticStatement]? = nil,
+        at location: SourceLocation? = nil
+    ) -> SyntacticDeclaration {
+        SyntacticDeclaration(
+            _kind: .initializer(parameters: parameters, body: body),
+            accessLevel: accessLevel,
+            at: location
+        )
+    }
+
+    @inlinable
+    public static func initializer(
+        accessLevel: AccessLevel,
+        parameters: [SyntacticParameter],
+        @ArrayBuilder<SyntacticStatement> makeBody: () -> [SyntacticStatement]
+    ) -> SyntacticDeclaration {
+        .initializer(
+            accessLevel: accessLevel,
+            parameters: parameters,
+            body: makeBody()
         )
     }
     
@@ -91,75 +160,6 @@ public struct SyntacticDeclaration: Hashable, Sendable {
             parameters: parameters,
             returnType: returnType,
             body: makeBody()
-        )
-    }
-    
-    @inlinable
-    public static func initializer(
-        accessLevel: AccessLevel,
-        parameters: [SyntacticParameter],
-        body: [SyntacticStatement]? = nil,
-        at location: SourceLocation? = nil
-    ) -> SyntacticDeclaration {
-        SyntacticDeclaration(
-            _kind: .initializer(parameters: parameters, body: body),
-            accessLevel: accessLevel,
-            at: location
-        )
-    }
-
-    @inlinable
-    public static func initializer(
-        accessLevel: AccessLevel,
-        parameters: [SyntacticParameter],
-        @ArrayBuilder<SyntacticStatement> makeBody: () -> [SyntacticStatement]
-    ) -> SyntacticDeclaration {
-        .initializer(
-            accessLevel: accessLevel,
-            parameters: parameters,
-            body: makeBody()
-        )
-    }
-    
-    @inlinable
-    public static func structure(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        members: [SyntacticDeclaration],
-        at location: SourceLocation? = nil
-    ) -> SyntacticDeclaration {
-        SyntacticDeclaration(
-            _kind: .structure(name, members: members),
-            accessLevel: accessLevel,
-            at: location
-        )
-    }
-    
-    @inlinable
-    public static func structure(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        @ArrayBuilder<SyntacticDeclaration> makeMembers: () -> [SyntacticDeclaration]
-    ) -> SyntacticDeclaration {
-        .structure(
-            name,
-            accessLevel: accessLevel,
-            members: makeMembers()
-        )
-    }
-    
-    @inlinable
-    public static func variable(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        isExternal: Bool = false,
-        type: SyntacticType,
-        at location: SourceLocation? = nil
-    ) -> SyntacticDeclaration {
-        SyntacticDeclaration(
-            _kind: .variable(name, isExternal: isExternal, type: type),
-            accessLevel: accessLevel,
-            at: location
         )
     }
 }
