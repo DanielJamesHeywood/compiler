@@ -14,6 +14,9 @@ extension SemanticModule {
         for variable in variables {
             generator.declareGlobalVariable(for: variable)
         }
+        for function in functions where function.isExternal {
+            generator.defineFunction(for: function)
+        }
         return generator.takeLLVMModule()
     }
 }

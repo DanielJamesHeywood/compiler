@@ -29,6 +29,9 @@ internal struct _IRGenerator: ~Copyable {
     internal var _llvmGlobalVariablesForVariables = [:] as [SemanticVariable: LLVMGlobalVariable]
     
     @usableFromInline
+    internal var _llvmFunctionsForFunctions = [:] as [SemanticFunction: LLVMFunction]
+    
+    @usableFromInline
     internal var _externalNames = [] as Set<Identifier>
     
     @inlinable
@@ -55,6 +58,26 @@ internal struct _IRGenerator: ~Copyable {
         _llvmGlobalVariablesForVariables[variable] = _llvmModule.addGlobal(
             variable.name.text,
             type: _llvmType(for: variable.type)
+        )
+    }
+    
+    @inlinable
+    internal mutating func defineFunction(for function: SemanticFunction) {
+        if function.isExternal {
+            _insertExternalName(function.name)
+        } else {
+            precondition(
+                _llvmFunctionsForFunctions[function] == nil,
+                "The function \"\(function.name)\" is already defined"
+            )
+        }
+        _llvmFunctionsForFunctions[function] = _llvmModule.addFunction(
+            function.isExternal ? function.name.text : "",
+            type: LLVMFunctionType(
+                returnType: _llvmType(for: function.returnType),
+                parameterTypes: function.parameters.map { _llvmType(for: $0.type) }
+            ),
+            linkage: function.isExternal ? .external : .internal
         )
     }
     
