@@ -67,7 +67,7 @@ internal struct _IRGenerator: ~Copyable {
                 "The function \"\(function.name)\" is already defined"
             )
         }
-        _llvmFunctionsForFunctions[function] = _llvmModule.addFunction(
+        let llvmFunction = _llvmModule.addFunction(
             function.isExternal ? function.name.text : "",
             type: LLVMFunctionType(
                 returnType: _llvmType(for: function.returnType),
@@ -75,6 +75,7 @@ internal struct _IRGenerator: ~Copyable {
             ),
             linkage: function.isExternal ? .external : .internal
         )
+        _llvmFunctionsForFunctions[function] = llvmFunction
     }
     
     @inlinable
