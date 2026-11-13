@@ -14,9 +14,6 @@ internal struct _IRGenerator: ~Copyable {
     internal let _llvmModule: LLVMModule
     
     @usableFromInline
-    internal let _llvmBuilder: LLVMBuilder
-    
-    @usableFromInline
     internal var _llvmTypesForStructures = [:] as [SemanticStructure: LLVMType]
     
     @usableFromInline
@@ -38,7 +35,6 @@ internal struct _IRGenerator: ~Copyable {
     internal init(in llvmContext: LLVMContext) {
         self.llvmContext = llvmContext
         self._llvmModule = LLVMModule(in: llvmContext)
-        self._llvmBuilder = LLVMBuilder(in: llvmContext)
     }
     
     @inlinable
