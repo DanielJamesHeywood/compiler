@@ -20,6 +20,9 @@ internal struct _IRGenerator: ~Copyable {
     internal var _llvmTypesForStructures = [:] as [SemanticStructure: LLVMType]
     
     @usableFromInline
+    internal var _indicesForProperties = [:] as [SemanticProperty: Int]
+    
+    @usableFromInline
     internal var _llvmGlobalVariablesForConstants = [:] as [SemanticConstant: LLVMGlobalVariable]
     
     @usableFromInline
@@ -90,6 +93,18 @@ internal struct _IRGenerator: ~Copyable {
             }
         }
         return llvmType(for: type)
+    }
+    
+    @inlinable
+    internal mutating func _index(for property: SemanticProperty) -> Int {
+        if let index = _indicesForProperties[property] {
+            return index
+        } else {
+            for (index, property) in property.containingStructure.properties.enumerated() {
+                _indicesForProperties[property] = index
+            }
+            return _indicesForProperties[property].unsafelyUnwrapped
+        }
     }
     
     @inlinable
