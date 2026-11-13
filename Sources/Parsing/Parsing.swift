@@ -245,6 +245,20 @@ extension ArraySlice<Token> {
     }
     
     @inlinable
+    internal mutating func _parseMembers() throws(ParsingError) -> [SyntacticDeclaration] {
+        var members = [] as [SyntacticDeclaration]
+        try _parseOpeningBrace()
+        while let token = first, token.kind != .closingBrace {
+            if !token.isAtStartOfLine, !members.isEmpty {
+                throw .unexpectedToken(token, expected: .newlineSeparatingConsecutiveDeclarations)
+            }
+            members.append(try _parseDeclaration())
+        }
+        try _parseClosingBrace()
+        return members
+    }
+    
+    @inlinable
     internal mutating func _parseParameters() throws(ParsingError) -> [SyntacticParameter] {
         var parameters = [] as [SyntacticParameter]
         try _parseOpeningParenthesis()
@@ -282,19 +296,5 @@ extension ArraySlice<Token> {
         }
         try _parseClosingBrace()
         return statements
-    }
-    
-    @inlinable
-    internal mutating func _parseMembers() throws(ParsingError) -> [SyntacticDeclaration] {
-        var members = [] as [SyntacticDeclaration]
-        try _parseOpeningBrace()
-        while let token = first, token.kind != .closingBrace {
-            if !token.isAtStartOfLine, !members.isEmpty {
-                throw .unexpectedToken(token, expected: .newlineSeparatingConsecutiveDeclarations)
-            }
-            members.append(try _parseDeclaration())
-        }
-        try _parseClosingBrace()
-        return members
     }
 }
