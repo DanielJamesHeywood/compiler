@@ -7,7 +7,7 @@ extension SemanticModule {
     
     @inlinable
     public func makeLLVMModule(in llvmContext: LLVMContext) -> LLVMModule {
-        var generator = _IRGenerator(in: llvmContext)
+        let generator = _IRGenerator(in: llvmContext)
         for constant in constants {
             generator.declareGlobalVariable(for: constant)
         }
