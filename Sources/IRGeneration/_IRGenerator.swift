@@ -8,9 +8,6 @@ import Semantics
 internal struct _IRGenerator: ~Copyable {
     
     @usableFromInline
-    internal let llvmContext: LLVMContext
-    
-    @usableFromInline
     internal let _llvmModule: LLVMModule
     
     @usableFromInline
@@ -36,7 +33,6 @@ internal struct _IRGenerator: ~Copyable {
     
     @inlinable
     internal init(in llvmContext: LLVMContext) {
-        self.llvmContext = llvmContext
         self._llvmModule = LLVMModule(in: llvmContext)
     }
     
@@ -103,16 +99,16 @@ internal struct _IRGenerator: ~Copyable {
                     structuresBeingLowered.insert(structure)
                     let llvmType = LLVMStructureType(
                         elementTypes: structure.properties.map { _llvmType(for: $0.type) },
-                        in: llvmContext
+                        in: _llvmModule.context
                     )
                     structuresBeingLowered.remove(structure)
                     _llvmTypesForStructures[structure] = llvmType
                     return llvmType
                 }
             case let .integerPrimitive(bitWidth: bitWidth):
-                return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmContext)
+                return LLVMIntegerType(bitWidth: bitWidth.value, in: _llvmModule.context)
             case let .bytePrimitive(bitWidth: bitWidth):
-                return LLVMByteType(bitWidth: bitWidth.value, in: llvmContext)
+                return LLVMByteType(bitWidth: bitWidth.value, in: _llvmModule.context)
             }
         }
         return llvmType(for: type)
