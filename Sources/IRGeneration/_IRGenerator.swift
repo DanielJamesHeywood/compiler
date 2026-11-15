@@ -26,6 +26,9 @@ internal struct _IRGenerator: ~Copyable {
     internal var _llvmGlobalVariablesForVariables = [:] as [SemanticVariable: LLVMGlobalVariable]
     
     @usableFromInline
+    internal var _llvmFunctionsForInitializers = [:] as [SemanticInitializer: LLVMFunction]
+    
+    @usableFromInline
     internal var _llvmFunctionsForFunctions = [:] as [SemanticFunction: LLVMFunction]
     
     @usableFromInline
