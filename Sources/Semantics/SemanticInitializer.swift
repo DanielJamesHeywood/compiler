@@ -33,6 +33,17 @@ public final class SemanticInitializer {
             _body = newValue
         }
     }
+    
+    @inlinable
+    public var containingStructure: SemanticStructure {
+        guard case let .structure(weakStructure) = _container else {
+            preconditionFailure("The initializer is not a member of a structure")
+        }
+        guard let structure = weakStructure.object else {
+            preconditionFailure("The structure has been deallocated")
+        }
+        return structure
+    }
 }
 
 extension SemanticInitializer: Equatable {
