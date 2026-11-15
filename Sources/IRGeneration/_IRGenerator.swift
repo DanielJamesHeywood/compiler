@@ -5,10 +5,10 @@ import Syntax
 import Semantics
 
 @usableFromInline
-internal struct _IRGenerator: ~Copyable {
+internal final class _IRGenerator {
     
     @usableFromInline
-    internal let _llvmModule: LLVMModule
+    internal var _llvmModule: LLVMModule?
     
     @usableFromInline
     internal var _llvmTypesForStructures = [:] as [SemanticStructure: LLVMType]
@@ -37,27 +37,36 @@ internal struct _IRGenerator: ~Copyable {
     }
     
     @inlinable
-    internal mutating func declareGlobalVariable(for constant: SemanticConstant) {
+    internal func declareGlobalVariable(for constant: SemanticConstant) {
+        guard let llvmModule = _llvmModule else {
+            preconditionFailure("The LLVM module has been taken")
+        }
         precondition(constant.isExternal, "The constant \"\(constant.name)\" is not external")
         _insertExternalName(constant.name)
-        _llvmGlobalVariablesForConstants[constant] = _llvmModule.addGlobal(
+        _llvmGlobalVariablesForConstants[constant] = llvmModule.addGlobal(
             constant.name.text,
             type: _llvmType(for: constant.type)
         )
     }
     
     @inlinable
-    internal mutating func declareGlobalVariable(for variable: SemanticVariable) {
+    internal func declareGlobalVariable(for variable: SemanticVariable) {
+        guard let llvmModule = _llvmModule else {
+            preconditionFailure("The LLVM module has been taken")
+        }
         precondition(variable.isExternal, "The variable \"\(variable.name)\" is not external")
         _insertExternalName(variable.name)
-        _llvmGlobalVariablesForVariables[variable] = _llvmModule.addGlobal(
+        _llvmGlobalVariablesForVariables[variable] = llvmModule.addGlobal(
             variable.name.text,
             type: _llvmType(for: variable.type)
         )
     }
     
     @inlinable
-    internal mutating func defineFunction(for function: SemanticFunction) {
+    internal func defineFunction(for function: SemanticFunction) {
+        guard let llvmModule = _llvmModule else {
+            preconditionFailure("The LLVM module has been taken")
+        }
         if function.isExternal {
             _insertExternalName(function.name)
         } else {
@@ -66,7 +75,7 @@ internal struct _IRGenerator: ~Copyable {
                 "The function \"\(function.name)\" is already defined"
             )
         }
-        let llvmFunction = _llvmModule.addFunction(
+        let llvmFunction = llvmModule.addFunction(
             function.isExternal ? function.name.text : "",
             type: LLVMFunctionType(
                 returnType: _llvmType(for: function.returnType),
@@ -78,10 +87,23 @@ internal struct _IRGenerator: ~Copyable {
     }
     
     @inlinable
-    internal consuming func takeLLVMModule() -> LLVMModule { _llvmModule }
+    internal func takeLLVMModule() -> LLVMModule {
+        guard let llvmModule = _llvmModule.take() else {
+            preconditionFailure("The LLVM module has already been taken")
+        }
+        _llvmGlobalVariablesForConstants.removeAll()
+        _llvmGlobalVariablesForVariables.removeAll()
+        _llvmFunctionsForInitializers.removeAll()
+        _llvmFunctionsForFunctions.removeAll()
+        _externalNames.removeAll()
+        return llvmModule
+    }
     
     @inlinable
-    internal mutating func _llvmType(for type: SemanticType) -> LLVMType {
+    internal func _llvmType(for type: SemanticType) -> LLVMType {
+        guard let llvmModule = _llvmModule else {
+            preconditionFailure("The LLVM module has been taken")
+        }
         var structuresBeingLowered = [] as Set<SemanticStructure>
         func llvmType(for type: SemanticType) -> LLVMType {
             switch type.kind {
@@ -99,23 +121,23 @@ internal struct _IRGenerator: ~Copyable {
                     structuresBeingLowered.insert(structure)
                     let llvmType = LLVMStructureType(
                         elementTypes: structure.properties.map { _llvmType(for: $0.type) },
-                        in: _llvmModule.context
+                        in: llvmModule.context
                     )
                     structuresBeingLowered.remove(structure)
                     _llvmTypesForStructures[structure] = llvmType
                     return llvmType
                 }
             case let .integerPrimitive(bitWidth: bitWidth):
-                return LLVMIntegerType(bitWidth: bitWidth.value, in: _llvmModule.context)
+                return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
             case let .bytePrimitive(bitWidth: bitWidth):
-                return LLVMByteType(bitWidth: bitWidth.value, in: _llvmModule.context)
+                return LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
             }
         }
         return llvmType(for: type)
     }
     
     @inlinable
-    internal mutating func _index(for property: SemanticProperty) -> Int {
+    internal func _index(for property: SemanticProperty) -> Int {
         if let index = _indicesForProperties[property] {
             return index
         } else {
@@ -127,7 +149,8 @@ internal struct _IRGenerator: ~Copyable {
     }
     
     @inlinable
-    internal mutating func _insertExternalName(_ name: Identifier) {
+    internal func _insertExternalName(_ name: Identifier) {
+        precondition(_llvmModule != nil, "The LLVM module has been taken")
         precondition(!_externalNames.contains(name), "The external declaration \"\(name)\" is not uniquely named")
         _externalNames.insert(name)
     }
