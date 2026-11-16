@@ -49,6 +49,17 @@ public final class SemanticFunction {
             _body = newValue
         }
     }
+    
+    @inlinable
+    public var containingStructure: SemanticStructure? {
+        guard case let .structure(weakStructure) = _container else {
+            return nil
+        }
+        guard let structure = weakStructure.object else {
+            preconditionFailure("The structure has been deallocated")
+        }
+        return structure
+    }
 }
 
 extension SemanticFunction: Equatable {
