@@ -70,6 +70,22 @@ internal final class _ModuleIRGenerator {
     
     @inlinable
     @discardableResult
+    internal func defineFunction(for initializer: SemanticInitializer) -> LLVMFunction {
+        guard let llvmModule = _llvmModule else {
+            preconditionFailure("The LLVM module has been taken")
+        }
+        precondition(initializer.body != nil, "The initializer has no body")
+        precondition(_llvmFunctionsForInitializers[initializer] == nil, "The initializer is already defined")
+        let llvmFunction = llvmModule.addFunction(
+            type: _llvmFunctionType(for: initializer),
+            linkage: .internal
+        )
+        _llvmFunctionsForInitializers[initializer] = llvmFunction
+        return llvmFunction
+    }
+    
+    @inlinable
+    @discardableResult
     internal func defineFunction(for function: SemanticFunction) -> LLVMFunction {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
@@ -92,22 +108,6 @@ internal final class _ModuleIRGenerator {
             linkage: function.isExternal ? .external : .internal
         )
         _llvmFunctionsForFunctions[function] = llvmFunction
-        return llvmFunction
-    }
-    
-    @inlinable
-    @discardableResult
-    internal func defineFunction(for initializer: SemanticInitializer) -> LLVMFunction {
-        guard let llvmModule = _llvmModule else {
-            preconditionFailure("The LLVM module has been taken")
-        }
-        precondition(initializer.body != nil, "The initializer has no body")
-        precondition(_llvmFunctionsForInitializers[initializer] == nil, "The initializer is already defined")
-        let llvmFunction = llvmModule.addFunction(
-            type: _llvmFunctionType(for: initializer),
-            linkage: .internal
-        )
-        _llvmFunctionsForInitializers[initializer] = llvmFunction
         return llvmFunction
     }
     
@@ -177,11 +177,6 @@ internal final class _ModuleIRGenerator {
     }
     
     @inlinable
-    internal func _llvmFunction(for initializer: SemanticInitializer) -> LLVMFunction {
-        _llvmFunctionsForInitializers[initializer] ?? defineFunction(for: initializer)
-    }
-    
-    @inlinable
     internal func _index(for property: SemanticProperty) -> Int {
         if let index = _indicesForProperties[property] {
             return index
@@ -191,6 +186,11 @@ internal final class _ModuleIRGenerator {
             }
             return _indicesForProperties[property].unsafelyUnwrapped
         }
+    }
+    
+    @inlinable
+    internal func _llvmFunction(for initializer: SemanticInitializer) -> LLVMFunction {
+        _llvmFunctionsForInitializers[initializer] ?? defineFunction(for: initializer)
     }
     
     @inlinable
