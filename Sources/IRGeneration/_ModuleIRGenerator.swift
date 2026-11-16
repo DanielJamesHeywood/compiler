@@ -5,7 +5,7 @@ import Syntax
 import Semantics
 
 @usableFromInline
-internal final class _IRGenerator {
+internal final class _ModuleIRGenerator {
     
     @usableFromInline
     internal var _llvmModule: LLVMModule?
