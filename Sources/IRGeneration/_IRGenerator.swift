@@ -141,6 +141,14 @@ internal final class _IRGenerator {
     }
     
     @inlinable
+    internal func _llvmFunctionType(for initializer: SemanticInitializer) -> LLVMFunctionType {
+        LLVMFunctionType(
+            returnType: _llvmType(for: .structure(initializer.containingStructure)),
+            parameterTypes: initializer.parameters.map { _llvmType(for: $0.type) }
+        )
+    }
+    
+    @inlinable
     internal func _index(for property: SemanticProperty) -> Int {
         if let index = _indicesForProperties[property] {
             return index
