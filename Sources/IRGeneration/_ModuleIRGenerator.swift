@@ -37,29 +37,29 @@ internal final class _ModuleIRGenerator {
     }
     
     @inlinable
-    internal func declareGlobalVariable(for constant: SemanticConstant) {
+    @discardableResult
+    internal func declareGlobalVariable(for constant: SemanticConstant) -> LLVMGlobalVariable {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
         precondition(constant.isExternal, "The constant \"\(constant.name)\" is not external")
         _insertExternalName(constant.name)
-        _llvmGlobalVariablesForConstants[constant] = llvmModule.addGlobal(
-            constant.name.text,
-            type: _llvmType(for: constant.type)
-        )
+        let llvmGlobalVariable = llvmModule.addGlobal(constant.name.text, type: _llvmType(for: constant.type))
+        _llvmGlobalVariablesForConstants[constant] = llvmGlobalVariable
+        return llvmGlobalVariable
     }
     
     @inlinable
-    internal func declareGlobalVariable(for variable: SemanticVariable) {
+    @discardableResult
+    internal func declareGlobalVariable(for variable: SemanticVariable) -> LLVMGlobalVariable {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
         precondition(variable.isExternal, "The variable \"\(variable.name)\" is not external")
         _insertExternalName(variable.name)
-        _llvmGlobalVariablesForVariables[variable] = llvmModule.addGlobal(
-            variable.name.text,
-            type: _llvmType(for: variable.type)
-        )
+        let llvmGlobalVariable = llvmModule.addGlobal(variable.name.text, type: _llvmType(for: variable.type))
+        _llvmGlobalVariablesForVariables[variable] = llvmGlobalVariable
+        return llvmGlobalVariable
     }
     
     @inlinable
