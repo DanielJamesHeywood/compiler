@@ -71,6 +71,10 @@ internal final class _IRGenerator {
             _insertExternalName(function.name)
         } else {
             precondition(
+                function.body != nil,
+                "The function \"\(function.name)\" is not external and has no body"
+            )
+            precondition(
                 _llvmFunctionsForFunctions[function] == nil,
                 "The function \"\(function.name)\" is already defined"
             )
