@@ -88,6 +88,13 @@ internal final class _ModuleIRGenerator {
     }
     
     @inlinable
+    internal func defineFunction(for initializer: SemanticInitializer) {
+        guard let llvmModule = _llvmModule else {
+            preconditionFailure("The LLVM module has been taken")
+        }
+    }
+    
+    @inlinable
     internal func takeLLVMModule() -> LLVMModule {
         guard let llvmModule = _llvmModule.take() else {
             preconditionFailure("The LLVM module has already been taken")
@@ -150,6 +157,16 @@ internal final class _ModuleIRGenerator {
             returnType: _llvmType(for: .structure(initializer.containingStructure)),
             parameterTypes: initializer.parameters.map { _llvmType(for: $0.type) }
         )
+    }
+    
+    @inlinable
+    internal func _llvmFunction(for initializer: SemanticInitializer) -> LLVMFunction {
+        if let llvmFunction = _llvmFunctionsForInitializers[initializer] {
+            return llvmFunction
+        } else {
+            defineFunction(for: initializer)
+            return _llvmFunctionsForInitializers[initializer].unsafelyUnwrapped
+        }
     }
     
     @inlinable
