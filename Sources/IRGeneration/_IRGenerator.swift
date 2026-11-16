@@ -81,10 +81,7 @@ internal final class _IRGenerator {
         }
         let llvmFunction = llvmModule.addFunction(
             function.isExternal ? function.name.text : "",
-            type: LLVMFunctionType(
-                returnType: _llvmType(for: function.returnType),
-                parameterTypes: function.parameters.map { _llvmType(for: $0.type) }
-            ),
+            type: _llvmFunctionType(for: function),
             linkage: function.isExternal ? .external : .internal
         )
         _llvmFunctionsForFunctions[function] = llvmFunction
@@ -138,6 +135,13 @@ internal final class _IRGenerator {
             }
         }
         return llvmType(for: type)
+    }
+    
+    @inlinable
+    internal func _llvmFunctionType(for function: SemanticFunction) -> LLVMFunctionType {
+        var llvmParameterTypes = function.containingStructure.map { [_llvmType(for: .structure($0))] } ?? []
+        llvmParameterTypes += function.parameters.map { _llvmType(for: $0.type) }
+        return LLVMFunctionType(returnType: _llvmType(for: function.returnType), parameterTypes: llvmParameterTypes)
     }
     
     @inlinable
