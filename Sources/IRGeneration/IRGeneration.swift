@@ -9,13 +9,13 @@ extension SemanticModule {
     public func makeLLVMModule(in llvmContext: LLVMContext) -> LLVMModule {
         let generator = _ModuleIRGenerator(in: llvmContext)
         for constant in constants where constant.accessLevel == .public {
-            generator.defineGlobalVariable(for: constant)
+            generator.defineLLVMGlobalVariable(for: constant)
         }
         for variable in variables where variable.accessLevel == .public {
-            generator.defineGlobalVariable(for: variable)
+            generator.defineLLVMGlobalVariable(for: variable)
         }
         for function in functions where function.accessLevel == .public && function.isExternal {
-            generator.defineFunction(for: function)
+            generator.defineLLVMFunction(for: function)
         }
         return generator.takeLLVMModule()
     }

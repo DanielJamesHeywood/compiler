@@ -37,7 +37,7 @@ internal final class _ModuleIRGenerator {
     }
     
     @inlinable
-    internal func defineGlobalVariable(for constant: SemanticConstant) {
+    internal func defineLLVMGlobalVariable(for constant: SemanticConstant) {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
@@ -50,7 +50,7 @@ internal final class _ModuleIRGenerator {
     }
     
     @inlinable
-    internal func defineGlobalVariable(for variable: SemanticVariable) {
+    internal func defineLLVMGlobalVariable(for variable: SemanticVariable) {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
@@ -63,12 +63,12 @@ internal final class _ModuleIRGenerator {
     }
     
     @inlinable
-    internal func defineFunction(for initializer: SemanticInitializer) {
+    internal func defineLLVMFunction(for initializer: SemanticInitializer) {
         _ = _FunctionIRGenerator(for: initializer, in: self)
     }
     
     @inlinable
-    internal func defineFunction(for function: SemanticFunction) {
+    internal func defineLLVMFunction(for function: SemanticFunction) {
         _ = _FunctionIRGenerator(for: function, in: self)
     }
     
@@ -160,7 +160,7 @@ internal final class _ModuleIRGenerator {
         if let llvmFunction = _llvmFunctionsForInitializers[initializer] {
             return llvmFunction
         } else {
-            defineFunction(for: initializer)
+            defineLLVMFunction(for: initializer)
             return _llvmFunctionsForInitializers[initializer].unsafelyUnwrapped
         }
     }
