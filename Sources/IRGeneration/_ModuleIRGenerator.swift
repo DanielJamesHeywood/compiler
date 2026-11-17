@@ -38,7 +38,7 @@ internal final class _ModuleIRGenerator {
     
     @inlinable
     @discardableResult
-    internal func declareGlobalVariable(for constant: SemanticConstant) -> LLVMGlobalVariable {
+    internal func defineGlobalVariable(for constant: SemanticConstant) -> LLVMGlobalVariable {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
@@ -54,7 +54,7 @@ internal final class _ModuleIRGenerator {
     
     @inlinable
     @discardableResult
-    internal func declareGlobalVariable(for variable: SemanticVariable) -> LLVMGlobalVariable {
+    internal func defineGlobalVariable(for variable: SemanticVariable) -> LLVMGlobalVariable {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
