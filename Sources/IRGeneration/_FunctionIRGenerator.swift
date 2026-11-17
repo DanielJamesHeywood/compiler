@@ -48,33 +48,38 @@ internal final class _FunctionIRGenerator {
         }
         switch _kind {
         case let .initializer(initializer):
-            precondition(initializer.body != nil, "The initializer has no body")
             precondition(
                 _moduleIRGenerator._llvmFunctionsForInitializers[initializer] == nil,
                 "The initializer is already defined"
             )
-            _moduleIRGenerator._llvmFunctionsForInitializers[initializer] = llvmModule.addFunction(
+            precondition(
+                initializer.body != nil,
+                "The initializer has no body"
+            )
+            let llvmFunction = llvmModule.addFunction(
                 type: _moduleIRGenerator._llvmFunctionType(for: initializer),
                 linkage: .internal
             )
+            _moduleIRGenerator._llvmFunctionsForInitializers[initializer] = llvmFunction
         case let .function(function):
             if function.isExternal {
                 _moduleIRGenerator._insertExternalName(function.name)
             } else {
                 precondition(
-                    function.body != nil,
-                    "The function \"\(function.name)\" is not external and has no body"
-                )
-                precondition(
                     _moduleIRGenerator._llvmFunctionsForFunctions[function] == nil,
                     "The function \"\(function.name)\" is already defined"
                 )
+                precondition(
+                    function.body != nil,
+                    "The function \"\(function.name)\" is not external and has no body"
+                )
             }
-            _moduleIRGenerator._llvmFunctionsForFunctions[function] = llvmModule.addFunction(
+            let llvmFunction = llvmModule.addFunction(
                 function.isExternal ? function.name.text : "",
                 type: _moduleIRGenerator._llvmFunctionType(for: function),
                 linkage: function.isExternal ? .external : .internal
             )
+            _moduleIRGenerator._llvmFunctionsForFunctions[function] = llvmFunction
         }
     }
 }
