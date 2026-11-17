@@ -4,13 +4,12 @@ import Syntax
 public struct SemanticExpression: Hashable {
     
     public enum Kind: Hashable {
-        case constant(Weak<SemanticConstant>)
-        case variable(Weak<SemanticVariable>)
-        case parameter(Weak<SemanticParameter>)
+        case constant(SemanticConstant)
+        case variable(SemanticVariable)
+        case parameter(SemanticParameter)
         case `self`
         case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
-        indirect case constantMember(Weak<SemanticConstant>, of: SemanticExpression)
-        indirect case variableMember(Weak<SemanticVariable>, of: SemanticExpression)
+        indirect case property(SemanticProperty, of: SemanticExpression)
         case structurePrimitive(Weak<SemanticStructure>, properties: [SemanticExpression])
         case integerPrimitive(words: [UInt64], bitWidth: BitWidth)
         case bytePrimitive(words: [UInt64], bitWidth: BitWidth)
@@ -33,7 +32,7 @@ public struct SemanticExpression: Hashable {
         _ constant: SemanticConstant,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .constant(Weak(constant)), at: location)
+        SemanticExpression(_kind: .constant(constant), at: location)
     }
     
     @inlinable
@@ -41,7 +40,7 @@ public struct SemanticExpression: Hashable {
         _ variable: SemanticVariable,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .variable(Weak(variable)), at: location)
+        SemanticExpression(_kind: .variable(variable), at: location)
     }
     
     @inlinable
@@ -49,7 +48,7 @@ public struct SemanticExpression: Hashable {
         _ parameter: SemanticParameter,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .parameter(Weak(parameter)), at: location)
+        SemanticExpression(_kind: .parameter(parameter), at: location)
     }
     
     @inlinable
@@ -73,21 +72,12 @@ public struct SemanticExpression: Hashable {
     }
     
     @inlinable
-    public static func constantMember(
-        _ constant: SemanticConstant,
+    public static func property(
+        _ property: SemanticProperty,
         of base: SemanticExpression,
         at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .constantMember(Weak(constant), of: base), at: location)
-    }
-    
-    @inlinable
-    public static func variableMember(
-        _ variable: SemanticVariable,
-        of base: SemanticExpression,
-        at location: SourceLocation?
-    ) -> SemanticExpression {
-        SemanticExpression(_kind: .variableMember(Weak(variable), of: base), at: location)
+        SemanticExpression(_kind: .property(property, of: base), at: location)
     }
     
     @inlinable
