@@ -26,9 +26,9 @@ public final class SemanticInitializer {
     }
     
     @inlinable
-    public var containingStructure: SemanticStructure {
+    public var containingStructure: SemanticStructure? {
         guard case let .structure(weakStructure) = _container else {
-            preconditionFailure("The initializer is not a member of a structure")
+            return nil
         }
         guard let structure = weakStructure.object else {
             preconditionFailure("The structure has been deallocated")
