@@ -30,6 +30,17 @@ public final class SemanticConstant {
         self.type = type
         self.location = location
     }
+    
+    @inlinable
+    public var containingModule: SemanticModule? {
+        guard case let .module(weakModule) = _container else {
+            return nil
+        }
+        guard let module = weakModule.object else {
+            preconditionFailure("The module has been deallocated")
+        }
+        return module
+    }
 }
 
 extension SemanticConstant: Equatable {

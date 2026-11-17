@@ -42,6 +42,7 @@ internal final class _ModuleIRGenerator {
             preconditionFailure("The LLVM module has been taken")
         }
         precondition(constant.isExternal, "The constant \"\(constant.name)\" is not external")
+        precondition(constant.containingModule != nil, "The constant \"\(constant.name)\" is not declared in a module")
         _insertExternalName(constant.name)
         _llvmGlobalVariablesForConstants[constant] = llvmModule.addGlobal(
             constant.name.text,
@@ -55,6 +56,7 @@ internal final class _ModuleIRGenerator {
             preconditionFailure("The LLVM module has been taken")
         }
         precondition(variable.isExternal, "The variable \"\(variable.name)\" is not external")
+        precondition(variable.containingModule != nil, "The variable \"\(variable.name)\" is not declared in a module")
         _insertExternalName(variable.name)
         _llvmGlobalVariablesForVariables[variable] = llvmModule.addGlobal(
             variable.name.text,
