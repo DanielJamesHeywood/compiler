@@ -52,15 +52,14 @@ internal final class _FunctionIRGenerator {
                 _moduleIRGenerator._llvmFunctionsForInitializers[initializer] == nil,
                 "The initializer is already defined"
             )
-            precondition(
-                initializer.body != nil,
-                "The initializer has no body"
-            )
             let llvmFunction = llvmModule.addFunction(
                 type: _moduleIRGenerator._llvmFunctionType(for: initializer),
                 linkage: .internal
             )
             _moduleIRGenerator._llvmFunctionsForInitializers[initializer] = llvmFunction
+            guard let body = initializer.body else {
+                preconditionFailure("The initializer has no body")
+            }
         case let .function(function):
             if function.isExternal {
                 _moduleIRGenerator._insertExternalName(function.name)
@@ -69,10 +68,6 @@ internal final class _FunctionIRGenerator {
                     _moduleIRGenerator._llvmFunctionsForFunctions[function] == nil,
                     "The function \"\(function.name)\" is already defined"
                 )
-                precondition(
-                    function.body != nil,
-                    "The function \"\(function.name)\" is not external and has no body"
-                )
             }
             let llvmFunction = llvmModule.addFunction(
                 function.isExternal ? function.name.text : "",
@@ -80,6 +75,9 @@ internal final class _FunctionIRGenerator {
                 linkage: function.isExternal ? .external : .internal
             )
             _moduleIRGenerator._llvmFunctionsForFunctions[function] = llvmFunction
+            if let body = function.body {} else {
+                precondition(function.isExternal, "The function \"\(function.name)\" has no body but is not external")
+            }
         }
     }
 }
