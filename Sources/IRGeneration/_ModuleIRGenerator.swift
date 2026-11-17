@@ -158,6 +158,26 @@ internal final class _ModuleIRGenerator {
     }
     
     @inlinable
+    internal func _llvmGlobalVariable(for constant: SemanticConstant) -> LLVMGlobalVariable {
+        if let llvmGlobalVariable = _llvmGlobalVariablesForConstants[constant] {
+            return llvmGlobalVariable
+        } else {
+            defineLLVMGlobalVariable(for: constant)
+            return _llvmGlobalVariablesForConstants[constant].unsafelyUnwrapped
+        }
+    }
+    
+    @inlinable
+    internal func _llvmGlobalVariable(for variable: SemanticVariable) -> LLVMGlobalVariable {
+        if let llvmGlobalVariable = _llvmGlobalVariablesForVariables[variable] {
+            return llvmGlobalVariable
+        } else {
+            defineLLVMGlobalVariable(for: variable)
+            return _llvmGlobalVariablesForVariables[variable].unsafelyUnwrapped
+        }
+    }
+    
+    @inlinable
     internal func _llvmFunction(for initializer: SemanticInitializer) -> LLVMFunction {
         if let llvmFunction = _llvmFunctionsForInitializers[initializer] {
             return llvmFunction
