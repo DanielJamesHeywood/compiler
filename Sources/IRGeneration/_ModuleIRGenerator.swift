@@ -37,78 +37,39 @@ internal final class _ModuleIRGenerator {
     }
     
     @inlinable
-    @discardableResult
-    internal func defineGlobalVariable(for constant: SemanticConstant) -> LLVMGlobalVariable {
+    internal func defineGlobalVariable(for constant: SemanticConstant) {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
         precondition(constant.isExternal, "The constant \"\(constant.name)\" is not external")
         _insertExternalName(constant.name)
-        let llvmGlobalVariable = llvmModule.addGlobal(
+        _llvmGlobalVariablesForConstants[constant] = llvmModule.addGlobal(
             constant.name.text,
             type: _llvmType(for: constant.type)
         )
-        _llvmGlobalVariablesForConstants[constant] = llvmGlobalVariable
-        return llvmGlobalVariable
     }
     
     @inlinable
-    @discardableResult
-    internal func defineGlobalVariable(for variable: SemanticVariable) -> LLVMGlobalVariable {
+    internal func defineGlobalVariable(for variable: SemanticVariable) {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
         precondition(variable.isExternal, "The variable \"\(variable.name)\" is not external")
         _insertExternalName(variable.name)
-        let llvmGlobalVariable = llvmModule.addGlobal(
+        _llvmGlobalVariablesForVariables[variable] = llvmModule.addGlobal(
             variable.name.text,
             type: _llvmType(for: variable.type)
         )
-        _llvmGlobalVariablesForVariables[variable] = llvmGlobalVariable
-        return llvmGlobalVariable
     }
     
     @inlinable
-    @discardableResult
-    internal func defineFunction(for initializer: SemanticInitializer) -> LLVMFunction {
-        guard let llvmModule = _llvmModule else {
-            preconditionFailure("The LLVM module has been taken")
-        }
-        precondition(initializer.body != nil, "The initializer has no body")
-        precondition(_llvmFunctionsForInitializers[initializer] == nil, "The initializer is already defined")
-        let llvmFunction = llvmModule.addFunction(
-            type: _llvmFunctionType(for: initializer),
-            linkage: .internal
-        )
-        _llvmFunctionsForInitializers[initializer] = llvmFunction
-        return llvmFunction
+    internal func defineFunction(for initializer: SemanticInitializer) {
+        _ = _FunctionIRGenerator(in: self)
     }
     
     @inlinable
-    @discardableResult
-    internal func defineFunction(for function: SemanticFunction) -> LLVMFunction {
-        guard let llvmModule = _llvmModule else {
-            preconditionFailure("The LLVM module has been taken")
-        }
-        if function.isExternal {
-            _insertExternalName(function.name)
-        } else {
-            precondition(
-                function.body != nil,
-                "The function \"\(function.name)\" is not external and has no body"
-            )
-            precondition(
-                _llvmFunctionsForFunctions[function] == nil,
-                "The function \"\(function.name)\" is already defined"
-            )
-        }
-        let llvmFunction = llvmModule.addFunction(
-            function.isExternal ? function.name.text : "",
-            type: _llvmFunctionType(for: function),
-            linkage: function.isExternal ? .external : .internal
-        )
-        _llvmFunctionsForFunctions[function] = llvmFunction
-        return llvmFunction
+    internal func defineFunction(for function: SemanticFunction) {
+        _ = _FunctionIRGenerator(in: self)
     }
     
     @inlinable
@@ -196,7 +157,12 @@ internal final class _ModuleIRGenerator {
     
     @inlinable
     internal func _llvmFunction(for initializer: SemanticInitializer) -> LLVMFunction {
-        _llvmFunctionsForInitializers[initializer] ?? defineFunction(for: initializer)
+        if let llvmFunction = _llvmFunctionsForInitializers[initializer] {
+            return llvmFunction
+        } else {
+            defineFunction(for: initializer)
+            return _llvmFunctionsForInitializers[initializer].unsafelyUnwrapped
+        }
     }
     
     @inlinable
