@@ -9,8 +9,7 @@ public final class SemanticInitializer {
     
     public let location: SourceLocation?
     
-    @usableFromInline
-    internal var _body: [SemanticStatement]?
+    public var body: [SemanticStatement]?
     
     @usableFromInline
     internal var _container: _Container?
@@ -23,14 +22,6 @@ public final class SemanticInitializer {
         for parameter in parameters {
             precondition(parameter._container == nil, "A parameter is already declared by a function or initializer")
             parameter._container = _Container(self)
-        }
-    }
-    
-    @inlinable
-    public var body: [SemanticStatement]? {
-        get { _body }
-        set {
-            _body = newValue
         }
     }
     
