@@ -64,12 +64,12 @@ internal final class _ModuleIRGenerator {
     
     @inlinable
     internal func defineLLVMFunction(for initializer: SemanticInitializer) {
-        _ = _FunctionIRGenerator(for: initializer, in: self)
+        _FunctionIRGenerator(for: initializer, in: self).defineLLVMFunction()
     }
     
     @inlinable
     internal func defineLLVMFunction(for function: SemanticFunction) {
-        _ = _FunctionIRGenerator(for: function, in: self)
+        _FunctionIRGenerator(for: function, in: self).defineLLVMFunction()
     }
     
     @inlinable

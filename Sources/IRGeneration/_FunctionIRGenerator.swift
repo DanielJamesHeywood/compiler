@@ -39,4 +39,7 @@ internal final class _FunctionIRGenerator {
     internal convenience init(for function: SemanticFunction, in moduleIRGenerator: _ModuleIRGenerator) {
         self.init(_kind: .function(function), in: moduleIRGenerator)
     }
+    
+    @inlinable
+    internal func defineLLVMFunction() {}
 }
