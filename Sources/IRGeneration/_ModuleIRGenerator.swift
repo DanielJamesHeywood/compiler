@@ -64,12 +64,12 @@ internal final class _ModuleIRGenerator {
     
     @inlinable
     internal func defineFunction(for initializer: SemanticInitializer) {
-        _ = _FunctionIRGenerator(in: self)
+        _ = _FunctionIRGenerator(for: initializer, in: self)
     }
     
     @inlinable
     internal func defineFunction(for function: SemanticFunction) {
-        _ = _FunctionIRGenerator(in: self)
+        _ = _FunctionIRGenerator(for: function, in: self)
     }
     
     @inlinable
