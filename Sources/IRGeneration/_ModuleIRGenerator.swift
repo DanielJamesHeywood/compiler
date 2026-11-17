@@ -170,8 +170,11 @@ internal final class _ModuleIRGenerator {
     
     @inlinable
     internal func _llvmFunctionType(for initializer: SemanticInitializer) -> LLVMFunctionType {
-        LLVMFunctionType(
-            returnType: _llvmType(for: .structure(initializer.containingStructure)),
+        guard let structure = initializer.containingStructure else {
+            preconditionFailure("The initializer is not a member of a structure")
+        }
+        return LLVMFunctionType(
+            returnType: _llvmType(for: .structure(structure)),
             parameterTypes: initializer.parameters.map { _llvmType(for: $0.type) }
         )
     }
@@ -181,7 +184,10 @@ internal final class _ModuleIRGenerator {
         if let index = _indicesForProperties[property] {
             return index
         } else {
-            for (index, property) in property.containingStructure.properties.enumerated() {
+            guard let structure = property.containingStructure else {
+                preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
+            }
+            for (index, property) in structure.properties.enumerated() {
                 _indicesForProperties[property] = index
             }
             return _indicesForProperties[property].unsafelyUnwrapped
