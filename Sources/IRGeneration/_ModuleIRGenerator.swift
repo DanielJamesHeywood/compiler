@@ -108,7 +108,7 @@ internal final class _ModuleIRGenerator {
                     )
                     structuresBeingLowered.insert(structure)
                     let llvmType = LLVMStructureType(
-                        elementTypes: structure.properties.map { _llvmType(for: $0.type) },
+                        elementTypes: structure.properties.map { llvmType(for: $0.type) },
                         in: llvmModule.context
                     )
                     structuresBeingLowered.remove(structure)
