@@ -77,6 +77,7 @@ internal final class _FunctionIRGenerator {
                 )
             }
             _llvmBuilder.position(atEndOf: llvmFunction.appendBasicBlock())
+            _llvmBuilder.buildReturn(of: _llvmValueForSelf.unsafelyUnwrapped)
         case let .function(function):
             if function.isExternal {
                 _moduleIRGenerator._insertExternalName(function.name)
