@@ -11,7 +11,7 @@ internal final class _ModuleIRGenerator {
     internal var _llvmModule: LLVMModule?
     
     @usableFromInline
-    internal var _llvmTypesForStructures = [:] as [SemanticStructure: LLVMType]
+    internal var _llvmStructureTypesForStructures = [:] as [SemanticStructure: LLVMStructureType]
     
     @usableFromInline
     internal var _indicesForProperties = [:] as [SemanticProperty: Int]
@@ -92,43 +92,56 @@ internal final class _ModuleIRGenerator {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
-        var structuresBeingLowered = [] as Set<SemanticStructure>
-        func llvmType(for type: SemanticType) -> LLVMType {
-            switch type.kind {
-            case let .structure(weakStructure):
-                guard let structure = weakStructure.object else {
-                    preconditionFailure("The structure has been deallocated")
-                }
-                if let llvmType = _llvmTypesForStructures[structure] {
-                    return llvmType
-                } else {
-                    precondition(
-                        !structuresBeingLowered.contains(structure),
-                        "The structure \"\(structure.name)\" recursively contains itself"
-                    )
-                    structuresBeingLowered.insert(structure)
-                    let llvmType = LLVMStructureType(
-                        elementTypes: structure.properties.map { llvmType(for: $0.type) },
-                        in: llvmModule.context
-                    )
-                    structuresBeingLowered.remove(structure)
-                    _llvmTypesForStructures[structure] = llvmType
-                    return llvmType
-                }
-            case let .integerPrimitive(bitWidth: bitWidth):
-                return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
-            case let .bytePrimitive(bitWidth: bitWidth):
-                return LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
+        switch type.kind {
+        case let .structure(weakStructure):
+            guard let structure = weakStructure.object else {
+                preconditionFailure("The structure has been deallocated")
             }
+            return _llvmStructureType(for: structure)
+        case let .integerPrimitive(bitWidth: bitWidth):
+            return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
+        case let .bytePrimitive(bitWidth: bitWidth):
+            return LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
         }
-        return llvmType(for: type)
     }
     
     @inlinable
-    internal func _llvmFunctionType(for function: SemanticFunction) -> LLVMFunctionType {
-        var llvmParameterTypes = function.containingStructure.map { [_llvmType(for: .structure($0))] } ?? []
-        llvmParameterTypes += function.parameters.map { _llvmType(for: $0.type) }
-        return LLVMFunctionType(returnType: _llvmType(for: function.returnType), parameterTypes: llvmParameterTypes)
+    internal func _llvmStructureType(for structure: SemanticStructure) -> LLVMStructureType {
+        guard let llvmModule = _llvmModule else {
+            preconditionFailure("The LLVM module has been taken")
+        }
+        var structuresBeingLowered = [] as Set<SemanticStructure>
+        func llvmStructureType(for structure: SemanticStructure) -> LLVMStructureType {
+            if let llvmStructureType = _llvmStructureTypesForStructures[structure] {
+                return llvmStructureType
+            } else {
+                precondition(
+                    !structuresBeingLowered.contains(structure),
+                    "The structure \"\(structure.name)\" recursively contains itself"
+                )
+                structuresBeingLowered.insert(structure)
+                let llvmStructureType = LLVMStructureType(
+                    elementTypes: structure.properties.map { property in
+                        switch property.type.kind {
+                        case let .structure(weakStructure):
+                            guard let structure = weakStructure.object else {
+                                preconditionFailure("The structure has been deallocated")
+                            }
+                            return llvmStructureType(for: structure)
+                        case let .integerPrimitive(bitWidth: bitWidth):
+                            return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
+                        case let .bytePrimitive(bitWidth: bitWidth):
+                            return LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
+                        }
+                    },
+                    in: llvmModule.context
+                )
+                structuresBeingLowered.remove(structure)
+                _llvmStructureTypesForStructures[structure] = llvmStructureType
+                return llvmStructureType
+            }
+        }
+        return llvmStructureType(for: structure)
     }
     
     @inlinable
@@ -140,6 +153,13 @@ internal final class _ModuleIRGenerator {
             returnType: _llvmType(for: .structure(structure)),
             parameterTypes: initializer.parameters.map { _llvmType(for: $0.type) }
         )
+    }
+    
+    @inlinable
+    internal func _llvmFunctionType(for function: SemanticFunction) -> LLVMFunctionType {
+        var llvmParameterTypes = function.containingStructure.map { [_llvmType(for: .structure($0))] } ?? []
+        llvmParameterTypes += function.parameters.map { _llvmType(for: $0.type) }
+        return LLVMFunctionType(returnType: _llvmType(for: function.returnType), parameterTypes: llvmParameterTypes)
     }
     
     @inlinable
