@@ -139,6 +139,13 @@ internal final class _FunctionIRGenerator {
                 passing: arguments.map { _llvmValue(for: $0) }
             )
         case let .property(property, of: base):
+            guard let structure = property.containingStructure else {
+                preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
+            }
+            precondition(
+                _type(of: base).kind == .structure(Weak(structure)),
+                "The property \"\(property.name)\" is not a member of the type of the base"
+            )
             return _llvmBuilder.buildExtraction(
                 fromAggregate: _llvmValue(for: base),
                 at: _moduleIRGenerator._index(for: property)
