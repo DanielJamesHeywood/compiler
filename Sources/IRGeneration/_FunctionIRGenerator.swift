@@ -123,7 +123,9 @@ internal final class _FunctionIRGenerator {
     }
     
     @inlinable
-    internal func _generateIR(for statement: SemanticStatement) {}
+    internal func _generateIR(for statement: SemanticStatement) {
+        precondition(!_isCurrentBlockTerminated, "The statement is unreachable")
+    }
     
     @inlinable
     internal func _llvmValue(for expression: SemanticExpression) -> LLVMValue {
