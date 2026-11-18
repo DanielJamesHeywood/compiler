@@ -82,7 +82,13 @@ internal final class _FunctionIRGenerator {
                 linkage: function.isExternal ? .external : .internal
             )
             _moduleIRGenerator._llvmFunctionsForFunctions[function] = llvmFunction
-            if let body = function.body {} else {
+            if let body = function.body {
+                for (index, parameter) in function.parameters.enumerated() {
+                    _llvmArgumentsForParameters[parameter] = llvmFunction.argument(
+                        at: function.containingStructure != nil ? index + 1 : index
+                    )
+                }
+            } else {
                 precondition(function.isExternal, "The function \"\(function.name)\" has no body but is not external")
             }
         }
