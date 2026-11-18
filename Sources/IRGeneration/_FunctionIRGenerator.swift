@@ -65,7 +65,9 @@ internal final class _FunctionIRGenerator {
                 preconditionFailure("The initializer has no body")
             }
             for (index, parameter) in initializer.parameters.enumerated() {
-                _llvmArgumentsForParameters[parameter] = llvmFunction.argument(at: index)
+                _llvmArgumentsForParameters[parameter] = llvmFunction.argument(
+                    at: index
+                )
             }
         case let .function(function):
             if function.isExternal {
