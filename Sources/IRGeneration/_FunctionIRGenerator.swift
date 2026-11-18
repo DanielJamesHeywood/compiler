@@ -120,7 +120,7 @@ internal final class _FunctionIRGenerator {
             return LLVMConstant(
                 elements: propertyValues.map { propertyValue in
                     guard let llvmConstant = _llvmValue(for: propertyValue) as? LLVMConstant else {
-                        fatalError()
+                        preconditionFailure("A property value is not constant")
                     }
                     return llvmConstant
                 },
