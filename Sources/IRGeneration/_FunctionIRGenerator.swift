@@ -127,7 +127,11 @@ internal final class _FunctionIRGenerator {
         precondition(!_isCurrentBlockTerminated, "The statement is unreachable")
         switch statement.kind {
         case let .return(of: value):
-            break
+            guard let value else {
+                fatalError()
+            }
+            _llvmBuilder.buildReturn(of: _llvmValue(for: value))
+            _isCurrentBlockTerminated = true
         case let .assignment(of: source, to: destination):
             break
         }
