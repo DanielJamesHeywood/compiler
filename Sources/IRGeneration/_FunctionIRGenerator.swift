@@ -22,6 +22,9 @@ internal final class _FunctionIRGenerator {
     @usableFromInline
     internal let _llvmBuilder: LLVMBuilder
     
+    @usableFromInline
+    internal var _llvmArgumentsForParameters = [:] as [SemanticParameter: LLVMArgument]
+    
     @inlinable
     internal init(_kind: _Kind, in moduleIRGenerator: _ModuleIRGenerator) {
         guard let llvmModule = moduleIRGenerator._llvmModule else {
@@ -61,6 +64,9 @@ internal final class _FunctionIRGenerator {
             guard let body = initializer.body else {
                 preconditionFailure("The initializer has no body")
             }
+            for (index, parameter) in initializer.parameters.enumerated() {
+                _llvmArgumentsForParameters[parameter] = llvmFunction.argument(at: index)
+            }
         case let .function(function):
             if function.isExternal {
                 _moduleIRGenerator._insertExternalName(function.name)
@@ -95,8 +101,12 @@ internal final class _FunctionIRGenerator {
                 of: _moduleIRGenerator._llvmType(for: variable.type),
                 fromPointer: _moduleIRGenerator._llvmGlobalVariable(for: variable)
             )
-        case .parameter:
-            fatalError()
+        case let .parameter(parameter):
+            guard let llvmArgument = _llvmArgumentsForParameters[parameter] else {
+                preconditionFailure("The parameter \"\(parameter.name)\" is not declared by the function or initializer"
+)
+            }
+            return llvmArgument
         case .self:
             fatalError()
         case let .call(toInitializer: weakInitializer, passing: arguments):
