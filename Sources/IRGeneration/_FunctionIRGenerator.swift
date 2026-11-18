@@ -182,6 +182,22 @@ internal final class _FunctionIRGenerator {
                 to: _moduleIRGenerator._llvmType(for: type)
             )
         case let .primitiveBitCast(of: value, to: type):
+            let valueBitWidth = switch _type(of: value).kind {
+            case let .integerPrimitive(bitWidth: bitWidth), let .bytePrimitive(bitWidth: bitWidth):
+                bitWidth
+            default:
+                preconditionFailure("The value is not an integer or byte primitive")
+            }
+            let typeBitWidth = switch type.kind {
+            case let .integerPrimitive(bitWidth: bitWidth), let .bytePrimitive(bitWidth: bitWidth):
+                bitWidth
+            default:
+                preconditionFailure("The type is not an integer or byte primitive")
+            }
+            precondition(
+                typeBitWidth == valueBitWidth,
+                "Expected the type to be \(valueBitWidth) bits wide, but it is \(typeBitWidth) bits wide"
+            )
             return _llvmBuilder.buildBitCast(
                 of: _llvmValue(for: value),
                 to: _moduleIRGenerator._llvmType(for: type)
