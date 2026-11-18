@@ -126,7 +126,7 @@ internal final class _FunctionIRGenerator {
             return llvmArgument
         case .self:
             guard let llvmValue = _llvmValueForSelf else {
-                fatalError()
+                preconditionFailure("Self is not declared by the function or initializer")
             }
             return llvmValue
         case let .call(toInitializer: weakInitializer, passing: arguments):
