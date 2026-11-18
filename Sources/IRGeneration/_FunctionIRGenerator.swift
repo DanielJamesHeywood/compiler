@@ -28,6 +28,9 @@ internal final class _FunctionIRGenerator {
     @usableFromInline
     internal var _llvmArgumentsForParameters = [:] as [SemanticParameter: LLVMArgument]
     
+    @usableFromInline
+    internal var _isCurrentBlockTerminated = false
+    
     @inlinable
     internal init(_kind: _Kind, in moduleIRGenerator: _ModuleIRGenerator) {
         guard let llvmModule = moduleIRGenerator._llvmModule else {
@@ -77,6 +80,9 @@ internal final class _FunctionIRGenerator {
                 )
             }
             _llvmBuilder.position(atEndOf: llvmFunction.appendBasicBlock())
+            for statement in body {
+                _generateIR(for: statement)
+            }
             _llvmBuilder.buildReturn(of: _llvmValueForSelf.unsafelyUnwrapped)
         case let .function(function):
             if function.isExternal {
@@ -103,11 +109,21 @@ internal final class _FunctionIRGenerator {
                     )
                 }
                 _llvmBuilder.position(atEndOf: llvmFunction.appendBasicBlock())
+                for statement in body {
+                    _generateIR(for: statement)
+                }
+                precondition(
+                    _isCurrentBlockTerminated,
+                    "The function \"\(function.name)\" does not end with a return statement"
+                )
             } else {
                 precondition(function.isExternal, "The function \"\(function.name)\" has no body but is not external")
             }
         }
     }
+    
+    @inlinable
+    internal func _generateIR(for statement: SemanticStatement) {}
     
     @inlinable
     internal func _llvmValue(for expression: SemanticExpression) -> LLVMValue {
