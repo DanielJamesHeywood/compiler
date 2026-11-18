@@ -133,6 +133,10 @@ internal final class _FunctionIRGenerator {
             guard let initializer = weakInitializer.object else {
                 preconditionFailure("The initializer has been deallocated")
             }
+            precondition(
+                arguments.elementsEqual(initializer.parameters, by: { _type(of: $0).kind == $1.type.kind }),
+                "The types of the arguments do not match the types of the parameters"
+            )
             return _llvmBuilder.buildCall(
                 to: _moduleIRGenerator._llvmFunction(for: initializer),
                 ofType: _moduleIRGenerator._llvmFunctionType(for: initializer),
@@ -154,6 +158,10 @@ internal final class _FunctionIRGenerator {
             guard let structure = weakStructure.object else {
                 preconditionFailure("The structure has been deallocated")
             }
+            precondition(
+                propertyValues.elementsEqual(structure.properties, by: { _type(of: $0).kind == $1.type.kind }),
+                "The types of the property values do not match the types of the properties"
+            )
             return LLVMConstant(
                 elements: propertyValues.map { propertyValue in
                     guard let llvmConstant = _llvmValue(for: propertyValue) as? LLVMConstant else {
