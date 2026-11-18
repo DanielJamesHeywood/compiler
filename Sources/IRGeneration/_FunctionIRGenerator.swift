@@ -111,8 +111,7 @@ internal final class _FunctionIRGenerator {
             )
         case let .parameter(parameter):
             guard let llvmArgument = _llvmArgumentsForParameters[parameter] else {
-                preconditionFailure("The parameter \"\(parameter.name)\" is not declared by the function or initializer"
-)
+                preconditionFailure("The parameter \"\(parameter.name)\" is not declared by the function or initializer")
             }
             return llvmArgument
         case .self:
