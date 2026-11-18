@@ -23,6 +23,9 @@ internal final class _FunctionIRGenerator {
     internal let _llvmBuilder: LLVMBuilder
     
     @usableFromInline
+    internal var _llvmValueForSelf: LLVMValue?
+    
+    @usableFromInline
     internal var _llvmArgumentsForParameters = [:] as [SemanticParameter: LLVMArgument]
     
     @inlinable
@@ -64,6 +67,10 @@ internal final class _FunctionIRGenerator {
             guard let body = initializer.body else {
                 preconditionFailure("The initializer has no body")
             }
+            guard let structure = initializer.containingStructure else {
+                preconditionFailure("The initializer is not a member of a structure")
+            }
+            _llvmValueForSelf = LLVMPoisonValue(type: _moduleIRGenerator._llvmStructureType(for: structure))
             for (index, parameter) in initializer.parameters.enumerated() {
                 _llvmArgumentsForParameters[parameter] = llvmFunction.argument(
                     at: index
@@ -85,6 +92,9 @@ internal final class _FunctionIRGenerator {
             )
             _moduleIRGenerator._llvmFunctionsForFunctions[function] = llvmFunction
             if let body = function.body {
+                if function.containingStructure != nil {
+                    _llvmValueForSelf = llvmFunction.argument(at: 0)
+                }
                 for (index, parameter) in function.parameters.enumerated() {
                     _llvmArgumentsForParameters[parameter] = llvmFunction.argument(
                         at: function.containingStructure != nil ? index + 1 : index
@@ -115,7 +125,10 @@ internal final class _FunctionIRGenerator {
             }
             return llvmArgument
         case .self:
-            fatalError()
+            guard let llvmValue = _llvmValueForSelf else {
+                fatalError()
+            }
+            return llvmValue
         case let .call(toInitializer: weakInitializer, passing: arguments):
             guard let initializer = weakInitializer.object else {
                 preconditionFailure("The initializer has been deallocated")
