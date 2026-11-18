@@ -10,7 +10,7 @@ public struct SemanticExpression: Hashable {
         case `self`
         case call(toInitializer: Weak<SemanticInitializer>, passing: [SemanticExpression])
         indirect case property(SemanticProperty, of: SemanticExpression)
-        case structurePrimitive(Weak<SemanticStructure>, properties: [SemanticExpression])
+        case structurePrimitive(Weak<SemanticStructure>, propertyValues: [SemanticExpression])
         case integerPrimitive(words: [UInt64], bitWidth: BitWidth)
         case bytePrimitive(words: [UInt64], bitWidth: BitWidth)
         indirect case primitiveTruncation(of: SemanticExpression, to: SemanticType)
@@ -83,13 +83,13 @@ public struct SemanticExpression: Hashable {
     @inlinable
     public static func structurePrimitive(
         _ structure: SemanticStructure,
-        properties: [SemanticExpression]
+        propertyValues: [SemanticExpression]
     ) -> SemanticExpression {
         precondition(
-            properties.count == structure.properties.count,
-            "Expected \(structure.properties.count) properties, but got \(properties.count)"
+            propertyValues.count == structure.properties.count,
+            "Expected \(structure.properties.count) values, but got \(propertyValues.count)"
         )
-        return SemanticExpression(_kind: .structurePrimitive(Weak(structure), properties: properties))
+        return SemanticExpression(_kind: .structurePrimitive(Weak(structure), propertyValues: propertyValues))
     }
     
     @inlinable
