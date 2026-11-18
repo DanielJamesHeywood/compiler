@@ -178,4 +178,50 @@ internal final class _FunctionIRGenerator {
             )
         }
     }
+    
+    @inlinable
+    internal func _type(of expression: SemanticExpression) -> SemanticType {
+        switch expression.kind {
+        case let .constant(constant):
+            return constant.type
+        case let .variable(variable):
+            return variable.type
+        case let .parameter(parameter):
+            return parameter.type
+        case .self:
+            let structure = switch _kind {
+            case let .function(function):
+                function.containingStructure
+            case let .initializer(initializer):
+                initializer.containingStructure
+            }
+            guard let structure else {
+                preconditionFailure("Self is not declared by the function or initializer")
+            }
+            return .structure(structure)
+        case let .call(toInitializer: weakInitializer, passing: _):
+            guard let initializer = weakInitializer.object else {
+                preconditionFailure("The initializer has been deallocated")
+            }
+            guard let structure = initializer.containingStructure else {
+                preconditionFailure("The initializer is not a member of a structure")
+            }
+            return .structure(structure)
+        case let .property(property, of: _):
+            return property.type
+        case let .structurePrimitive(weakStructure, propertyValues: _):
+            guard let structure = weakStructure.object else {
+                preconditionFailure("The structure has been deallocated")
+            }
+            return .structure(structure)
+        case let .integerPrimitive(words: _, bitWidth: bitWidth):
+            return .integerPrimitive(bitWidth: bitWidth)
+        case let .bytePrimitive(words: _, bitWidth: bitWidth):
+            return .bytePrimitive(bitWidth: bitWidth)
+        case let .primitiveTruncation(of: _, to: type):
+            return type
+        case let .primitiveBitCast(of: _, to: type):
+            return type
+        }
+    }
 }
