@@ -167,6 +167,16 @@ internal final class _FunctionIRGenerator {
                 type: LLVMByteType(bitWidth: bitWidth.value, in: _llvmBuilder.context)
             )
         case let .primitiveTruncation(of: value, to: type):
+            guard case let .integerPrimitive(bitWidth: valueBitWidth) = _type(of: value).kind else {
+                preconditionFailure("The value is not an integer primitive")
+            }
+            guard case let .integerPrimitive(bitWidth: typeBitWidth) = type.kind else {
+                preconditionFailure("The type is not an integer primitive")
+            }
+            precondition(
+                typeBitWidth < valueBitWidth,
+                "Expected the type to be narrower than \(valueBitWidth) bits, but it is \(typeBitWidth) bits wide"
+            )
             return _llvmBuilder.buildTruncation(
                 of: _llvmValue(for: value),
                 to: _moduleIRGenerator._llvmType(for: type)
