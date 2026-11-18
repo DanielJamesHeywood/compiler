@@ -1,6 +1,7 @@
 import LLVM
 
 import Tokens
+import Syntax
 import Semantics
 
 @usableFromInline
@@ -78,6 +79,73 @@ internal final class _FunctionIRGenerator {
             if let body = function.body {} else {
                 precondition(function.isExternal, "The function \"\(function.name)\" has no body but is not external")
             }
+        }
+    }
+    
+    @inlinable
+    internal func _llvmValue(for expression: SemanticExpression) -> LLVMValue {
+        switch expression.kind {
+        case let .constant(constant):
+            return _llvmBuilder.buildLoad(
+                of: _moduleIRGenerator._llvmType(for: constant.type),
+                fromPointer: _moduleIRGenerator._llvmGlobalVariable(for: constant)
+            )
+        case let .variable(variable):
+            return _llvmBuilder.buildLoad(
+                of: _moduleIRGenerator._llvmType(for: variable.type),
+                fromPointer: _moduleIRGenerator._llvmGlobalVariable(for: variable)
+            )
+        case .parameter:
+            fatalError()
+        case .self:
+            fatalError()
+        case let .call(toInitializer: weakInitializer, passing: arguments):
+            guard let initializer = weakInitializer.object else {
+                preconditionFailure("The initializer has been deallocated")
+            }
+            return _llvmBuilder.buildCall(
+                to: _moduleIRGenerator._llvmFunction(for: initializer),
+                ofType: _moduleIRGenerator._llvmFunctionType(for: initializer),
+                passing: arguments.map { _llvmValue(for: $0) }
+            )
+        case let .property(property, of: base):
+            return _llvmBuilder.buildExtraction(
+                fromAggregate: _llvmValue(for: base),
+                at: _moduleIRGenerator._index(for: property)
+            )
+        case let .structurePrimitive(weakStructure, propertyValues: propertyValues):
+            guard let structure = weakStructure.object else {
+                preconditionFailure("The structure has been deallocated")
+            }
+            return LLVMConstant(
+                elements: propertyValues.map { propertyValue in
+                    guard let llvmConstant = _llvmValue(for: propertyValue) as? LLVMConstant else {
+                        fatalError()
+                    }
+                    return llvmConstant
+                },
+                type: _moduleIRGenerator._llvmStructureType(for: structure)
+            )
+        case let .integerPrimitive(words: words, bitWidth: bitWidth):
+            return LLVMConstantInteger(
+                words: words,
+                type: LLVMIntegerType(bitWidth: bitWidth.value, in: _llvmBuilder.context)
+            )
+        case let .bytePrimitive(words: words, bitWidth: bitWidth):
+            return LLVMConstantByte(
+                words: words,
+                type: LLVMByteType(bitWidth: bitWidth.value, in: _llvmBuilder.context)
+            )
+        case let .primitiveTruncation(of: value, to: type):
+            return _llvmBuilder.buildTruncation(
+                of: _llvmValue(for: value),
+                to: _moduleIRGenerator._llvmType(for: type)
+            )
+        case let .primitiveBitCast(of: value, to: type):
+            return _llvmBuilder.buildBitCast(
+                of: _llvmValue(for: value),
+                to: _moduleIRGenerator._llvmType(for: type)
+            )
         }
     }
 }
