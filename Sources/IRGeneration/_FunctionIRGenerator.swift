@@ -76,6 +76,7 @@ internal final class _FunctionIRGenerator {
                     at: index
                 )
             }
+            _llvmBuilder.position(atEndOf: llvmFunction.appendBasicBlock())
         case let .function(function):
             if function.isExternal {
                 _moduleIRGenerator._insertExternalName(function.name)
@@ -100,6 +101,7 @@ internal final class _FunctionIRGenerator {
                         at: function.containingStructure != nil ? index + 1 : index
                     )
                 }
+                _llvmBuilder.position(atEndOf: llvmFunction.appendBasicBlock())
             } else {
                 precondition(function.isExternal, "The function \"\(function.name)\" has no body but is not external")
             }
