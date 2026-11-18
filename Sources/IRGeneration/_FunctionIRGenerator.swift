@@ -125,6 +125,12 @@ internal final class _FunctionIRGenerator {
     @inlinable
     internal func _generateIR(for statement: SemanticStatement) {
         precondition(!_isCurrentBlockTerminated, "The statement is unreachable")
+        switch statement.kind {
+        case let .return(of: value):
+            break
+        case let .assignment(of: source, to: destination):
+            break
+        }
     }
     
     @inlinable
