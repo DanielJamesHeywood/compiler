@@ -160,6 +160,13 @@ internal final class _FunctionIRGenerator {
                 case .self:
                     _llvmValueForSelf = llvmValue
                 case let .property(property, of: base):
+                    guard let structure = property.containingStructure else {
+                        preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
+                    }
+                    precondition(
+                        _type(of: base).kind == .structure(Weak(structure)),
+                        "The property \"\(property.name)\" is not a member of the type of the base"
+                    )
                     buildAssignment(
                         of: _llvmBuilder.buildInsertion(
                             of: llvmValue,
