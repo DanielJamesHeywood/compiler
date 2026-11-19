@@ -131,7 +131,7 @@ internal final class _FunctionIRGenerator {
             case let .function(function):
                 function.returnType
             default:
-                preconditionFailure("An initializer cannot contain a return statement")
+                preconditionFailure("The declaration cannot contain a return statement")
             }
             if let value {
                 precondition(
