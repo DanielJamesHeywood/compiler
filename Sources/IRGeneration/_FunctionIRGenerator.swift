@@ -127,8 +127,20 @@ internal final class _FunctionIRGenerator {
         precondition(!_isCurrentBlockTerminated, "The statement is unreachable")
         switch statement.kind {
         case let .return(of: value):
+            let returnType = switch _kind {
+            case let .function(function):
+                function.returnType
+            default:
+                preconditionFailure("An initializer cannot contain a return statement")
+            }
             if let value {
+                precondition(
+                    _type(of: value).kind == returnType.kind,
+                    "The type of the value does not match the return type"
+                )
                 _llvmBuilder.buildReturn(of: _llvmValue(for: value))
+            } else {
+                preconditionFailure("The statement returns nothing")
             }
             _isCurrentBlockTerminated = true
         case let .assignment(of: source, to: destination):
