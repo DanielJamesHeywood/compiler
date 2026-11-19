@@ -144,6 +144,10 @@ internal final class _FunctionIRGenerator {
             }
             _isCurrentBlockTerminated = true
         case let .assignment(of: source, to: destination):
+            precondition(
+                _type(of: source).kind == _type(of: destination).kind,
+                "The types of the source and destination do not match"
+            )
             func buildAssignment(of llvmValue: LLVMValue, to destination: SemanticExpression) {
                 switch destination.kind {
                 case let .variable(variable):
@@ -199,7 +203,7 @@ internal final class _FunctionIRGenerator {
             }
             precondition(
                 arguments.elementsEqual(initializer.parameters, by: { _type(of: $0).kind == $1.type.kind }),
-                "The types of the arguments do not match the types of the parameters"
+                "The types of the arguments and parameters do not match"
             )
             return _llvmBuilder.buildCall(
                 to: _moduleIRGenerator._llvmFunction(for: initializer),
@@ -224,7 +228,7 @@ internal final class _FunctionIRGenerator {
             }
             precondition(
                 propertyValues.elementsEqual(structure.properties, by: { _type(of: $0).kind == $1.type.kind }),
-                "The types of the property values do not match the types of the properties"
+                "The types of the property values and properties do not match"
             )
             return LLVMConstant(
                 elements: propertyValues.map { propertyValue in
