@@ -147,7 +147,10 @@ internal final class _FunctionIRGenerator {
             func buildAssignment(of llvmValue: LLVMValue, to destination: SemanticExpression) {
                 switch destination.kind {
                 case let .variable(variable):
-                    break
+                    _llvmBuilder.buildStore(
+                        of: llvmValue,
+                        toPointer: _moduleIRGenerator._llvmGlobalVariable(for: variable)
+                    )
                 case .self:
                     break
                 case let .property(property, of: base):
