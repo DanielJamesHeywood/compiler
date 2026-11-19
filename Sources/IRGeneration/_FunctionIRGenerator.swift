@@ -156,7 +156,7 @@ internal final class _FunctionIRGenerator {
                 case let .property(property, of: base):
                     break
                 default:
-                    break
+                    preconditionFailure("The destination is not assignable")
                 }
             }
             buildAssignment(of: _llvmValue(for: source), to: destination)
