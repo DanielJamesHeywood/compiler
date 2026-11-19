@@ -186,6 +186,13 @@ internal final class _FunctionIRGenerator {
                         toPointer: _moduleIRGenerator._llvmGlobalVariable(for: variable)
                     )
                 case .self:
+                    let isSelfAssignable = switch _kind {
+                    case .initializer:
+                        true
+                    case .function:
+                        false
+                    }
+                    precondition(isSelfAssignable, "Self is not assignable in the declaration")
                     _llvmValueForSelf = llvmValue
                 case let .property(property, of: base):
                     guard let structure = property.containingStructure else {
@@ -228,12 +235,12 @@ internal final class _FunctionIRGenerator {
             )
         case let .parameter(parameter):
             guard let llvmArgument = _llvmArgumentsForParameters[parameter] else {
-                preconditionFailure("The parameter \"\(parameter.name)\" is not declared by the function or initializer")
+                preconditionFailure("The declaration has no parameter \"\(parameter.name)\"")
             }
             return llvmArgument
         case .self:
             guard let llvmValue = _llvmValueForSelf else {
-                preconditionFailure("Self is not declared by the function or initializer")
+                preconditionFailure("The declaration is not a member of a structure")
             }
             return llvmValue
         case let .call(toInitializer: weakInitializer, passing: arguments):
@@ -344,7 +351,7 @@ internal final class _FunctionIRGenerator {
                 initializer.containingStructure
             }
             guard let structure else {
-                preconditionFailure("Self is not declared by the function or initializer")
+                preconditionFailure("The declaration is not a member of a structure")
             }
             return .structure(structure)
         case let .call(toInitializer: weakInitializer, passing: _):
