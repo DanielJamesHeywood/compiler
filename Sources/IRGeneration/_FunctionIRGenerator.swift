@@ -156,6 +156,7 @@ internal final class _FunctionIRGenerator {
                     break
                 }
             }
+            buildAssignment(of: _llvmValue(for: source), to: destination)
         }
     }
     
