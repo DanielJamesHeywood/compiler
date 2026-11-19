@@ -84,6 +84,7 @@ internal final class _FunctionIRGenerator {
                 _generateIR(for: statement)
             }
             _llvmBuilder.buildReturn(of: _llvmValueForSelf.unsafelyUnwrapped)
+            _isCurrentBlockTerminated = true
         case let .function(function):
             if function.isExternal {
                 _moduleIRGenerator._insertExternalName(function.name)
@@ -176,6 +177,7 @@ internal final class _FunctionIRGenerator {
     
     @inlinable
     internal func _llvmValue(for expression: SemanticExpression) -> LLVMValue {
+        precondition(!_isCurrentBlockTerminated, "The expression is unreachable")
         switch expression.kind {
         case let .constant(constant):
             return _llvmBuilder.buildLoad(
