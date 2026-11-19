@@ -150,6 +150,13 @@ internal final class _FunctionIRGenerator {
                 _type(of: source).kind == _type(of: destination).kind,
                 "The types of the source and destination do not match"
             )
+            var llvmAggregateValuesForExpressions = [:] as [SemanticExpression: LLVMValue]
+            func llvmAggregateValue(for expression: SemanticExpression) -> LLVMValue {
+                if let llvmValue = llvmAggregateValuesForExpressions[expression] {
+                    return llvmValue
+                } else {
+                }
+            }
             func buildAssignment(of llvmValue: LLVMValue, to destination: SemanticExpression) {
                 switch destination.kind {
                 case let .variable(variable):
@@ -170,7 +177,7 @@ internal final class _FunctionIRGenerator {
                     buildAssignment(
                         of: _llvmBuilder.buildInsertion(
                             of: llvmValue,
-                            intoAggregate: <#T##LLVMValue#>,
+                            intoAggregate: llvmAggregateValue(for: base),
                             at: _moduleIRGenerator._index(for: property)
                         ),
                         to: base
