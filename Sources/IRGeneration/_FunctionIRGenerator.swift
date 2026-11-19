@@ -155,6 +155,9 @@ internal final class _FunctionIRGenerator {
                 if let llvmValue = llvmAggregateValuesForExpressions[expression] {
                     return llvmValue
                 } else {
+                    let llvmValue = <#T##LLVMValue#>
+                    llvmAggregateValuesForExpressions[expression] = llvmValue
+                    return llvmValue
                 }
             }
             func buildAssignment(of llvmValue: LLVMValue, to destination: SemanticExpression) {
