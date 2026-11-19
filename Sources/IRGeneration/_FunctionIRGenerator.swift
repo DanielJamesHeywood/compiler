@@ -144,7 +144,18 @@ internal final class _FunctionIRGenerator {
             }
             _isCurrentBlockTerminated = true
         case let .assignment(of: source, to: destination):
-            break
+            func buildAssignment(of llvmValue: LLVMValue, to destination: SemanticExpression) {
+                switch destination.kind {
+                case let .variable(variable):
+                    break
+                case .self:
+                    break
+                case let .property(property, of: base):
+                    break
+                default:
+                    break
+                }
+            }
         }
     }
     
