@@ -152,7 +152,7 @@ internal final class _FunctionIRGenerator {
                         toPointer: _moduleIRGenerator._llvmGlobalVariable(for: variable)
                     )
                 case .self:
-                    break
+                    _llvmValueForSelf = llvmValue
                 case let .property(property, of: base):
                     break
                 default:
