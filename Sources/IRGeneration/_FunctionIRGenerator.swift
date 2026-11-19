@@ -155,7 +155,25 @@ internal final class _FunctionIRGenerator {
                 if let llvmValue = llvmAggregateValuesForExpressions[expression] {
                     return llvmValue
                 } else {
-                    let llvmValue = <#T##LLVMValue#>
+                    let llvmValue: LLVMValue
+                    switch expression.kind {
+                    case .variable, .self:
+                        llvmValue = _llvmValue(for: expression)
+                    case let .property(property, of: base):
+                        guard let structure = property.containingStructure else {
+                            preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
+                        }
+                        precondition(
+                            _type(of: base).kind == .structure(Weak(structure)),
+                            "The property \"\(property.name)\" is not a member of the type of the base"
+                        )
+                        llvmValue = _llvmBuilder.buildExtraction(
+                            fromAggregate: llvmAggregateValue(for: base),
+                            at: _moduleIRGenerator._index(for: property)
+                        )
+                    default:
+                        preconditionFailure("The expression is not assignable")
+                    }
                     llvmAggregateValuesForExpressions[expression] = llvmValue
                     return llvmValue
                 }
