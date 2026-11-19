@@ -125,6 +125,7 @@ internal final class _FunctionIRGenerator {
     
     @inlinable
     internal func _generateIR(for statement: SemanticStatement) {
+        precondition(_moduleIRGenerator._llvmModule != nil, "The LLVM module has been taken")
         precondition(!_isCurrentBlockTerminated, "The statement is unreachable")
         switch statement.kind {
         case let .return(of: value):
@@ -177,6 +178,7 @@ internal final class _FunctionIRGenerator {
     
     @inlinable
     internal func _llvmValue(for expression: SemanticExpression) -> LLVMValue {
+        precondition(_moduleIRGenerator._llvmModule != nil, "The LLVM module has been taken")
         precondition(!_isCurrentBlockTerminated, "The expression is unreachable")
         switch expression.kind {
         case let .constant(constant):
