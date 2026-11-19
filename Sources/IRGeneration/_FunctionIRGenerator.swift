@@ -154,7 +154,14 @@ internal final class _FunctionIRGenerator {
                 case .self:
                     _llvmValueForSelf = llvmValue
                 case let .property(property, of: base):
-                    break
+                    buildAssignment(
+                        of: _llvmBuilder.buildInsertion(
+                            of: llvmValue,
+                            intoAggregate: <#T##LLVMValue#>,
+                            at: _moduleIRGenerator._index(for: property)
+                        ),
+                        to: base
+                    )
                 default:
                     preconditionFailure("The destination is not assignable")
                 }
