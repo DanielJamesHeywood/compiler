@@ -1,7 +1,7 @@
 import Tokens
 import Syntax
 
-public struct SemanticExpression: Hashable {
+public struct SemanticExpression {
     
     public enum Kind: Hashable {
         case constant(SemanticConstant)
@@ -122,5 +122,19 @@ public struct SemanticExpression: Hashable {
         to type: SemanticType
     ) -> SemanticExpression {
         SemanticExpression(_kind: .primitiveBitCast(of: value, to: type))
+    }
+}
+
+extension SemanticExpression: Equatable {
+    
+    @inlinable
+    public static func == (lhs: SemanticExpression, rhs: SemanticExpression) -> Bool { lhs.kind == rhs.kind }
+}
+
+extension SemanticExpression: Hashable {
+    
+    @inlinable
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(kind)
     }
 }

@@ -1,7 +1,7 @@
 import Tokens
 import Syntax
 
-public struct SemanticType: Hashable {
+public struct SemanticType {
     
     public enum Kind: Hashable {
         case structure(Weak<SemanticStructure>)
@@ -32,5 +32,19 @@ public struct SemanticType: Hashable {
     @inlinable
     public static func bytePrimitive(bitWidth: BitWidth, at location: SourceLocation? = nil) -> SemanticType {
         SemanticType(_kind: .bytePrimitive(bitWidth: bitWidth), at: location)
+    }
+}
+
+extension SemanticType: Equatable {
+    
+    @inlinable
+    public static func == (lhs: SemanticType, rhs: SemanticType) -> Bool { lhs.kind == rhs.kind }
+}
+
+extension SemanticType: Hashable {
+    
+    @inlinable
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(kind)
     }
 }
