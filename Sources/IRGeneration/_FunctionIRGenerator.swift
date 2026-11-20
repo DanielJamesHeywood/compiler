@@ -75,9 +75,7 @@ internal final class _FunctionIRGenerator {
             }
             _llvmValueForSelf = LLVMPoisonValue(type: _moduleIRGenerator._llvmStructureType(for: structure))
             for (index, parameter) in initializer.parameters.enumerated() {
-                _llvmArgumentsForParameters[parameter] = llvmFunction.argument(
-                    at: index
-                )
+                _llvmArgumentsForParameters[parameter] = llvmFunction.argument(at: index)
             }
             _llvmBuilder.position(atEndOf: llvmFunction.appendBasicBlock())
             for statement in body {
@@ -104,10 +102,8 @@ internal final class _FunctionIRGenerator {
                 if function.containingStructure != nil {
                     _llvmValueForSelf = llvmFunction.argument(at: 0)
                 }
-                for (index, parameter) in function.parameters.enumerated() {
-                    _llvmArgumentsForParameters[parameter] = llvmFunction.argument(
-                        at: function.containingStructure != nil ? index + 1 : index
-                    )
+                for (index, parameter) in zip(function.containingStructure != nil ? 1... : 0..., function.parameters) {
+                    _llvmArgumentsForParameters[parameter] = llvmFunction.argument(at: index)
                 }
                 _llvmBuilder.position(atEndOf: llvmFunction.appendBasicBlock())
                 for statement in body {
