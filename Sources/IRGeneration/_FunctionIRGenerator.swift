@@ -132,10 +132,7 @@ internal final class _FunctionIRGenerator {
                 preconditionFailure("The declaration cannot contain a return statement")
             }
             if let value {
-                precondition(
-                    _type(of: value).kind == returnType.kind,
-                    "The type of the value does not match the return type"
-                )
+                precondition(_type(of: value) == returnType, "The type of the value does not match the return type")
                 _llvmBuilder.buildReturn(of: _llvmValue(for: value))
             } else {
                 preconditionFailure("The statement returns nothing")
@@ -143,7 +140,7 @@ internal final class _FunctionIRGenerator {
             _isCurrentBlockTerminated = true
         case let .assignment(of: source, to: destination):
             precondition(
-                _type(of: source).kind == _type(of: destination).kind,
+                _type(of: source) == _type(of: destination),
                 "The types of the source and destination do not match"
             )
             var llvmAggregateValuesForExpressions = [:] as [SemanticExpression: LLVMValue]
@@ -160,7 +157,7 @@ internal final class _FunctionIRGenerator {
                             preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
                         }
                         precondition(
-                            _type(of: base).kind == .structure(Weak(structure)),
+                            _type(of: base) == .structure(structure),
                             "The property \"\(property.name)\" is not a member of the type of the base"
                         )
                         llvmValue = _llvmBuilder.buildExtraction(
@@ -195,7 +192,7 @@ internal final class _FunctionIRGenerator {
                         preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
                     }
                     precondition(
-                        _type(of: base).kind == .structure(Weak(structure)),
+                        _type(of: base) == .structure(structure),
                         "The property \"\(property.name)\" is not a member of the type of the base"
                     )
                     buildAssignment(
@@ -244,7 +241,7 @@ internal final class _FunctionIRGenerator {
                 preconditionFailure("The initializer has been deallocated")
             }
             precondition(
-                arguments.elementsEqual(initializer.parameters, by: { _type(of: $0).kind == $1.type.kind }),
+                arguments.elementsEqual(initializer.parameters, by: { _type(of: $0) == $1.type }),
                 "The types of the arguments and parameters do not match"
             )
             return _llvmBuilder.buildCall(
@@ -257,7 +254,7 @@ internal final class _FunctionIRGenerator {
                 preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
             }
             precondition(
-                _type(of: base).kind == .structure(Weak(structure)),
+                _type(of: base) == .structure(structure),
                 "The property \"\(property.name)\" is not a member of the type of the base"
             )
             return _llvmBuilder.buildExtraction(
@@ -269,7 +266,7 @@ internal final class _FunctionIRGenerator {
                 preconditionFailure("The structure has been deallocated")
             }
             precondition(
-                propertyValues.elementsEqual(structure.properties, by: { _type(of: $0).kind == $1.type.kind }),
+                propertyValues.elementsEqual(structure.properties, by: { _type(of: $0) == $1.type }),
                 "The types of the property values and properties do not match"
             )
             return LLVMConstant(
