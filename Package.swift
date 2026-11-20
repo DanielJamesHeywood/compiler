@@ -26,7 +26,7 @@ let package = Package(
         ),
         .target(
             name: "Lexing",
-            dependencies: ["Tokens"]
+            dependencies: [.product(name: "SystemPackage", package: "swift-system"), "Tokens"]
         ),
         .target(
             name: "Parsing",
@@ -41,7 +41,8 @@ let package = Package(
             dependencies: [.product(name: "LLVM", package: "llvm-swift"), "Tokens", "Syntax", "Semantics"]
         ),
         .target(
-            name: "Tokens"
+            name: "Tokens",
+            dependencies: [.product(name: "SystemPackage", package: "swift-system")]
         ),
         .target(
             name: "Syntax",

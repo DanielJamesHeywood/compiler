@@ -90,7 +90,7 @@ struct CompilerCommand: ParsableCommand {
         }
         let tokensForSourceFiles = try zip(sourcePaths, contentsOfSourceFiles).map { path, contents in
             do {
-                return try tokens(for: contents)
+                return try tokens(for: contents, at: path)
             } catch {
                 throw StringError("Failed to compile '\(path)': \(error)")
             }

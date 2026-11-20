@@ -1,7 +1,9 @@
+import SystemPackage
+
 import Tokens
 
 @inlinable
-public func tokens(for text: String) throws(LexingError) -> [Token] {
+public func tokens(for text: String, at path: FilePath) throws(LexingError) -> [Token] {
     var tokens = [] as [Token]
     for (lineNumber, line) in zip(1..., text.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)) {
         var columnNumber = 1
@@ -13,7 +15,7 @@ public func tokens(for text: String) throws(LexingError) -> [Token] {
                 unlexedText.removeFirst()
             } else {
                 let token: Token
-                let location = SourceLocation(line: lineNumber, column: columnNumber)
+                let location = SourceLocation(path: path, line: lineNumber, column: columnNumber)
                 if let match = unlexedText.prefixMatch(
                     of: /[a-zA-Z_][a-zA-Z_0-9]*/
                 ) {
