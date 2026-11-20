@@ -241,13 +241,16 @@ internal final class _FunctionIRGenerator {
                 preconditionFailure("The initializer has been deallocated")
             }
             precondition(
-                arguments.elementsEqual(initializer.parameters, by: { _type(of: $0) == $1.type }),
+                arguments.elementsEqual(
+                    initializer.parameters,
+                    by: { argument, parameter in _type(of: argument) == parameter.type }
+                ),
                 "The types of the arguments and parameters do not match"
             )
             return _llvmBuilder.buildCall(
                 to: _moduleIRGenerator._llvmFunction(for: initializer),
                 ofType: _moduleIRGenerator._llvmFunctionType(for: initializer),
-                passing: arguments.map { _llvmValue(for: $0) }
+                passing: arguments.map { argument in _llvmValue(for: argument) }
             )
         case let .property(property, of: base):
             guard let structure = property.containingStructure else {
@@ -266,7 +269,10 @@ internal final class _FunctionIRGenerator {
                 preconditionFailure("The structure has been deallocated")
             }
             precondition(
-                propertyValues.elementsEqual(structure.properties, by: { _type(of: $0) == $1.type }),
+                propertyValues.elementsEqual(
+                    structure.properties,
+                    by: { propertyValue, property in _type(of: propertyValue) == property.type }
+                ),
                 "The types of the property values and properties do not match"
             )
             return LLVMConstant(

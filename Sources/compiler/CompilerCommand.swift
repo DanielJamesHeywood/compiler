@@ -27,7 +27,7 @@ struct CompilerCommand: ParsableCommand {
     
     func run() throws {
         precondition(
-            sourcePaths.allSatisfy { $0.extension == "source" },
+            sourcePaths.allSatisfy { path in path.extension == "source" },
             "The validated source paths do not all have extension \"source\""
         )
         precondition(

@@ -151,14 +151,16 @@ internal final class _ModuleIRGenerator {
         }
         return LLVMFunctionType(
             returnType: _llvmType(for: .structure(structure)),
-            parameterTypes: initializer.parameters.map { _llvmType(for: $0.type) }
+            parameterTypes: initializer.parameters.map { parameter in _llvmType(for: parameter.type) }
         )
     }
     
     @inlinable
     internal func _llvmFunctionType(for function: SemanticFunction) -> LLVMFunctionType {
-        var llvmParameterTypes = function.containingStructure.map { [_llvmType(for: .structure($0))] } ?? []
-        llvmParameterTypes += function.parameters.map { _llvmType(for: $0.type) }
+        var llvmParameterTypes = function.containingStructure.map { structure in
+            [_llvmType(for: .structure(structure))]
+        } ?? []
+        llvmParameterTypes += function.parameters.map { parameter in _llvmType(for: parameter.type) }
         return LLVMFunctionType(returnType: _llvmType(for: function.returnType), parameterTypes: llvmParameterTypes)
     }
     
