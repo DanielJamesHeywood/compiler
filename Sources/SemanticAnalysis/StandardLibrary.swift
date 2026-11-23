@@ -8,7 +8,7 @@ internal var _syntacticStandardLibrary: SyntacticModule {
             SyntacticDeclaration.variable("value", accessLevel: .private, type: .integerPrimitive(bitWidth: 32))
             SyntacticDeclaration.initializer(
                 accessLevel: .public,
-                parameters: [SyntacticParameter("literal", label: "_", type: .identifier("IntegerLiteral"))]
+                parameters: SyntacticParameter("literal", label: "_", type: .identifier("IntegerLiteral"))
             ) {
                 SyntacticStatement.assignment(
                     of: .primitiveTruncation(

@@ -121,7 +121,7 @@ public struct SyntacticDeclaration: Sendable {
     @inlinable
     public static func initializer(
         accessLevel: AccessLevel,
-        parameters: [SyntacticParameter],
+        parameters: SyntacticParameter...,
         @ArrayBuilder<SyntacticStatement> makeBody: () -> [SyntacticStatement]
     ) -> SyntacticDeclaration {
         .initializer(
