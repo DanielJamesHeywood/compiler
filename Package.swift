@@ -23,7 +23,8 @@ let package = Package(
                 "SemanticAnalysis",
                 "IRGeneration",
                 "Tokens",
-                "Syntax"
+                "Syntax",
+                "Semantics"
             ]
         ),
         .target(

@@ -8,6 +8,7 @@ import SemanticAnalysis
 import IRGeneration
 import Tokens
 import Syntax
+import Semantics
 
 @main
 struct CompilerCommand: ParsableCommand {
@@ -96,8 +97,13 @@ struct CompilerCommand: ParsableCommand {
         let syntacticModules = try tokenizedSourceFiles.map { tokenizedSourceFile in
             try SyntacticModule(parsing: tokenizedSourceFile)
         }
-        _ = syntacticModules
-        _ = LLVMContext()
+        let semanticModule = try SemanticModule(analyzing: syntacticModules)
+        let llvmModule = semanticModule.makeLLVMModule(in: LLVMContext())
+        do {
+            try llvmModule.writeIR(to: outputPath)
+        } catch {
+            throw StringError("Failed to write '\(outputPath)': \(error)")
+        }
     }
     
     func validate() throws {
