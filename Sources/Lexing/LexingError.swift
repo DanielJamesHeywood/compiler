@@ -1,3 +1,5 @@
+import SystemPackage
+
 import Tokens
 
 public struct LexingError: Hashable, Error {
@@ -30,7 +32,7 @@ extension LexingError: CustomStringConvertible {
         case let .unexpectedCharacter(character):
             "Unexpected character '\(character.debugDescription.dropFirst().dropLast())'"
         }
-        return "\(message) at line \(location.line), column \(location.column)"
+        return "\(message) at line \(location.line), column \(location.column) in \(location.path)"
     }
 }
 

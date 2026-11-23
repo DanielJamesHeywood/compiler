@@ -21,7 +21,9 @@ let package = Package(
                 "Lexing",
                 "Parsing",
                 "SemanticAnalysis",
-                "IRGeneration"
+                "IRGeneration",
+                "Tokens",
+                "Syntax"
             ]
         ),
         .target(
@@ -30,7 +32,7 @@ let package = Package(
         ),
         .target(
             name: "Parsing",
-            dependencies: ["Tokens", "Syntax"]
+            dependencies: [.product(name: "SystemPackage", package: "swift-system"), "Tokens", "Syntax"]
         ),
         .target(
             name: "SemanticAnalysis",

@@ -29,7 +29,7 @@ internal final class _FunctionIRGenerator {
     internal var _llvmArgumentsForParameters = [:] as [SemanticParameter: LLVMArgument]
     
     @usableFromInline
-    internal var _isCurrentBlockTerminated = false
+    internal var _currentBlockIsTerminated = false
     
     @inlinable
     internal init(_kind: _Kind, in moduleIRGenerator: _ModuleIRGenerator) {
@@ -82,7 +82,7 @@ internal final class _FunctionIRGenerator {
                 _generateIR(for: statement)
             }
             _llvmBuilder.buildReturn(of: _llvmValueForSelf.unsafelyUnwrapped)
-            _isCurrentBlockTerminated = true
+            _currentBlockIsTerminated = true
         case let .function(function):
             if function.isExternal {
                 _moduleIRGenerator._insertExternalName(function.name)
@@ -110,7 +110,7 @@ internal final class _FunctionIRGenerator {
                     _generateIR(for: statement)
                 }
                 precondition(
-                    _isCurrentBlockTerminated,
+                    _currentBlockIsTerminated,
                     "The function \"\(function.name)\" does not end with a return statement"
                 )
             } else {
@@ -122,7 +122,7 @@ internal final class _FunctionIRGenerator {
     @inlinable
     internal func _generateIR(for statement: SemanticStatement) {
         precondition(_moduleIRGenerator._llvmModule != nil, "The LLVM module has been taken")
-        precondition(!_isCurrentBlockTerminated, "The statement is unreachable")
+        precondition(!_currentBlockIsTerminated, "The statement is unreachable")
         switch statement.kind {
         case let .return(of: value):
             let returnType = switch _kind {
@@ -137,7 +137,7 @@ internal final class _FunctionIRGenerator {
             } else {
                 preconditionFailure("The statement returns nothing")
             }
-            _isCurrentBlockTerminated = true
+            _currentBlockIsTerminated = true
         case let .assignment(of: source, to: destination):
             precondition(
                 _type(of: source) == _type(of: destination),
@@ -179,13 +179,13 @@ internal final class _FunctionIRGenerator {
                         toPointer: _moduleIRGenerator._llvmGlobalVariable(for: variable)
                     )
                 case .self:
-                    let isSelfAssignable = switch _kind {
+                    let selfIsAssignable = switch _kind {
                     case .initializer:
                         true
                     case .function:
                         false
                     }
-                    precondition(isSelfAssignable, "Self is not assignable in the declaration")
+                    precondition(selfIsAssignable, "Self is not assignable in the declaration")
                     _llvmValueForSelf = llvmValue
                 case let .property(property, of: base):
                     guard let structure = property.containingStructure else {
@@ -214,7 +214,7 @@ internal final class _FunctionIRGenerator {
     @inlinable
     internal func _llvmValue(for expression: SemanticExpression) -> LLVMValue {
         precondition(_moduleIRGenerator._llvmModule != nil, "The LLVM module has been taken")
-        precondition(!_isCurrentBlockTerminated, "The expression is unreachable")
+        precondition(!_currentBlockIsTerminated, "The expression is unreachable")
         switch expression.kind {
         case let .constant(constant):
             return _llvmBuilder.buildLoad(

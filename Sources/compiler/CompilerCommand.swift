@@ -6,6 +6,8 @@ import Lexing
 import Parsing
 import SemanticAnalysis
 import IRGeneration
+import Tokens
+import Syntax
 
 @main
 struct CompilerCommand: ParsableCommand {
@@ -88,23 +90,14 @@ struct CompilerCommand: ParsableCommand {
                 throw StringError("Failed to read '\(path)': \(error)")
             }
         }
-        let tokensForSourceFiles = try zip(sourcePaths, contentsOfSourceFiles).map { path, contents in
-            do {
-                return try tokens(for: contents, at: path)
-            } catch {
-                throw StringError("Failed to compile '\(path)': \(error)")
-            }
+        let tokenizedSourceFiles = try zip(sourcePaths, contentsOfSourceFiles).map { path, contents in
+            try TokenizedSourceFile(lexing: contents, at: path)
         }
-        let syntacticDeclarationsForSourceFiles = try zip(sourcePaths, tokensForSourceFiles).map { path, tokens in
-            do {
-                return try syntacticDeclarations(for: tokens)
-            } catch {
-                throw StringError("Failed to compile '\(path)': \(error)")
-            }
+        let syntacticModules = try tokenizedSourceFiles.map { tokenizedSourceFile in
+            try SyntacticModule(parsing: tokenizedSourceFile)
         }
-        _ = syntacticDeclarationsForSourceFiles
-        let llvmContext = LLVMContext()
-        _ = llvmContext
+        _ = syntacticModules
+        _ = LLVMContext()
     }
     
     func validate() throws {

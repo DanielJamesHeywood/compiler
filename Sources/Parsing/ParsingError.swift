@@ -1,10 +1,12 @@
+import SystemPackage
+
 import Tokens
 
 public struct ParsingError: Hashable, Error {
     
-    public enum Kind: Hashable, Sendable {
+    public enum Kind: Sendable {
         case unexpectedToken(Token)
-        case unexpectedEndOfFile
+        case unexpectedEndOfFile(at: SourceLocation)
     }
     
     public enum Expectation: Hashable, Sendable {
@@ -39,14 +41,16 @@ public struct ParsingError: Hashable, Error {
     }
     
     @inlinable
-    public static func unexpectedToken(_ token: Token, expected expectation: Expectation) -> ParsingError {
-        ParsingError(_kind: .unexpectedToken(token), expected: expectation)
-    }
+    public static func unexpectedToken(
+        _ token: Token,
+        expected expectation: Expectation
+    ) -> ParsingError { ParsingError(_kind: .unexpectedToken(token), expected: expectation) }
     
     @inlinable
-    public static func unexpectedEndOfFile(expected expectation: Expectation) -> ParsingError {
-        ParsingError(_kind: .unexpectedEndOfFile, expected: expectation)
-    }
+    public static func unexpectedEndOfFile(
+        at location: SourceLocation,
+        expected expectation: Expectation
+    ) -> ParsingError { ParsingError(_kind: .unexpectedEndOfFile(at: location), expected: expectation) }
 }
 
 extension ParsingError: CustomStringConvertible {
@@ -129,12 +133,18 @@ extension ParsingError: CustomStringConvertible {
             case .arrow:
                 "an arrow"
             }
-            let locationDescription = "line \(token.location.line), column \(token.location.column)"
-            kindDescription = "got \(tokenKindDescription) '\(token.text)' at \(locationDescription)"
+            kindDescription = "got \(tokenKindDescription) '\(token.text)'"
         case .unexpectedEndOfFile:
             kindDescription = "reached the end of the file"
         }
-        return "Expected \(expectationDescription), but \(kindDescription)"
+        let location = switch kind {
+        case let .unexpectedToken(token):
+            token.location
+        case let .unexpectedEndOfFile(at: location):
+            location
+        }
+        let locationDescription = "line \(location.line), column \(location.column) in \(location.path)"
+        return "Expected \(expectationDescription), but \(kindDescription) at \(locationDescription)"
     }
 }
 
@@ -143,5 +153,34 @@ extension ParsingError: CustomDebugStringConvertible {
     @inlinable
     public var debugDescription: String {
         "Parsing.ParsingError(kind: \(String(reflecting: kind)), expectation: \(String(reflecting: expectation)))"
+    }
+}
+
+extension ParsingError.Kind: Equatable {
+    
+    @inlinable
+    public static func == (lhs: ParsingError.Kind, rhs: ParsingError.Kind) -> Bool {
+        switch (lhs, rhs) {
+        case let (.unexpectedToken(lhToken), .unexpectedToken(rhToken)):
+            lhToken == rhToken && lhToken.location == rhToken.location
+        case let (.unexpectedEndOfFile(at: lhLocation), .unexpectedEndOfFile(at: rhLocation)):
+            lhLocation == rhLocation
+        default:
+            false
+        }
+    }
+}
+
+extension ParsingError.Kind: Hashable {
+    
+    @inlinable
+    public func hash(into hasher: inout Hasher) {
+        switch self {
+        case let .unexpectedToken(token):
+            hasher.combine(token)
+            hasher.combine(token.location)
+        case let .unexpectedEndOfFile(at: location):
+            hasher.combine(location)
+        }
     }
 }
