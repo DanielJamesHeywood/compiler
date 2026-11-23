@@ -184,12 +184,13 @@ extension ArraySlice<Token> {
             throw .unexpectedEndOfFile(expected: isExternal ? .externalDeclaration : .declaration)
         }
         switch token.kind {
-        case .structureKeyword where !isExternal:
+        case .structureKeyword:
             let name = try _parseIdentifier()
             let members = try _parseMembers()
             return .structure(
                 name,
                 accessLevel: accessLevel,
+                isExternal: isExternal,
                 members: members,
                 at: firstToken.location
             )

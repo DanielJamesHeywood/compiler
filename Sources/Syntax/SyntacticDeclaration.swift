@@ -5,6 +5,7 @@ public struct SyntacticDeclaration: Sendable {
     public enum Kind: Hashable, Sendable {
         case structure(
             Identifier,
+            isExternal: Bool,
             members: [SyntacticDeclaration]
         )
         case constant(
@@ -47,11 +48,12 @@ public struct SyntacticDeclaration: Sendable {
     public static func structure(
         _ name: Identifier,
         accessLevel: AccessLevel,
+        isExternal: Bool,
         members: [SyntacticDeclaration],
         at location: SourceLocation? = nil
     ) -> SyntacticDeclaration {
         SyntacticDeclaration(
-            _kind: .structure(name, members: members),
+            _kind: .structure(name, isExternal: isExternal, members: members),
             accessLevel: accessLevel,
             at: location
         )
@@ -61,11 +63,13 @@ public struct SyntacticDeclaration: Sendable {
     public static func structure(
         _ name: Identifier,
         accessLevel: AccessLevel,
+        isExternal: Bool = false,
         @ArrayBuilder<SyntacticDeclaration> makeMembers: () -> [SyntacticDeclaration]
     ) -> SyntacticDeclaration {
         .structure(
             name,
             accessLevel: accessLevel,
+            isExternal: isExternal,
             members: makeMembers()
         )
     }
@@ -131,7 +135,7 @@ public struct SyntacticDeclaration: Sendable {
     public static func function(
         _ name: Identifier,
         accessLevel: AccessLevel,
-        isExternal: Bool = false,
+        isExternal: Bool,
         parameters: [SyntacticParameter],
         returnType: SyntacticType,
         body: [SyntacticStatement]? = nil,
@@ -141,25 +145,6 @@ public struct SyntacticDeclaration: Sendable {
             _kind: .function(name, isExternal: isExternal, parameters: parameters, returnType: returnType, body: body),
             accessLevel: accessLevel,
             at: location
-        )
-    }
-    
-    @inlinable
-    public static func function(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        isExternal: Bool = false,
-        parameters: [SyntacticParameter],
-        returnType: SyntacticType,
-        @ArrayBuilder<SyntacticStatement> makeBody: () -> [SyntacticStatement]
-    ) -> SyntacticDeclaration {
-        .function(
-            name,
-            accessLevel: accessLevel,
-            isExternal: isExternal,
-            parameters: parameters,
-            returnType: returnType,
-            body: makeBody()
         )
     }
 }

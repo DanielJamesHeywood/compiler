@@ -111,17 +111,19 @@ public struct SemanticExpression {
     @inlinable
     public static func primitiveTruncation(
         of value: SemanticExpression,
-        to type: SemanticType
+        to type: SemanticType,
+        at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .primitiveTruncation(of: value, to: type))
+        SemanticExpression(_kind: .primitiveTruncation(of: value, to: type), at: location)
     }
     
     @inlinable
     public static func primitiveBitCast(
         of value: SemanticExpression,
-        to type: SemanticType
+        to type: SemanticType,
+        at location: SourceLocation?
     ) -> SemanticExpression {
-        SemanticExpression(_kind: .primitiveBitCast(of: value, to: type))
+        SemanticExpression(_kind: .primitiveBitCast(of: value, to: type), at: location)
     }
 }
 

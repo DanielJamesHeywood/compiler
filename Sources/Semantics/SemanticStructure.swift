@@ -7,6 +7,8 @@ public final class SemanticStructure {
     
     public let accessLevel: AccessLevel
     
+    public let isExternal: Bool
+    
     public let location: SourceLocation?
     
     @usableFromInline
@@ -25,9 +27,10 @@ public final class SemanticStructure {
     internal var _container: _Container?
     
     @inlinable
-    public init(_ name: Identifier, accessLevel: AccessLevel, at location: SourceLocation?) {
+    public init(_ name: Identifier, accessLevel: AccessLevel, isExternal: Bool, at location: SourceLocation?) {
         self.name = name
         self.accessLevel = accessLevel
+        self.isExternal = isExternal
         self.location = location
     }
     
@@ -115,6 +118,7 @@ extension SemanticStructure: CustomReflectable {
             children: [
                 "name": name,
                 "accessLevel": accessLevel,
+                "isExternal": isExternal,
                 "location": location as Any,
                 "structures": structures,
                 "properties": properties,
