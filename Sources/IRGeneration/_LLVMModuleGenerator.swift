@@ -5,7 +5,7 @@ import Syntax
 import Semantics
 
 @usableFromInline
-internal final class _ModuleIRGenerator {
+internal final class _LLVMModuleGenerator {
     
     @usableFromInline
     internal var _llvmModule: LLVMModule?
@@ -66,12 +66,12 @@ internal final class _ModuleIRGenerator {
     
     @inlinable
     internal func defineLLVMFunction(for initializer: SemanticInitializer) {
-        _FunctionIRGenerator(for: initializer, in: self).defineLLVMFunction()
+        _LLVMFunctionGenerator(for: initializer, in: self).defineLLVMFunction()
     }
     
     @inlinable
     internal func defineLLVMFunction(for function: SemanticFunction) {
-        _FunctionIRGenerator(for: function, in: self).defineLLVMFunction()
+        _LLVMFunctionGenerator(for: function, in: self).defineLLVMFunction()
     }
     
     @inlinable

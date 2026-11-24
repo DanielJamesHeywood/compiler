@@ -5,7 +5,7 @@ import Syntax
 import Semantics
 
 @usableFromInline
-internal final class _FunctionIRGenerator {
+internal final class _LLVMFunctionGenerator {
     
     @usableFromInline
     internal enum _Kind {
@@ -17,7 +17,7 @@ internal final class _FunctionIRGenerator {
     internal let _kind: _Kind
     
     @usableFromInline
-    internal let _moduleIRGenerator: _ModuleIRGenerator
+    internal let _moduleGenerator: _LLVMModuleGenerator
     
     @usableFromInline
     internal let _llvmBuilder: LLVMBuilder
@@ -32,48 +32,48 @@ internal final class _FunctionIRGenerator {
     internal var _currentBlockIsTerminated = false
     
     @inlinable
-    internal init(_kind: _Kind, in moduleIRGenerator: _ModuleIRGenerator) {
-        guard let llvmModule = moduleIRGenerator._llvmModule else {
+    internal init(_kind: _Kind, in moduleGenerator: _LLVMModuleGenerator) {
+        guard let llvmModule = moduleGenerator._llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
         self._kind = _kind
-        self._moduleIRGenerator = moduleIRGenerator
+        self._moduleGenerator = moduleGenerator
         self._llvmBuilder = LLVMBuilder(in: llvmModule.context)
     }
     
     @inlinable
-    internal convenience init(for initializer: SemanticInitializer, in moduleIRGenerator: _ModuleIRGenerator) {
-        self.init(_kind: .initializer(initializer), in: moduleIRGenerator)
+    internal convenience init(for initializer: SemanticInitializer, in moduleGenerator: _LLVMModuleGenerator) {
+        self.init(_kind: .initializer(initializer), in: moduleGenerator)
     }
     
     @inlinable
-    internal convenience init(for function: SemanticFunction, in moduleIRGenerator: _ModuleIRGenerator) {
-        self.init(_kind: .function(function), in: moduleIRGenerator)
+    internal convenience init(for function: SemanticFunction, in moduleGenerator: _LLVMModuleGenerator) {
+        self.init(_kind: .function(function), in: moduleGenerator)
     }
     
     @inlinable
     internal func defineLLVMFunction() {
-        guard let llvmModule = _moduleIRGenerator._llvmModule else {
+        guard let llvmModule = _moduleGenerator._llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
         switch _kind {
         case let .initializer(initializer):
             precondition(
-                _moduleIRGenerator._llvmFunctionsForInitializers[initializer] == nil,
+                _moduleGenerator._llvmFunctionsForInitializers[initializer] == nil,
                 "The initializer is already defined"
             )
             let llvmFunction = llvmModule.addFunction(
-                type: _moduleIRGenerator._llvmFunctionType(for: initializer),
+                type: _moduleGenerator._llvmFunctionType(for: initializer),
                 linkage: .internal
             )
-            _moduleIRGenerator._llvmFunctionsForInitializers[initializer] = llvmFunction
+            _moduleGenerator._llvmFunctionsForInitializers[initializer] = llvmFunction
             guard let body = initializer.body else {
                 preconditionFailure("The initializer has no body")
             }
             guard let structure = initializer.containingStructure else {
                 preconditionFailure("The initializer is not a member of a structure")
             }
-            _llvmValueForSelf = LLVMPoisonValue(type: _moduleIRGenerator._llvmStructureType(for: structure))
+            _llvmValueForSelf = LLVMPoisonValue(type: _moduleGenerator._llvmStructureType(for: structure))
             for (index, parameter) in initializer.parameters.enumerated() {
                 _llvmArgumentsForParameters[parameter] = llvmFunction.argument(at: index)
             }
@@ -85,23 +85,23 @@ internal final class _FunctionIRGenerator {
             _currentBlockIsTerminated = true
         case let .function(function):
             if function.isExternal {
-                _moduleIRGenerator._insertExternalName(function.name)
+                _moduleGenerator._insertExternalName(function.name)
                 precondition(
                     function.containingStructure == nil,
                     "The external function \"\(function.name)\" is a member of a structure"
                 )
             } else {
                 precondition(
-                    _moduleIRGenerator._llvmFunctionsForFunctions[function] == nil,
+                    _moduleGenerator._llvmFunctionsForFunctions[function] == nil,
                     "The function \"\(function.name)\" is already defined"
                 )
             }
             let llvmFunction = llvmModule.addFunction(
                 function.isExternal ? function.name.text : "",
-                type: _moduleIRGenerator._llvmFunctionType(for: function),
+                type: _moduleGenerator._llvmFunctionType(for: function),
                 linkage: function.isExternal ? .external : .internal
             )
-            _moduleIRGenerator._llvmFunctionsForFunctions[function] = llvmFunction
+            _moduleGenerator._llvmFunctionsForFunctions[function] = llvmFunction
             if let body = function.body {
                 if function.containingStructure != nil {
                     _llvmValueForSelf = llvmFunction.argument(at: 0)
@@ -115,7 +115,7 @@ internal final class _FunctionIRGenerator {
                 }
                 if !_currentBlockIsTerminated {
                     _llvmBuilder.buildReturn(
-                        of: LLVMPoisonValue(type: _moduleIRGenerator._llvmType(for: function.returnType))
+                        of: LLVMPoisonValue(type: _moduleGenerator._llvmType(for: function.returnType))
                     )
                     _currentBlockIsTerminated = true
                 }
@@ -127,7 +127,7 @@ internal final class _FunctionIRGenerator {
     
     @inlinable
     internal func _generateIR(for statement: SemanticStatement) {
-        precondition(_moduleIRGenerator._llvmModule != nil, "The LLVM module has been taken")
+        precondition(_moduleGenerator._llvmModule != nil, "The LLVM module has been taken")
         precondition(!_currentBlockIsTerminated, "The statement is unreachable")
         switch statement.kind {
         case let .return(of: value):
@@ -168,7 +168,7 @@ internal final class _FunctionIRGenerator {
                         )
                         llvmValue = _llvmBuilder.buildExtraction(
                             fromAggregate: llvmAggregateValue(for: base),
-                            at: _moduleIRGenerator._index(for: property)
+                            at: _moduleGenerator._index(for: property)
                         )
                     default:
                         preconditionFailure("The expression is not assignable")
@@ -180,10 +180,7 @@ internal final class _FunctionIRGenerator {
             func buildAssignment(of llvmValue: LLVMValue, to destination: SemanticExpression) {
                 switch destination.kind {
                 case let .variable(variable):
-                    _llvmBuilder.buildStore(
-                        of: llvmValue,
-                        toPointer: _moduleIRGenerator._llvmGlobalVariable(for: variable)
-                    )
+                    _llvmBuilder.buildStore(of: llvmValue, toPointer: _moduleGenerator._llvmGlobalVariable(for: variable))
                 case .self:
                     let selfIsAssignable = switch _kind {
                     case .initializer:
@@ -205,7 +202,7 @@ internal final class _FunctionIRGenerator {
                         of: _llvmBuilder.buildInsertion(
                             of: llvmValue,
                             intoAggregate: llvmAggregateValue(for: base),
-                            at: _moduleIRGenerator._index(for: property)
+                            at: _moduleGenerator._index(for: property)
                         ),
                         to: base
                     )
@@ -219,18 +216,18 @@ internal final class _FunctionIRGenerator {
     
     @inlinable
     internal func _llvmValue(for expression: SemanticExpression) -> LLVMValue {
-        precondition(_moduleIRGenerator._llvmModule != nil, "The LLVM module has been taken")
+        precondition(_moduleGenerator._llvmModule != nil, "The LLVM module has been taken")
         precondition(!_currentBlockIsTerminated, "The expression is unreachable")
         switch expression.kind {
         case let .constant(constant):
             return _llvmBuilder.buildLoad(
-                of: _moduleIRGenerator._llvmType(for: constant.type),
-                fromPointer: _moduleIRGenerator._llvmGlobalVariable(for: constant)
+                of: _moduleGenerator._llvmType(for: constant.type),
+                fromPointer: _moduleGenerator._llvmGlobalVariable(for: constant)
             )
         case let .variable(variable):
             return _llvmBuilder.buildLoad(
-                of: _moduleIRGenerator._llvmType(for: variable.type),
-                fromPointer: _moduleIRGenerator._llvmGlobalVariable(for: variable)
+                of: _moduleGenerator._llvmType(for: variable.type),
+                fromPointer: _moduleGenerator._llvmGlobalVariable(for: variable)
             )
         case let .parameter(parameter):
             guard let llvmArgument = _llvmArgumentsForParameters[parameter] else {
@@ -254,8 +251,8 @@ internal final class _FunctionIRGenerator {
                 "The types of the arguments and parameters do not match"
             )
             return _llvmBuilder.buildCall(
-                to: _moduleIRGenerator._llvmFunction(for: initializer),
-                ofType: _moduleIRGenerator._llvmFunctionType(for: initializer),
+                to: _moduleGenerator._llvmFunction(for: initializer),
+                ofType: _moduleGenerator._llvmFunctionType(for: initializer),
                 passing: arguments.map { argument in _llvmValue(for: argument) }
             )
         case let .property(property, of: base):
@@ -268,7 +265,7 @@ internal final class _FunctionIRGenerator {
             )
             return _llvmBuilder.buildExtraction(
                 fromAggregate: _llvmValue(for: base),
-                at: _moduleIRGenerator._index(for: property)
+                at: _moduleGenerator._index(for: property)
             )
         case let .structurePrimitive(weakStructure, propertyValues: propertyValues):
             guard let structure = weakStructure.object else {
@@ -288,7 +285,7 @@ internal final class _FunctionIRGenerator {
                     }
                     return llvmConstant
                 },
-                type: _moduleIRGenerator._llvmStructureType(for: structure)
+                type: _moduleGenerator._llvmStructureType(for: structure)
             )
         case let .integerPrimitive(words: words, bitWidth: bitWidth):
             return LLVMConstantInteger(
@@ -311,10 +308,7 @@ internal final class _FunctionIRGenerator {
                 typeBitWidth < valueBitWidth,
                 "Expected the type to be narrower than \(valueBitWidth) bits, but it is \(typeBitWidth) bits wide"
             )
-            return _llvmBuilder.buildTruncation(
-                of: _llvmValue(for: value),
-                to: _moduleIRGenerator._llvmType(for: type)
-            )
+            return _llvmBuilder.buildTruncation(of: _llvmValue(for: value), to: _moduleGenerator._llvmType(for: type))
         case let .primitiveBitCast(of: value, to: type):
             let valueBitWidth = switch _type(of: value).kind {
             case let .integerPrimitive(bitWidth: bitWidth), let .bytePrimitive(bitWidth: bitWidth):
@@ -332,10 +326,7 @@ internal final class _FunctionIRGenerator {
                 typeBitWidth == valueBitWidth,
                 "Expected the type to be \(valueBitWidth) bits wide, but it is \(typeBitWidth) bits wide"
             )
-            return _llvmBuilder.buildBitCast(
-                of: _llvmValue(for: value),
-                to: _moduleIRGenerator._llvmType(for: type)
-            )
+            return _llvmBuilder.buildBitCast(of: _llvmValue(for: value), to: _moduleGenerator._llvmType(for: type))
         }
     }
     
