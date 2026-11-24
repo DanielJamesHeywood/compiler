@@ -8,6 +8,9 @@ internal final class _StructureAnalyzer {
     internal let _container: _Container
     
     @usableFromInline
+    internal var _structureAnalyzers = [] as [_StructureAnalyzer]
+    
+    @usableFromInline
     internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
     
     @inlinable

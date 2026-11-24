@@ -8,6 +8,9 @@ internal final class _ModuleAnalyzer {
     internal weak let _analyzer: _Analyzer?
     
     @usableFromInline
+    internal var _structureAnalyzers = [] as [_StructureAnalyzer]
+    
+    @usableFromInline
     internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
     
     @inlinable
