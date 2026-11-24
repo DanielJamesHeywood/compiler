@@ -86,6 +86,10 @@ internal final class _FunctionIRGenerator {
         case let .function(function):
             if function.isExternal {
                 _moduleIRGenerator._insertExternalName(function.name)
+                precondition(
+                    function.containingStructure == nil,
+                    "The external function \"\(function.name)\" is a member of a structure"
+                )
             } else {
                 precondition(
                     _moduleIRGenerator._llvmFunctionsForFunctions[function] == nil,
@@ -109,10 +113,12 @@ internal final class _FunctionIRGenerator {
                 for statement in body {
                     _generateIR(for: statement)
                 }
-                precondition(
-                    _currentBlockIsTerminated,
-                    "The function \"\(function.name)\" does not end with a return statement"
-                )
+                if !_currentBlockIsTerminated {
+                    _llvmBuilder.buildReturn(
+                        of: LLVMPoisonValue(type: _moduleIRGenerator._llvmType(for: function.returnType))
+                    )
+                    _currentBlockIsTerminated = true
+                }
             } else {
                 precondition(function.isExternal, "The function \"\(function.name)\" has no body but is not external")
             }

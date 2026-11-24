@@ -37,7 +37,7 @@ let package = Package(
         ),
         .target(
             name: "SemanticAnalysis",
-            dependencies: ["Tokens", "Syntax", "Semantics"]
+            dependencies: [.product(name: "SystemPackage", package: "swift-system"), "Tokens", "Syntax", "Semantics"]
         ),
         .target(
             name: "IRGeneration",
