@@ -2,7 +2,7 @@ import Tokens
 import Syntax
 
 @usableFromInline
-internal struct _Parser {
+internal final class _Parser {
     
     @usableFromInline
     internal var _unparsedTokens: ArraySlice<Token>
@@ -17,7 +17,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseModule() throws(ParsingError) -> SyntacticModule {
+    internal func _parseModule() throws(ParsingError) -> SyntacticModule {
         var declarations = [] as [SyntacticDeclaration]
         while let token = _unparsedTokens.first {
             if !token.isAtStartOfLine, !declarations.isEmpty {
@@ -29,7 +29,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseIdentifier() throws(ParsingError) -> Identifier {
+    internal func _parseIdentifier() throws(ParsingError) -> Identifier {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .identifier)
         }
@@ -40,7 +40,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseOpeningParenthesis() throws(ParsingError) {
+    internal func _parseOpeningParenthesis() throws(ParsingError) {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .openingParenthesis)
         }
@@ -50,7 +50,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseClosingParenthesis() throws(ParsingError) {
+    internal func _parseClosingParenthesis() throws(ParsingError) {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .closingParenthesis)
         }
@@ -60,7 +60,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseOpeningBrace() throws(ParsingError) {
+    internal func _parseOpeningBrace() throws(ParsingError) {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .openingBrace)
         }
@@ -70,7 +70,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseClosingBrace() throws(ParsingError) {
+    internal func _parseClosingBrace() throws(ParsingError) {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .closingBrace)
         }
@@ -80,7 +80,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseComma() throws(ParsingError) {
+    internal func _parseComma() throws(ParsingError) {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .comma)
         }
@@ -90,7 +90,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseColon() throws(ParsingError) {
+    internal func _parseColon() throws(ParsingError) {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .colon)
         }
@@ -100,7 +100,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseEqualsSign() throws(ParsingError) {
+    internal func _parseEqualsSign() throws(ParsingError) {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .equalsSign)
         }
@@ -110,7 +110,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseArrow() throws(ParsingError) {
+    internal func _parseArrow() throws(ParsingError) {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .arrow)
         }
@@ -120,7 +120,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseType() throws(ParsingError) -> SyntacticType {
+    internal func _parseType() throws(ParsingError) -> SyntacticType {
         guard let token = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .type)
         }
@@ -131,7 +131,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseExpression() throws(ParsingError) -> SyntacticExpression {
+    internal func _parseExpression() throws(ParsingError) -> SyntacticExpression {
         guard let firstToken = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .expression)
         }
@@ -154,7 +154,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseStatement() throws(ParsingError) -> SyntacticStatement {
+    internal func _parseStatement() throws(ParsingError) -> SyntacticStatement {
         guard let firstToken = _unparsedTokens.first else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .statement)
         }
@@ -176,7 +176,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseDeclaration() throws(ParsingError) -> SyntacticDeclaration {
+    internal func _parseDeclaration() throws(ParsingError) -> SyntacticDeclaration {
         guard let firstToken = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .declaration)
         }
@@ -258,7 +258,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseMembers() throws(ParsingError) -> [SyntacticDeclaration] {
+    internal func _parseMembers() throws(ParsingError) -> [SyntacticDeclaration] {
         var members = [] as [SyntacticDeclaration]
         try _parseOpeningBrace()
         while let token = _unparsedTokens.first, token.kind != .closingBrace {
@@ -272,7 +272,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseParameters() throws(ParsingError) -> [SyntacticParameter] {
+    internal func _parseParameters() throws(ParsingError) -> [SyntacticParameter] {
         var parameters = [] as [SyntacticParameter]
         try _parseOpeningParenthesis()
         while let token = _unparsedTokens.first, token.kind != .closingParenthesis {
@@ -286,7 +286,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseParameter() throws(ParsingError) -> SyntacticParameter {
+    internal func _parseParameter() throws(ParsingError) -> SyntacticParameter {
         guard let firstToken = _unparsedTokens.first else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .parameter)
         }
@@ -300,7 +300,7 @@ internal struct _Parser {
     }
     
     @inlinable
-    internal mutating func _parseBody() throws(ParsingError) -> [SyntacticStatement] {
+    internal func _parseBody() throws(ParsingError) -> [SyntacticStatement] {
         var statements = [] as [SyntacticStatement]
         try _parseOpeningBrace()
         while let token = _unparsedTokens.first, token.kind != .closingBrace {
