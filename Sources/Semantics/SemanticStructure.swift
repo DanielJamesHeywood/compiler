@@ -12,6 +12,12 @@ public final class SemanticStructure {
     public let location: SourceLocation?
     
     @usableFromInline
+    internal let _conformances: [Weak<SemanticProtocol>]
+    
+    @usableFromInline
+    internal var _protocols = [] as [SemanticProtocol]
+    
+    @usableFromInline
     internal var _structures = [] as [SemanticStructure]
     
     @usableFromInline
@@ -27,11 +33,43 @@ public final class SemanticStructure {
     internal var _container: _Container?
     
     @inlinable
-    public init(_ name: Identifier, accessLevel: AccessLevel, isExternal: Bool, at location: SourceLocation?) {
+    public init(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        isExternal: Bool,
+        conformances: [SemanticProtocol],
+        at location: SourceLocation?
+    ) {
         self.name = name
         self.accessLevel = accessLevel
         self.isExternal = isExternal
+        self._conformances = conformances.map { conformance in Weak(conformance) }
         self.location = location
+    }
+    
+    @inlinable
+    public var conformances: [SemanticProtocol] {
+        _conformances.map { weakConformance in
+            guard let conformance = weakConformance.object else {
+                preconditionFailure("The protocol has been deallocated")
+            }
+            return conformance
+        }
+    }
+    
+    @inlinable
+    public var protocols: [SemanticProtocol] {
+        get { _protocols }
+        set {
+            for `protocol` in _protocols {
+                `protocol`._container = nil
+            }
+            for `protocol` in newValue {
+                precondition(`protocol`._container == nil, "A protocol is already declared in a module or structure")
+                `protocol`._container = _Container(self)
+            }
+            _protocols = newValue
+        }
     }
     
     @inlinable
@@ -57,7 +95,10 @@ public final class SemanticStructure {
                 property._container = nil
             }
             for property in newValue {
-                precondition(property._container == nil, "A property is already declared in a module or structure")
+                precondition(
+                    property._container == nil,
+                    "A property is already declared in a module, protocol or structure"
+                )
                 property._container = _Container(self)
             }
             _properties = newValue
@@ -72,7 +113,10 @@ public final class SemanticStructure {
                 initializer._container = nil
             }
             for initializer in newValue {
-                precondition(initializer._container == nil, "An initializer is already declared in a structure")
+                precondition(
+                    initializer._container == nil,
+                    "An initializer is already declared in a protocol or structure"
+                )
                 initializer._container = _Container(self)
             }
             _initializers = newValue
@@ -87,7 +131,10 @@ public final class SemanticStructure {
                 function._container = nil
             }
             for function in newValue {
-                precondition(function._container == nil, "A function is already declared in a module or structure")
+                precondition(
+                    function._container == nil,
+                    "A function is already declared in a module, protocol or structure"
+                )
                 function._container = _Container(self)
             }
             _functions = newValue
@@ -120,6 +167,8 @@ extension SemanticStructure: CustomReflectable {
                 "accessLevel": accessLevel,
                 "isExternal": isExternal,
                 "location": location as Any,
+                "conformances": conformances,
+                "protocols": protocols,
                 "structures": structures,
                 "properties": properties,
                 "initializers": initializers,
