@@ -11,6 +11,8 @@ public final class SemanticVariable {
     
     public let type: SemanticType
     
+    public let initialValue: SemanticExpression?
+    
     public let location: SourceLocation?
     
     @usableFromInline
@@ -22,12 +24,14 @@ public final class SemanticVariable {
         accessLevel: AccessLevel,
         isExternal: Bool,
         type: SemanticType,
+        initialValue: SemanticExpression?,
         at location: SourceLocation?
     ) {
         self.name = name
         self.accessLevel = accessLevel
         self.isExternal = isExternal
         self.type = type
+        self.initialValue = initialValue
         self.location = location
     }
     
@@ -68,6 +72,7 @@ extension SemanticVariable: CustomReflectable {
                 "accessLevel": accessLevel,
                 "isExternal": isExternal,
                 "type": type,
+                "initialValue": initialValue as Any,
                 "location": location as Any
             ],
             displayStyle: .class
