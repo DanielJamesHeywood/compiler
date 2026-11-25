@@ -1,3 +1,4 @@
+import Tokens
 import Semantics
 
 @usableFromInline
@@ -5,6 +6,9 @@ internal final class _Analyzer {
     
     @usableFromInline
     internal var _moduleAnalyzers = [] as [_ModuleAnalyzer]
+    
+    @usableFromInline
+    internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
     
     @inlinable
     internal init() {}
