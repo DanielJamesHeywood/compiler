@@ -11,12 +11,14 @@ public struct SyntacticDeclaration: Sendable {
         case constant(
             Identifier,
             isExternal: Bool,
-            type: SyntacticType
+            type: SyntacticType,
+            initialValue: SyntacticExpression?
         )
         case variable(
             Identifier,
             isExternal: Bool,
-            type: SyntacticType
+            type: SyntacticType,
+            initialValue: SyntacticExpression?
         )
         case initializer(
             parameters: [SyntacticParameter],
@@ -80,10 +82,11 @@ public struct SyntacticDeclaration: Sendable {
         accessLevel: AccessLevel,
         isExternal: Bool = false,
         type: SyntacticType,
+        initialValue: SyntacticExpression? = nil,
         at location: SourceLocation? = nil
     ) -> SyntacticDeclaration {
         SyntacticDeclaration(
-            _kind: .constant(name, isExternal: isExternal, type: type),
+            _kind: .constant(name, isExternal: isExternal, type: type, initialValue: initialValue),
             accessLevel: accessLevel,
             at: location
         )
@@ -95,10 +98,11 @@ public struct SyntacticDeclaration: Sendable {
         accessLevel: AccessLevel,
         isExternal: Bool = false,
         type: SyntacticType,
+        initialValue: SyntacticExpression? = nil,
         at location: SourceLocation? = nil
     ) -> SyntacticDeclaration {
         SyntacticDeclaration(
-            _kind: .variable(name, isExternal: isExternal, type: type),
+            _kind: .variable(name, isExternal: isExternal, type: type, initialValue: initialValue),
             accessLevel: accessLevel,
             at: location
         )

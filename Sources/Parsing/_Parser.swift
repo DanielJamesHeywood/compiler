@@ -210,22 +210,34 @@ internal final class _Parser {
             let name = try _parseIdentifier()
             try _parseColon()
             let type = try _parseType()
+            let hasInitialValue = _unparsedTokens.first?.kind == .equalsSign
+            if hasInitialValue {
+                _unparsedTokens.removeFirst()
+            }
+            let initialValue = hasInitialValue ? try _parseExpression() : nil
             return .constant(
                 name,
                 accessLevel: accessLevel,
                 isExternal: isExternal,
                 type: type,
+                initialValue: initialValue,
                 at: firstToken.location
             )
         case .variableKeyword:
             let name = try _parseIdentifier()
             try _parseColon()
             let type = try _parseType()
+            let hasInitialValue = _unparsedTokens.first?.kind == .equalsSign
+            if hasInitialValue {
+                _unparsedTokens.removeFirst()
+            }
+            let initialValue = hasInitialValue ? try _parseExpression() : nil
             return .variable(
                 name,
                 accessLevel: accessLevel,
                 isExternal: isExternal,
                 type: type,
+                initialValue: initialValue,
                 at: firstToken.location
             )
         case .initializerKeyword where !isExternal:
