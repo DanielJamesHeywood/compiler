@@ -33,6 +33,8 @@ extension TokenizedSourceFile {
                             .initializerKeyword(isAtStartOfLine: isAtStartOfLine, at: location)
                         case "private":
                             .privateKeyword(isAtStartOfLine: isAtStartOfLine, at: location)
+                        case "protocol":
+                            .protocolKeyword(isAtStartOfLine: isAtStartOfLine, at: location)
                         case "public":
                             .publicKeyword(isAtStartOfLine: isAtStartOfLine, at: location)
                         case "return":

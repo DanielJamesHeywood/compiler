@@ -106,6 +106,7 @@ extension ParsingError: CustomStringConvertible {
                 .functionKeyword,
                 .initializerKeyword,
                 .privateKeyword,
+                .protocolKeyword,
                 .publicKeyword,
                 .returnKeyword,
                 .selfKeyword,

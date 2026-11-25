@@ -7,6 +7,7 @@ public struct Token: Sendable {
         case functionKeyword
         case initializerKeyword
         case privateKeyword
+        case protocolKeyword
         case publicKeyword
         case returnKeyword
         case selfKeyword
@@ -65,6 +66,11 @@ public struct Token: Sendable {
     @inlinable
     public static func privateKeyword(isAtStartOfLine: Bool, at location: SourceLocation) -> Token {
         Token(_kind: .privateKeyword, isAtStartOfLine: isAtStartOfLine, at: location)
+    }
+    
+    @inlinable
+    public static func protocolKeyword(isAtStartOfLine: Bool, at location: SourceLocation) -> Token {
+        Token(_kind: .protocolKeyword, isAtStartOfLine: isAtStartOfLine, at: location)
     }
     
     @inlinable
@@ -157,6 +163,8 @@ public struct Token: Sendable {
             "initializer"
         case .privateKeyword:
             "private"
+        case .protocolKeyword:
+            "protocol"
         case .publicKeyword:
             "public"
         case .returnKeyword:
