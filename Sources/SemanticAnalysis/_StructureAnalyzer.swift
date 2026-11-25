@@ -14,12 +14,17 @@ internal final class _StructureAnalyzer {
     internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
     
     @inlinable
-    internal init(in moduleAnalyzer: _ModuleAnalyzer) {
-        self._container = _Container(moduleAnalyzer)
+    internal init(_in container: _Container) {
+        self._container = container
     }
     
     @inlinable
-    internal init(in structureAnalyzer: _StructureAnalyzer) {
-        self._container = _Container(structureAnalyzer)
+    internal convenience init(in moduleAnalyzer: _ModuleAnalyzer) {
+        self.init(_in: _Container(moduleAnalyzer))
+    }
+    
+    @inlinable
+    internal convenience init(in structureAnalyzer: _StructureAnalyzer) {
+        self.init(_in: _Container(structureAnalyzer))
     }
 }
