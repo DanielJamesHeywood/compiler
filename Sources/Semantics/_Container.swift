@@ -1,6 +1,7 @@
 @usableFromInline
 internal enum _Container: Hashable {
     case module(Weak<SemanticModule>)
+    case `protocol`(Weak<SemanticProtocol>)
     case structure(Weak<SemanticStructure>)
     case initializer(Weak<SemanticInitializer>)
     case function(Weak<SemanticFunction>)
@@ -11,6 +12,11 @@ extension _Container {
     @inlinable
     internal init(_ module: SemanticModule) {
         self = .module(Weak(module))
+    }
+    
+    @inlinable
+    internal init(_ protocol: SemanticProtocol) {
+        self = .protocol(Weak(`protocol`))
     }
     
     @inlinable
