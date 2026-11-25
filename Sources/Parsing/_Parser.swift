@@ -145,10 +145,18 @@ internal final class _Parser {
         default:
             throw .unexpectedToken(firstToken, expected: .expression)
         } as SyntacticExpression
-        while _unparsedTokens.first?.kind == .period {
-            _unparsedTokens.removeFirst()
-            let name = try _parseIdentifier()
-            expression = .member(name, of: expression, at: firstToken.location)
+        while let token = _unparsedTokens.first {
+            switch token.kind {
+            case .openingParenthesis where !token.isAtStartOfLine:
+                let arguments = try _parseArguments()
+                expression = .call(to: expression, passing: arguments, at: firstToken.location)
+            case .period:
+                _unparsedTokens.removeFirst()
+                let name = try _parseIdentifier()
+                expression = .member(name, of: expression, at: firstToken.location)
+            default:
+                break
+            }
         }
         return expression
     }
