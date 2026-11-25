@@ -41,12 +41,24 @@ internal final class _LLVMModuleGenerator {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
-        precondition(constant.isExternal, "The constant \"\(constant.name)\" is not external")
         precondition(constant.containingModule != nil, "The constant \"\(constant.name)\" is not declared in a module")
-        _insertExternalName(constant.name)
+        if constant.isExternal {
+            _insertExternalName(constant.name)
+        } else {
+            precondition(
+                _llvmGlobalVariablesForConstants[constant] == nil,
+                "The constant \"\(constant.name)\" is already defined"
+            )
+            precondition(
+                constant.initialValue != nil,
+                "The constant \"\(constant.name)\" has no initial value but is not external"
+            )
+        }
         _llvmGlobalVariablesForConstants[constant] = llvmModule.addGlobal(
-            constant.name.text,
-            type: _llvmType(for: constant.type)
+            constant.isExternal ? constant.name.text : "",
+            type: _llvmType(for: constant.type),
+            linkage: constant.isExternal ? .external : .internal,
+            initializer: constant.initialValue.map { value in _llvmConstant(for: value) }
         )
     }
     
@@ -55,12 +67,24 @@ internal final class _LLVMModuleGenerator {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
         }
-        precondition(variable.isExternal, "The variable \"\(variable.name)\" is not external")
         precondition(variable.containingModule != nil, "The variable \"\(variable.name)\" is not declared in a module")
-        _insertExternalName(variable.name)
+        if variable.isExternal {
+            _insertExternalName(variable.name)
+        } else {
+            precondition(
+                _llvmGlobalVariablesForVariables[variable] == nil,
+                "The variable \"\(variable.name)\" is already defined"
+            )
+            precondition(
+                variable.initialValue != nil,
+                "The variable \"\(variable.name)\" has no initial value but is not external"
+            )
+        }
         _llvmGlobalVariablesForVariables[variable] = llvmModule.addGlobal(
-            variable.name.text,
-            type: _llvmType(for: variable.type)
+            variable.isExternal ? variable.name.text : "",
+            type: _llvmType(for: variable.type),
+            linkage: variable.isExternal ? .external : .internal,
+            initializer: variable.initialValue.map { value in _llvmConstant(for: value) }
         )
     }
     
