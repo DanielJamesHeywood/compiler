@@ -274,13 +274,13 @@ internal final class _LLVMFunctionGenerator {
             precondition(
                 propertyValues.elementsEqual(
                     structure.properties,
-                    by: { propertyValue, property in _type(of: propertyValue) == property.type }
+                    by: { value, property in _type(of: value) == property.type }
                 ),
                 "The types of the property values and properties do not match"
             )
             return LLVMConstant(
-                elements: propertyValues.map { propertyValue in
-                    guard let llvmConstant = _llvmValue(for: propertyValue) as? LLVMConstant else {
+                elements: propertyValues.map { value in
+                    guard let llvmConstant = _llvmValue(for: value) as? LLVMConstant else {
                         preconditionFailure("A property value is not constant")
                     }
                     return llvmConstant
