@@ -180,6 +180,35 @@ internal final class _LLVMModuleGenerator {
     }
     
     @inlinable
+    internal func _llvmConstant(for expression: SemanticExpression) -> LLVMConstant {
+        guard let llvmModule = _llvmModule else {
+            preconditionFailure("The LLVM module has been taken")
+        }
+        switch expression.kind {
+        case let .structurePrimitive(weakStructure, propertyValues: propertyValues):
+            guard let structure = weakStructure.object else {
+                preconditionFailure("The structure has been deallocated")
+            }
+            return LLVMConstant(
+                elements: propertyValues.map { value in _llvmConstant(for: value) },
+                type: _llvmStructureType(for: structure)
+            )
+        case let .integerPrimitive(words: words, bitWidth: bitWidth):
+            return LLVMConstantInteger(
+                words: words,
+                type: LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
+            )
+        case let .bytePrimitive(words: words, bitWidth: bitWidth):
+            return LLVMConstantByte(
+                words: words,
+                type: LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
+            )
+        default:
+            preconditionFailure("The expression is not a structure, integer or byte primitive")
+        }
+    }
+    
+    @inlinable
     internal func _llvmGlobalVariable(for constant: SemanticConstant) -> LLVMGlobalVariable {
         if let llvmGlobalVariable = _llvmGlobalVariablesForConstants[constant] {
             return llvmGlobalVariable
