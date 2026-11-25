@@ -267,36 +267,8 @@ internal final class _LLVMFunctionGenerator {
                 fromAggregate: _llvmValue(for: base),
                 at: _moduleGenerator._index(for: property)
             )
-        case let .structurePrimitive(weakStructure, propertyValues: propertyValues):
-            guard let structure = weakStructure.object else {
-                preconditionFailure("The structure has been deallocated")
-            }
-            precondition(
-                propertyValues.elementsEqual(
-                    structure.properties,
-                    by: { value, property in _type(of: value) == property.type }
-                ),
-                "The types of the property values and properties do not match"
-            )
-            return LLVMConstant(
-                elements: propertyValues.map { value in
-                    guard let llvmConstant = _llvmValue(for: value) as? LLVMConstant else {
-                        preconditionFailure("A property value is not constant")
-                    }
-                    return llvmConstant
-                },
-                type: _moduleGenerator._llvmStructureType(for: structure)
-            )
-        case let .integerPrimitive(words: words, bitWidth: bitWidth):
-            return LLVMConstantInteger(
-                words: words,
-                type: LLVMIntegerType(bitWidth: bitWidth.value, in: _llvmBuilder.context)
-            )
-        case let .bytePrimitive(words: words, bitWidth: bitWidth):
-            return LLVMConstantByte(
-                words: words,
-                type: LLVMByteType(bitWidth: bitWidth.value, in: _llvmBuilder.context)
-            )
+        case .structurePrimitive, .integerPrimitive, .bytePrimitive:
+            return _moduleGenerator._llvmConstant(for: expression)
         case let .primitiveTruncation(of: value, to: type):
             guard case let .integerPrimitive(bitWidth: valueBitWidth) = _type(of: value).kind else {
                 preconditionFailure("The value is not an integer primitive")
