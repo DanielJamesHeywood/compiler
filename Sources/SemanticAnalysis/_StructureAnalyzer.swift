@@ -1,8 +1,12 @@
 import Tokens
+import Syntax
 import Semantics
 
 @usableFromInline
 internal final class _StructureAnalyzer {
+    
+    @usableFromInline
+    internal let _syntacticStructure: SyntacticDeclaration
     
     @usableFromInline
     internal let _container: _Container
@@ -14,17 +18,21 @@ internal final class _StructureAnalyzer {
     internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
     
     @inlinable
-    internal init(_in container: _Container) {
+    internal init(_for syntacticStructure: SyntacticDeclaration, in container: _Container) {
+        guard case .structure = syntacticStructure.kind else {
+            preconditionFailure("The declaration is not a structure declaration")
+        }
+        self._syntacticStructure = syntacticStructure
         self._container = container
     }
     
     @inlinable
-    internal convenience init(in moduleAnalyzer: _ModuleAnalyzer) {
-        self.init(_in: _Container(moduleAnalyzer))
+    internal convenience init(for syntacticStructure: SyntacticDeclaration, in moduleAnalyzer: _ModuleAnalyzer) {
+        self.init(_for: syntacticStructure, in: _Container(moduleAnalyzer))
     }
     
     @inlinable
-    internal convenience init(in structureAnalyzer: _StructureAnalyzer) {
-        self.init(_in: _Container(structureAnalyzer))
+    internal convenience init(for syntacticStructure: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
+        self.init(_for: syntacticStructure, in: _Container(structureAnalyzer))
     }
 }
