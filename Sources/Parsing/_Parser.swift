@@ -135,7 +135,7 @@ internal final class _Parser {
         guard let firstToken = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .expression)
         }
-        var expression = switch firstToken.kind {
+        let expression = switch firstToken.kind {
         case let .identifier(identifier):
             .identifier(identifier, at: firstToken.location)
         case .selfKeyword:
@@ -145,20 +145,23 @@ internal final class _Parser {
         default:
             throw .unexpectedToken(firstToken, expected: .expression)
         } as SyntacticExpression
-        while let token = _unparsedTokens.first {
+        func parseSuffix(of base: SyntacticExpression) throws(ParsingError) -> SyntacticExpression {
+            guard let token = _unparsedTokens.first else {
+                return base
+            }
             switch token.kind {
             case .openingParenthesis where !token.isAtStartOfLine:
                 let arguments = try _parseArguments()
-                expression = .call(to: expression, passing: arguments, at: firstToken.location)
+                return try parseSuffix(of: .call(to: base, passing: arguments, at: firstToken.location))
             case .period:
                 _unparsedTokens.removeFirst()
                 let name = try _parseIdentifier()
-                expression = .member(name, of: expression, at: firstToken.location)
+                return try parseSuffix(of: .member(name, of: base, at: firstToken.location))
             default:
-                break
+                return base
             }
         }
-        return expression
+        return try parseSuffix(of: expression)
     }
     
     @inlinable
