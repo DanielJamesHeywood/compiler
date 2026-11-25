@@ -196,13 +196,26 @@ internal final class _Parser {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: isExternal ? .externalDeclaration : .declaration)
         }
         switch token.kind {
+        case .protocolKeyword where !isExternal:
+            let name = try _parseIdentifier()
+            let conformances = _unparsedTokens.first?.kind == .colon ? try _parseConformances() : []
+            let members = try _parseMembers()
+            return .protocol(
+                name,
+                accessLevel: accessLevel,
+                conformances: conformances,
+                members: members,
+                at: firstToken.location
+            )
         case .structureKeyword:
             let name = try _parseIdentifier()
+            let conformances = _unparsedTokens.first?.kind == .colon ? try _parseConformances() : []
             let members = try _parseMembers()
             return .structure(
                 name,
                 accessLevel: accessLevel,
                 isExternal: isExternal,
+                conformances: conformances,
                 members: members,
                 at: firstToken.location
             )
@@ -270,6 +283,18 @@ internal final class _Parser {
     }
     
     @inlinable
+    internal func _parseConformances() throws(ParsingError) -> [SyntacticType] {
+        var conformances = [] as [SyntacticType]
+        try _parseColon()
+        conformances.append(try _parseType())
+        while _unparsedTokens.first?.kind == .comma {
+            _unparsedTokens.removeFirst()
+            conformances.append(try _parseType())
+        }
+        return conformances
+    }
+    
+    @inlinable
     internal func _parseMembers() throws(ParsingError) -> [SyntacticDeclaration] {
         var members = [] as [SyntacticDeclaration]
         try _parseOpeningBrace()
@@ -308,7 +333,12 @@ internal final class _Parser {
         let name = try _parseIdentifier()
         try _parseColon()
         let type = try _parseType()
-        return SyntacticParameter(name, label: label, type: type, at: firstToken.location)
+        let hasDefaultValue = _unparsedTokens.first?.kind == .equalsSign
+        if hasDefaultValue {
+            _unparsedTokens.removeFirst()
+        }
+        let defaultValue = hasDefaultValue ? try _parseExpression() : nil
+        return SyntacticParameter(name, label: label, type: type, defaultValue: defaultValue, at: firstToken.location)
     }
     
     @inlinable
