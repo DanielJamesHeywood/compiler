@@ -341,10 +341,10 @@ internal final class _LLVMFunctionGenerator {
             return parameter.type
         case .self:
             let structure = switch _kind {
-            case let .function(function):
-                function.containingStructure
             case let .initializer(initializer):
                 initializer.containingStructure
+            case let .function(function):
+                function.containingStructure
             }
             guard let structure else {
                 preconditionFailure("The declaration is not a member of a structure")

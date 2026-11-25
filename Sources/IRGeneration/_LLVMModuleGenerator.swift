@@ -165,21 +165,6 @@ internal final class _LLVMModuleGenerator {
     }
     
     @inlinable
-    internal func _index(for property: SemanticProperty) -> Int {
-        if let index = _indicesForProperties[property] {
-            return index
-        } else {
-            guard let structure = property.containingStructure else {
-                preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
-            }
-            for (index, property) in structure.properties.enumerated() {
-                _indicesForProperties[property] = index
-            }
-            return _indicesForProperties[property].unsafelyUnwrapped
-        }
-    }
-    
-    @inlinable
     internal func _llvmConstant(for expression: SemanticExpression) -> LLVMConstant {
         guard let llvmModule = _llvmModule else {
             preconditionFailure("The LLVM module has been taken")
@@ -205,6 +190,21 @@ internal final class _LLVMModuleGenerator {
             )
         default:
             preconditionFailure("The expression is not a structure, integer or byte primitive")
+        }
+    }
+    
+    @inlinable
+    internal func _index(for property: SemanticProperty) -> Int {
+        if let index = _indicesForProperties[property] {
+            return index
+        } else {
+            guard let structure = property.containingStructure else {
+                preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
+            }
+            for (index, property) in structure.properties.enumerated() {
+                _indicesForProperties[property] = index
+            }
+            return _indicesForProperties[property].unsafelyUnwrapped
         }
     }
     
