@@ -1,4 +1,5 @@
 import Tokens
+import Syntax
 import Semantics
 
 @usableFromInline
@@ -11,7 +12,7 @@ internal final class _Analyzer {
     internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
     
     @inlinable
-    internal init() {}
+    internal init(for syntacticModules: [SyntacticModule]) {}
     
     @inlinable
     internal func takeSemanticStructures() -> [SemanticStructure] { [] }
