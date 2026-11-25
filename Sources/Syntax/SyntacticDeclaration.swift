@@ -3,14 +3,14 @@ import Tokens
 public struct SyntacticDeclaration: Sendable {
     
     public enum Kind: Hashable, Sendable {
-        case structure(
+        case `protocol`(
             Identifier,
-            isExternal: Bool,
             conformances: [SyntacticType],
             members: [SyntacticDeclaration]
         )
-        case `protocol`(
+        case structure(
             Identifier,
+            isExternal: Bool,
             conformances: [SyntacticType],
             members: [SyntacticDeclaration]
         )
@@ -53,6 +53,36 @@ public struct SyntacticDeclaration: Sendable {
     }
     
     @inlinable
+    public static func `protocol`(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        conformances: [SyntacticType],
+        members: [SyntacticDeclaration],
+        at location: SourceLocation? = nil
+    ) -> SyntacticDeclaration {
+        SyntacticDeclaration(
+            _kind: .protocol(name, conformances: conformances, members: members),
+            accessLevel: accessLevel,
+            at: location
+        )
+    }
+    
+    @inlinable
+    public static func `protocol`(
+        _ name: Identifier,
+        accessLevel: AccessLevel,
+        conformances: SyntacticType...,
+        @ArrayBuilder<SyntacticDeclaration> makeMembers: () -> [SyntacticDeclaration]
+    ) -> SyntacticDeclaration {
+        .protocol(
+            name,
+            accessLevel: accessLevel,
+            conformances: conformances,
+            members: makeMembers()
+        )
+    }
+    
+    @inlinable
     public static func structure(
         _ name: Identifier,
         accessLevel: AccessLevel,
@@ -80,36 +110,6 @@ public struct SyntacticDeclaration: Sendable {
             name,
             accessLevel: accessLevel,
             isExternal: isExternal,
-            conformances: conformances,
-            members: makeMembers()
-        )
-    }
-    
-    @inlinable
-    public static func `protocol`(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        conformances: [SyntacticType],
-        members: [SyntacticDeclaration],
-        at location: SourceLocation? = nil
-    ) -> SyntacticDeclaration {
-        SyntacticDeclaration(
-            _kind: .protocol(name, conformances: conformances, members: members),
-            accessLevel: accessLevel,
-            at: location
-        )
-    }
-    
-    @inlinable
-    public static func `protocol`(
-        _ name: Identifier,
-        accessLevel: AccessLevel,
-        conformances: SyntacticType...,
-        @ArrayBuilder<SyntacticDeclaration> makeMembers: () -> [SyntacticDeclaration]
-    ) -> SyntacticDeclaration {
-        .protocol(
-            name,
-            accessLevel: accessLevel,
             conformances: conformances,
             members: makeMembers()
         )
