@@ -17,7 +17,7 @@ internal final class _Parser {
     }
     
     @inlinable
-    internal func _parseModule() throws(ParsingError) -> SyntacticModule {
+    internal func parseModule() throws(ParsingError) -> SyntacticModule {
         var declarations = [] as [SyntacticDeclaration]
         while let token = _unparsedTokens.first {
             if !token.isAtStartOfLine, !declarations.isEmpty {
