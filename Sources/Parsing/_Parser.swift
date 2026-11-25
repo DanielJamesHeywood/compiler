@@ -154,6 +154,20 @@ internal final class _Parser {
     }
     
     @inlinable
+    internal func _parseArguments() throws(ParsingError) -> [SyntacticArgument] {
+        var arguments = [] as [SyntacticArgument]
+        try _parseOpeningParenthesis()
+        while let token = _unparsedTokens.first, token.kind != .closingParenthesis {
+            if !arguments.isEmpty {
+                try _parseComma()
+            }
+            arguments.append(try _parseArgument())
+        }
+        try _parseClosingParenthesis()
+        return arguments
+    }
+    
+    @inlinable
     internal func _parseArgument() throws(ParsingError) -> SyntacticArgument {
         guard let firstToken = _unparsedTokens.first else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .argument)
