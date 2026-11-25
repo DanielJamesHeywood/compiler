@@ -154,6 +154,19 @@ internal final class _Parser {
     }
     
     @inlinable
+    internal func _parseArgument() throws(ParsingError) -> SyntacticArgument {
+        guard let firstToken = _unparsedTokens.first else {
+            throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .argument)
+        }
+        let label = _unparsedTokens.dropFirst().first?.kind == .colon ? try _parseIdentifier() : nil
+        if label != nil {
+            _unparsedTokens.removeFirst()
+        }
+        let value = try _parseExpression()
+        return SyntacticArgument(value, label: label, at: firstToken.location)
+    }
+    
+    @inlinable
     internal func _parseStatement() throws(ParsingError) -> SyntacticStatement {
         guard let firstToken = _unparsedTokens.first else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .statement)
