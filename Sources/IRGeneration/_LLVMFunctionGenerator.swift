@@ -87,8 +87,8 @@ internal final class _LLVMFunctionGenerator {
             if function.isExternal {
                 _moduleGenerator._insertExternalName(function.name)
                 precondition(
-                    function.containingStructure == nil,
-                    "The external function \"\(function.name)\" is a member of a structure"
+                    function.containingModule != nil,
+                    "The external function \"\(function.name)\" is not declared in a module"
                 )
             } else {
                 precondition(

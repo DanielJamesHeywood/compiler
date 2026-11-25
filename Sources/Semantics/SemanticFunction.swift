@@ -42,6 +42,17 @@ public final class SemanticFunction {
     }
     
     @inlinable
+    public var containingModule: SemanticModule? {
+        guard case let .module(weakModule) = _container else {
+            return nil
+        }
+        guard let module = weakModule.object else {
+            preconditionFailure("The module has been deallocated")
+        }
+        return module
+    }
+    
+    @inlinable
     public var containingStructure: SemanticStructure? {
         guard case let .structure(weakStructure) = _container else {
             return nil
