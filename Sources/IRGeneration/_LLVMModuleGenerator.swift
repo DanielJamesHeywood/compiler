@@ -210,6 +210,13 @@ internal final class _LLVMModuleGenerator {
             guard let structure = weakStructure.object else {
                 preconditionFailure("The structure has been deallocated")
             }
+            precondition(
+                propertyValues.elementsEqual(
+                    structure.properties,
+                    by: { value, property in _type(of: value) == property.type }
+                ),
+                "The types of the property values and properties do not match"
+            )
             return LLVMConstant(
                 elements: propertyValues.map { value in _llvmConstant(for: value) },
                 type: _llvmStructureType(for: structure)
