@@ -58,7 +58,13 @@ internal final class _LLVMModuleGenerator {
             constant.isExternal ? constant.name.text : "",
             type: _llvmType(for: constant.type),
             linkage: constant.isExternal ? .external : .internal,
-            initializer: constant.initialValue.map { value in _llvmConstant(for: value) }
+            initializer: constant.initialValue.map { value in
+                precondition(
+                    _type(of: value) == constant.type,
+                    "The type of the initial value does not match the type of the constant \"\(constant.name)\""
+                )
+                return _llvmConstant(for: value)
+            }
         )
     }
     
@@ -84,7 +90,13 @@ internal final class _LLVMModuleGenerator {
             variable.isExternal ? variable.name.text : "",
             type: _llvmType(for: variable.type),
             linkage: variable.isExternal ? .external : .internal,
-            initializer: variable.initialValue.map { value in _llvmConstant(for: value) }
+            initializer: variable.initialValue.map { value in
+                precondition(
+                    _type(of: value) == variable.type,
+                    "The type of the initial value does not match the type of the variable \"\(variable.name)\""
+                )
+                return _llvmConstant(for: value)
+            }
         )
     }
     
@@ -267,5 +279,22 @@ internal final class _LLVMModuleGenerator {
         precondition(_llvmModule != nil, "The LLVM module has been taken")
         precondition(!_externalNames.contains(name), "The external declaration \"\(name)\" is not uniquely named")
         _externalNames.insert(name)
+    }
+    
+    @inlinable
+    internal func _type(of expression: SemanticExpression) -> SemanticType {
+        switch expression.kind {
+        case let .structurePrimitive(weakStructure, propertyValues: _):
+            guard let structure = weakStructure.object else {
+                preconditionFailure("The structure has been deallocated")
+            }
+            return .structure(structure)
+        case let .integerPrimitive(words: _, bitWidth: bitWidth):
+            return .integerPrimitive(bitWidth: bitWidth)
+        case let .bytePrimitive(words: _, bitWidth: bitWidth):
+            return .bytePrimitive(bitWidth: bitWidth)
+        default:
+            preconditionFailure("The expression is not a structure, integer or byte primitive")
+        }
     }
 }
