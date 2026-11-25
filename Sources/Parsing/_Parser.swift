@@ -135,7 +135,7 @@ internal final class _Parser {
         guard let firstToken = _unparsedTokens.popFirst() else {
             throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .expression)
         }
-        let expression = switch firstToken.kind {
+        var expression = switch firstToken.kind {
         case let .identifier(identifier):
             .identifier(identifier, at: firstToken.location)
         case .selfKeyword:
@@ -145,50 +145,12 @@ internal final class _Parser {
         default:
             throw .unexpectedToken(firstToken, expected: .expression)
         } as SyntacticExpression
-        func parseSuffix(of base: SyntacticExpression) throws(ParsingError) -> SyntacticExpression {
-            guard let token = _unparsedTokens.first else {
-                return base
-            }
-            switch token.kind {
-            case .openingParenthesis where !token.isAtStartOfLine:
-                let arguments = try _parseArguments()
-                return try parseSuffix(of: .call(to: base, passing: arguments, at: firstToken.location))
-            case .period:
-                _unparsedTokens.removeFirst()
-                let name = try _parseIdentifier()
-                return try parseSuffix(of: .member(name, of: base, at: firstToken.location))
-            default:
-                return base
-            }
-        }
-        return try parseSuffix(of: expression)
-    }
-    
-    @inlinable
-    internal func _parseArguments() throws(ParsingError) -> [SyntacticArgument] {
-        var arguments = [] as [SyntacticArgument]
-        try _parseOpeningParenthesis()
-        while let token = _unparsedTokens.first, token.kind != .closingParenthesis {
-            if !arguments.isEmpty {
-                try _parseComma()
-            }
-            arguments.append(try _parseArgument())
-        }
-        try _parseClosingParenthesis()
-        return arguments
-    }
-    
-    @inlinable
-    internal func _parseArgument() throws(ParsingError) -> SyntacticArgument {
-        guard let firstToken = _unparsedTokens.first else {
-            throw .unexpectedEndOfFile(at: _endOfFileLocation, expected: .argument)
-        }
-        let label = _unparsedTokens.dropFirst().first?.kind == .colon ? try _parseIdentifier() : nil
-        if label != nil {
+        while _unparsedTokens.first?.kind == .period {
             _unparsedTokens.removeFirst()
+            let name = try _parseIdentifier()
+            expression = .member(name, of: expression, at: firstToken.location)
         }
-        let value = try _parseExpression()
-        return SyntacticArgument(value, label: label, at: firstToken.location)
+        return expression
     }
     
     @inlinable
