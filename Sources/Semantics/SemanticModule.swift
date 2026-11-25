@@ -1,6 +1,9 @@
 public final class SemanticModule {
     
     @usableFromInline
+    internal var _protocols = [] as [SemanticProtocol]
+    
+    @usableFromInline
     internal var _structures = [] as [SemanticStructure]
     
     @usableFromInline
@@ -14,6 +17,21 @@ public final class SemanticModule {
     
     @inlinable
     public init() {}
+    
+    @inlinable
+    public var protocols: [SemanticProtocol] {
+        get { _protocols }
+        set {
+            for `protocol` in _protocols {
+                `protocol`._container = nil
+            }
+            for `protocol` in newValue {
+                precondition(`protocol`._container == nil, "A protocol is already declared in a module or structure")
+                `protocol`._container = _Container(self)
+            }
+            _protocols = newValue
+        }
+    }
     
     @inlinable
     public var structures: [SemanticStructure] {
@@ -38,7 +56,10 @@ public final class SemanticModule {
                 constant._container = nil
             }
             for constant in newValue {
-                precondition(constant._container == nil, "A constant is already declared in a module or structure")
+                precondition(
+                    constant._container == nil,
+                    "A constant is already declared in a module, protocol or structure"
+                )
                 constant._container = _Container(self)
             }
             _constants = newValue
@@ -53,7 +74,10 @@ public final class SemanticModule {
                 variable._container = nil
             }
             for variable in newValue {
-                precondition(variable._container == nil, "A variable is already declared in a module or structure")
+                precondition(
+                    variable._container == nil,
+                    "A variable is already declared in a module, protocol or structure"
+                )
                 variable._container = _Container(self)
             }
             _variables = newValue
@@ -68,7 +92,10 @@ public final class SemanticModule {
                 function._container = nil
             }
             for function in newValue {
-                precondition(function._container == nil, "A function is already declared in a module or structure")
+                precondition(
+                    function._container == nil,
+                    "A function is already declared in a module, protocol or structure"
+                )
                 function._container = _Container(self)
             }
             _functions = newValue
@@ -96,7 +123,13 @@ extension SemanticModule: CustomReflectable {
     public var customMirror: Mirror {
         Mirror(
             self,
-            children: ["structures": structures, "constants": constants, "variables": variables, "functions": functions],
+            children: [
+                "protocols": protocols,
+                "structures": structures,
+                "constants": constants,
+                "variables": variables,
+                "functions": functions
+            ],
             displayStyle: .class
         )
     }
