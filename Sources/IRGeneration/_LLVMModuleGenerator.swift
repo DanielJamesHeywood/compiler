@@ -193,9 +193,13 @@ internal final class _LLVMModuleGenerator {
     
     @inlinable
     internal func _llvmFunctionType(for function: SemanticFunction) -> LLVMFunctionType {
-        var llvmParameterTypes = function.containingStructure.map { structure in
+        var llvmParameterTypes = if function.containingModule != nil {
+            [] as [LLVMType]
+        } else if let structure = function.containingStructure {
             [_llvmType(for: .structure(structure))]
-        } ?? []
+        } else {
+            preconditionFailure("The function \"\(function.name)\" is not declared in a module or structure")
+        }
         llvmParameterTypes += function.parameters.map { parameter in _llvmType(for: parameter.type) }
         return LLVMFunctionType(returnType: _llvmType(for: function.returnType), parameterTypes: llvmParameterTypes)
     }
