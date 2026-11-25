@@ -4,7 +4,12 @@ import Syntax
 @inlinable
 internal var _syntacticStandardLibrary: SyntacticModule {
     SyntacticModule {
-        SyntacticDeclaration.structure("Integer32", accessLevel: .public, isExternal: true) {
+        SyntacticDeclaration.structure(
+            "Integer32",
+            accessLevel: .public,
+            isExternal: true,
+            conformances: .identifier("Integer")
+        ) {
             SyntacticDeclaration.variable("value", accessLevel: .private, type: .integerPrimitive(bitWidth: 32))
             SyntacticDeclaration.initializer(
                 accessLevel: .public,
@@ -22,8 +27,18 @@ internal var _syntacticStandardLibrary: SyntacticModule {
                 )
             }
         }
-        SyntacticDeclaration.structure("UnsignedInteger64", accessLevel: .public, isExternal: true) {
+        SyntacticDeclaration.structure(
+            "UnsignedInteger64",
+            accessLevel: .public,
+            isExternal: true
+        ) {
             SyntacticDeclaration.variable("value", accessLevel: .private, type: .integerPrimitive(bitWidth: 64))
+        }
+        SyntacticDeclaration.protocol("Integer", accessLevel: .public) {
+            SyntacticDeclaration.initializer(
+                accessLevel: .public,
+                parameters: SyntacticParameter("literal", label: "_", type: .identifier("IntegerLiteral"))
+            )
         }
         SyntacticDeclaration.structure("IntegerLiteral", accessLevel: .public) {
             SyntacticDeclaration.structure("Words", accessLevel: .public) {
