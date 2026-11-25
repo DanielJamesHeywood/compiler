@@ -8,16 +8,25 @@ public final class SemanticParameter {
     
     public let type: SemanticType
     
+    public let defaultValue: SemanticExpression?
+    
     public let location: SourceLocation?
     
     @usableFromInline
     internal var _container: _Container?
     
     @inlinable
-    public init(_ name: Identifier, label: Identifier?, type: SemanticType, at location: SourceLocation?) {
+    public init(
+        _ name: Identifier,
+        label: Identifier?,
+        type: SemanticType,
+        defaultValue: SemanticExpression?,
+        at location: SourceLocation?
+    ) {
         self.name = name
         self.label = label
         self.type = type
+        self.defaultValue = defaultValue
         self.location = location
     }
 }
@@ -42,7 +51,13 @@ extension SemanticParameter: CustomReflectable {
     public var customMirror: Mirror {
         Mirror(
             self,
-            children: ["name": name, "label": label as Any, "type": type, "location": location as Any],
+            children: [
+                "name": name,
+                "label": label as Any,
+                "type": type,
+                "defaultValue": defaultValue as Any,
+                "location": location as Any
+            ],
             displayStyle: .class
         )
     }
