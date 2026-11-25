@@ -22,12 +22,12 @@ public struct SyntacticType: Sendable {
     public static func identifier(_ identifier: Identifier, at location: SourceLocation? = nil) -> SyntacticType {
         SyntacticType(_kind: .identifier(identifier), at: location)
     }
-
+    
     @inlinable
     public static func integerPrimitive(bitWidth: BitWidth) -> SyntacticType {
         SyntacticType(_kind: .integerPrimitive(bitWidth: bitWidth))
     }
-
+    
     @inlinable
     public static func bytePrimitive(bitWidth: BitWidth) -> SyntacticType {
         SyntacticType(_kind: .bytePrimitive(bitWidth: bitWidth))
@@ -47,4 +47,3 @@ extension SyntacticType: Hashable {
         hasher.combine(kind)
     }
 }
-

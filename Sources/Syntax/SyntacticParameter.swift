@@ -8,13 +8,22 @@ public struct SyntacticParameter: Sendable {
     
     public let type: SyntacticType
     
+    public let defaultValue: SyntacticExpression?
+    
     public let location: SourceLocation?
     
     @inlinable
-    public init(_ name: Identifier, label: Identifier? = nil, type: SyntacticType, at location: SourceLocation? = nil) {
+    public init(
+        _ name: Identifier,
+        label: Identifier? = nil,
+        type: SyntacticType,
+        defaultValue: SyntacticExpression? = nil,
+        at location: SourceLocation? = nil
+    ) {
         self.name = name
         self.label = label
         self.type = type
+        self.defaultValue = defaultValue
         self.location = location
     }
 }
@@ -23,7 +32,7 @@ extension SyntacticParameter: Equatable {
     
     @inlinable
     public static func == (lhs: SyntacticParameter, rhs: SyntacticParameter) -> Bool {
-        lhs.name == rhs.name && lhs.label == rhs.label && lhs.type == rhs.type
+        lhs.name == rhs.name && lhs.label == rhs.label && lhs.type == rhs.type && lhs.defaultValue == rhs.defaultValue
     }
 }
 
@@ -34,5 +43,6 @@ extension SyntacticParameter: Hashable {
         hasher.combine(name)
         hasher.combine(label)
         hasher.combine(type)
+        hasher.combine(defaultValue)
     }
 }

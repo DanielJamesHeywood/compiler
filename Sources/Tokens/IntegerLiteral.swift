@@ -10,7 +10,7 @@ public struct IntegerLiteral: Hashable, Sendable {
         )
         self.text = _text
     }
-
+    
     @inlinable
     public init(_ text: Substring) {
         self.init(_text: String(text))
