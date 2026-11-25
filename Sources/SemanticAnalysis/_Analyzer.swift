@@ -15,6 +15,9 @@ internal final class _Analyzer {
     internal init(for syntacticModules: [SyntacticModule]) {}
     
     @inlinable
+    internal func takeSemanticProtocols() -> [SemanticProtocol] { [] }
+    
+    @inlinable
     internal func takeSemanticStructures() -> [SemanticStructure] { [] }
     
     @inlinable
