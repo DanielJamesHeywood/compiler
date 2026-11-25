@@ -3,11 +3,8 @@ import Semantics
 @usableFromInline
 internal final class _Analyzer {
     
-    @inlinable
-    internal init() {}
-    
-    @inlinable
-    internal func takeSemanticStructures() -> [SemanticStructure] { [] }
+    @usableFromInline
+    internal var _moduleAnalyzers = [] as [_ModuleAnalyzer]
     
     @inlinable
     internal func takeSemanticConstants() -> [SemanticConstant] { [] }
