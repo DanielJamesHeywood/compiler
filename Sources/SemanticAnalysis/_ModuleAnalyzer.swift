@@ -26,5 +26,9 @@ internal final class _ModuleAnalyzer {
     }
     
     @inlinable
-    internal func declareTypeNames() throws(SemanticAnalysisError) {}
+    internal func declareTypeNames() throws(SemanticAnalysisError) {
+        guard let analyzer = _analyzer else {
+            preconditionFailure("The analyzer has been deallocated")
+        }
+    }
 }
