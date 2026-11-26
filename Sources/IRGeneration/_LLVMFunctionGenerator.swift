@@ -246,8 +246,9 @@ internal final class _LLVMFunctionGenerator {
                 preconditionFailure("The declaration is not a member of a structure")
             }
             return llvmValue
-        case let .call(toInitializer: weakInitializer, passing: arguments):
-            guard let initializer = weakInitializer.object else {
+        case let .call(toInitializers: weakInitializers, passing: arguments):
+            precondition(weakInitializers.count == 1, "Expected exactly 1 initializer, but got \(weakInitializers.count)")
+            guard let initializer = weakInitializers[0].object else {
                 preconditionFailure("The initializer has been deallocated")
             }
             precondition(
@@ -303,7 +304,7 @@ internal final class _LLVMFunctionGenerator {
             }
             precondition(
                 typeBitWidth == valueBitWidth,
-                "Expected the type to be \(valueBitWidth) bits wide, but it is \(typeBitWidth) bits wide"
+                "Expected the type to be exactly \(valueBitWidth) bits wide, but it is \(typeBitWidth) bits wide"
             )
             return _llvmBuilder.buildBitCast(of: _llvmValue(for: value), to: _moduleGenerator._llvmType(for: type))
         }
@@ -329,8 +330,9 @@ internal final class _LLVMFunctionGenerator {
                 preconditionFailure("The declaration is not a member of a structure")
             }
             return .structure(structure)
-        case let .call(toInitializer: weakInitializer, passing: _):
-            guard let initializer = weakInitializer.object else {
+        case let .call(toInitializers: weakInitializers, passing: _):
+            precondition(weakInitializers.count == 1, "Expected exactly 1 initializer, but got \(weakInitializers.count)")
+            guard let initializer = weakInitializers[0].object else {
                 preconditionFailure("The initializer has been deallocated")
             }
             guard let structure = initializer.containingStructure else {
