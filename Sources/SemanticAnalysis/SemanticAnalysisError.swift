@@ -10,13 +10,13 @@ extension SemanticAnalysisError: Equatable {
     public static func == (lhs: SemanticAnalysisError, rhs: SemanticAnalysisError) -> Bool {
         switch (lhs, rhs) {
         case let (
-            .invalidRedeclaration(lhDeclaration, of: lhOtherDeclaration),
-            .invalidRedeclaration(rhDeclaration, of: rhOtherDeclaration)
+            .invalidRedeclaration(lhDeclaration, of: otherLHDeclaration),
+            .invalidRedeclaration(rhDeclaration, of: otherRHDeclaration)
         ):
             lhDeclaration == rhDeclaration
                 && lhDeclaration.location == rhDeclaration.location
-                && lhOtherDeclaration == rhOtherDeclaration
-                && lhOtherDeclaration.location == rhOtherDeclaration.location
+                && otherLHDeclaration == otherRHDeclaration
+                && otherLHDeclaration.location == otherRHDeclaration.location
         }
     }
 }
