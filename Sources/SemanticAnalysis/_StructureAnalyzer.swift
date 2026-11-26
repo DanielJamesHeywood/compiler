@@ -25,11 +25,17 @@ internal final class _StructureAnalyzer {
     
     @inlinable
     internal init(_for syntacticStructure: SyntacticDeclaration, in container: _Container) {
-        guard case .structure = syntacticStructure.kind else {
+        guard case let .structure(_, isExternal: _, conformances: _, members: members) = syntacticStructure.kind else {
             preconditionFailure("The declaration is not a structure declaration")
         }
         self._syntacticStructure = syntacticStructure
         self._container = container
+        self._protocolAnalyzers = members.compactMap { member in
+            if case .protocol = member.kind { _ProtocolAnalyzer(for: member, in: self) } else { nil }
+        }
+        self._structureAnalyzers = members.compactMap { member in
+            if case .structure = member.kind { _StructureAnalyzer(for: member, in: self) } else { nil }
+        }
     }
     
     @inlinable
