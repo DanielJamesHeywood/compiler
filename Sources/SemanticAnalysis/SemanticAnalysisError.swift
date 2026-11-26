@@ -4,6 +4,23 @@ public enum SemanticAnalysisError: Error {
     case invalidRedeclaration(SyntacticDeclaration, of: SyntacticDeclaration)
 }
 
+extension SemanticAnalysisError: Equatable {
+    
+    @inlinable
+    public static func == (lhs: SemanticAnalysisError, rhs: SemanticAnalysisError) -> Bool {
+        switch (lhs, rhs) {
+        case let (
+            .invalidRedeclaration(lhDeclaration, of: lhOtherDeclaration),
+            .invalidRedeclaration(rhDeclaration, of: rhOtherDeclaration)
+        ):
+            lhDeclaration == rhDeclaration
+                && lhDeclaration.location == rhDeclaration.location
+                && lhOtherDeclaration == rhOtherDeclaration
+                && lhOtherDeclaration.location == rhOtherDeclaration.location
+        }
+    }
+}
+
 extension SemanticAnalysisError: Hashable {
     
     @inlinable
