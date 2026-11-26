@@ -15,7 +15,12 @@ internal final class _Analyzer {
     internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
     
     @inlinable
-    internal init(for syntacticModules: [SyntacticModule]) {}
+    internal init(for syntacticModules: [SyntacticModule]) {
+        self._moduleAnalyzers = [_ModuleAnalyzer(for: _syntacticStandardLibrary, in: self)]
+        self._moduleAnalyzers += syntacticModules.map { syntacticModule in
+            _ModuleAnalyzer(for: syntacticModule, in: self)
+        }
+    }
     
     @inlinable
     internal func takeSemanticProtocols() -> [SemanticProtocol] { [] }
