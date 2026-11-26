@@ -18,6 +18,9 @@ internal final class _StructureAnalyzer {
     internal var _structureAnalyzers = [] as [_StructureAnalyzer]
     
     @usableFromInline
+    internal var _semanticProtocolsForNames = [:] as [Identifier: SemanticProtocol]
+    
+    @usableFromInline
     internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
     
     @inlinable
