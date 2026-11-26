@@ -16,8 +16,8 @@ internal final class _Analyzer {
     
     @inlinable
     internal init(for syntacticModules: [SyntacticModule]) {
-        self._moduleAnalyzers = [_ModuleAnalyzer(for: _syntacticStandardLibrary, in: self)]
-        self._moduleAnalyzers += syntacticModules.map { syntacticModule in
+        let syntacticModules = [_syntacticStandardLibrary] + syntacticModules
+        self._moduleAnalyzers = syntacticModules.map { syntacticModule in
             _ModuleAnalyzer(for: syntacticModule, in: self)
         }
     }
