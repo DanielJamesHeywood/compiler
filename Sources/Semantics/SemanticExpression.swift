@@ -102,14 +102,16 @@ public struct SemanticExpression {
     @inlinable
     public static func structurePrimitive(
         _ structure: SemanticStructure,
-        propertyValues: [SemanticExpression]
+        propertyValues: [SemanticExpression],
+        at location: SourceLocation?
     ) -> SemanticExpression {
         precondition(
             propertyValues.count == structure.properties.count,
             "Expected exactly \(structure.properties.count) values, but got \(propertyValues.count)"
         )
         return SemanticExpression(
-            _kind: .structurePrimitive(Weak(structure), propertyValues: propertyValues)
+            _kind: .structurePrimitive(Weak(structure), propertyValues: propertyValues),
+            at: location
         )
     }
     
