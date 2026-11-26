@@ -8,6 +8,7 @@ let package = Package(
     products: [.executable(name: "compiler", targets: ["compiler"])],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-collections", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-system", from: "1.7.0"),
         .package(url: "https://github.com/DanielJamesHeywood/llvm-swift", from: "1.1.0")
     ],
@@ -29,31 +30,56 @@ let package = Package(
         ),
         .target(
             name: "Lexing",
-            dependencies: [.product(name: "SystemPackage", package: "swift-system"), "Tokens"]
+            dependencies: [
+                .product(name: "SystemPackage", package: "swift-system"),
+                "Tokens"
+            ]
         ),
         .target(
             name: "Parsing",
-            dependencies: [.product(name: "SystemPackage", package: "swift-system"), "Tokens", "Syntax"]
+            dependencies: [
+                .product(name: "SystemPackage", package: "swift-system"),
+                "Tokens",
+                "Syntax"
+            ]
         ),
         .target(
             name: "SemanticAnalysis",
-            dependencies: [.product(name: "SystemPackage", package: "swift-system"), "Tokens", "Syntax", "Semantics"]
+            dependencies: [
+                .product(name: "OrderedCollections", package: "swift-collections"),
+                .product(name: "SystemPackage", package: "swift-system"),
+                "Tokens",
+                "Syntax",
+                "Semantics"
+            ]
         ),
         .target(
             name: "IRGeneration",
-            dependencies: [.product(name: "LLVM", package: "llvm-swift"), "Tokens", "Syntax", "Semantics"]
+            dependencies: [
+                .product(name: "LLVM", package: "llvm-swift"),
+                "Tokens",
+                "Syntax",
+                "Semantics"
+            ]
         ),
         .target(
             name: "Tokens",
-            dependencies: [.product(name: "SystemPackage", package: "swift-system")]
+            dependencies: [
+                .product(name: "SystemPackage", package: "swift-system")
+            ]
         ),
         .target(
             name: "Syntax",
-            dependencies: ["Tokens"]
+            dependencies: [
+                "Tokens"
+            ]
         ),
         .target(
             name: "Semantics",
-            dependencies: ["Tokens", "Syntax"]
+            dependencies: [
+                "Tokens",
+                "Syntax"
+            ]
         )
     ]
 )
