@@ -9,6 +9,12 @@ internal final class _ProtocolAnalyzer {
     @usableFromInline
     internal let _container: _Container
     
+    @usableFromInline
+    internal var _initializerAnalyzers = [] as [_InitializerAnalyzer]
+    
+    @usableFromInline
+    internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
+    
     @inlinable
     internal init(_for syntacticProtocol: SyntacticDeclaration, in container: _Container) {
         guard case .protocol = syntacticProtocol.kind else {

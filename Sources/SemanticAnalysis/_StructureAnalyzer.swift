@@ -13,10 +13,10 @@ internal final class _StructureAnalyzer {
     internal let _container: _Container
     
     @usableFromInline
-    internal var _protocolAnalyzersForNames = [:] as OrderedDictionary<Identifier, _ProtocolAnalyzer>
+    internal var _initializerAnalyzers = [] as [_InitializerAnalyzer]
     
     @usableFromInline
-    internal var _structureAnalyzersForNames = [:] as OrderedDictionary<Identifier, _StructureAnalyzer>
+    internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
     
     @inlinable
     internal init(_for syntacticStructure: SyntacticDeclaration, in container: _Container) {

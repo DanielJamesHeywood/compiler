@@ -13,10 +13,7 @@ internal final class _ModuleAnalyzer {
     internal weak let _analyzer: _Analyzer?
     
     @usableFromInline
-    internal var _protocolAnalyzersForNames = [:] as OrderedDictionary<Identifier, _ProtocolAnalyzer>
-    
-    @usableFromInline
-    internal var _structureAnalyzersForNames = [:] as OrderedDictionary<Identifier, _StructureAnalyzer>
+    internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
     
     @inlinable
     internal init(for syntacticModule: SyntacticModule, in analyzer: _Analyzer) {
