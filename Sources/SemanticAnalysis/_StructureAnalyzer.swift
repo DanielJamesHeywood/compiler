@@ -12,6 +12,9 @@ internal final class _StructureAnalyzer {
     internal let _container: _Container
     
     @usableFromInline
+    internal var _protocolAnalyzers = [] as [_ProtocolAnalyzer]
+    
+    @usableFromInline
     internal var _structureAnalyzers = [] as [_StructureAnalyzer]
     
     @usableFromInline
