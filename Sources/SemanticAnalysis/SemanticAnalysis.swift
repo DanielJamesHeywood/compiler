@@ -5,8 +5,9 @@ extension SemanticModule {
     
     @inlinable
     public convenience init(analyzing syntacticModules: [SyntacticModule]) throws(SemanticAnalysisError) {
-        let analyzer = _Analyzer(for: syntacticModules)
         self.init()
+        let analyzer = _Analyzer(for: syntacticModules)
+        try analyzer.declareTypeNames()
         self.protocols = analyzer.takeSemanticProtocols()
         self.structures = analyzer.takeSemanticStructures()
         self.constants = analyzer.takeSemanticConstants()

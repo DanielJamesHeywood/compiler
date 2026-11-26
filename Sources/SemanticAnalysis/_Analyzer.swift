@@ -23,6 +23,13 @@ internal final class _Analyzer {
     }
     
     @inlinable
+    internal func declareTypeNames() throws(SemanticAnalysisError) {
+        for moduleAnalyzer in _moduleAnalyzers {
+            try moduleAnalyzer.declareTypeNames()
+        }
+    }
+    
+    @inlinable
     internal func takeSemanticProtocols() -> [SemanticProtocol] { [] }
     
     @inlinable

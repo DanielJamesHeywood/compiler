@@ -24,4 +24,7 @@ internal final class _ModuleAnalyzer {
         self._syntacticModule = syntacticModule
         self._analyzer = analyzer
     }
+    
+    @inlinable
+    internal func declareTypeNames() throws(SemanticAnalysisError) {}
 }
