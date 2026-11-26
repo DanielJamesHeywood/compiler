@@ -106,7 +106,14 @@ internal final class _LLVMFunctionGenerator {
                 if function.containingStructure != nil {
                     _llvmValueForSelf = llvmFunction.argument(at: 0)
                 }
-                for (index, parameter) in zip(function.containingStructure != nil ? 1... : 0..., function.parameters) {
+                let firstParameterIndex = if function.containingModule != nil {
+                    0
+                } else if function.containingStructure != nil {
+                    1
+                } else {
+                    preconditionFailure("The function \"\(function.name)\" is not declared in a module or structure")
+                }
+                for (index, parameter) in zip(firstParameterIndex..., function.parameters) {
                     _llvmArgumentsForParameters[parameter] = llvmFunction.argument(at: index)
                 }
                 _llvmBuilder.position(atEndOf: llvmFunction.appendBasicBlock())
