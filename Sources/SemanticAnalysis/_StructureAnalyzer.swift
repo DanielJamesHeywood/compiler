@@ -13,6 +13,18 @@ internal final class _StructureAnalyzer {
     internal let _container: _Container
     
     @usableFromInline
+    internal var _protocolAnalyzersForNames = [:] as OrderedDictionary<Identifier, _ProtocolAnalyzer>
+    
+    @usableFromInline
+    internal var _structureAnalyzersForNames = [:] as OrderedDictionary<Identifier, _StructureAnalyzer>
+    
+    @usableFromInline
+    internal var _constantAnalyzersForNames = [:] as OrderedDictionary<Identifier, _ConstantAnalyzer>
+    
+    @usableFromInline
+    internal var _variableAnalyzersForNames = [:] as OrderedDictionary<Identifier, _VariableAnalyzer>
+    
+    @usableFromInline
     internal var _initializerAnalyzers = [] as [_InitializerAnalyzer]
     
     @usableFromInline

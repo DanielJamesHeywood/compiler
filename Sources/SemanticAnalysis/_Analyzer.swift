@@ -8,6 +8,18 @@ internal final class _Analyzer {
     @usableFromInline
     internal var _moduleAnalyzers = [] as [_ModuleAnalyzer]
     
+    @usableFromInline
+    internal var _protocolAnalyzersForNames = [:] as [Identifier: _ProtocolAnalyzer]
+    
+    @usableFromInline
+    internal var _structureAnalyzersForNames = [:] as [Identifier: _StructureAnalyzer]
+    
+    @usableFromInline
+    internal var _constantAnalyzersForNames = [:] as [Identifier: _ConstantAnalyzer]
+    
+    @usableFromInline
+    internal var _variableAnalyzersForNames = [:] as [Identifier: _VariableAnalyzer]
+    
     @inlinable
     internal init(for syntacticModules: [SyntacticModule]) {
         let syntacticModules = [_syntacticStandardLibrary] + syntacticModules
