@@ -27,12 +27,3 @@ public struct SourceLocation: Hashable, Sendable {
         self.column = column
     }
 }
-
-extension SourceLocation: Comparable {
-    
-    @inlinable
-    public static func < (lhs: SourceLocation, rhs: SourceLocation) -> Bool {
-        precondition(lhs.path == rhs.path, "The locations are not in the same file")
-        return (lhs.line, lhs.column) < (rhs.line, rhs.column)
-    }
-}
