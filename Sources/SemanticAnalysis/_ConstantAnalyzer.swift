@@ -1,4 +1,3 @@
-import Tokens
 import Syntax
 
 @usableFromInline
