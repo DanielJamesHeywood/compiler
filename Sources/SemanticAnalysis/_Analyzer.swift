@@ -9,10 +9,10 @@ internal final class _Analyzer {
     internal var _moduleAnalyzers = [] as [_ModuleAnalyzer]
     
     @usableFromInline
-    internal var _semanticProtocolsForNames = [:] as [Identifier: SemanticProtocol]
+    internal var _protocolAnalyzersForNames = [:] as [Identifier: _ProtocolAnalyzer]
     
     @usableFromInline
-    internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
+    internal var _structureAnalyzersForNames = [:] as [Identifier: _StructureAnalyzer]
     
     @inlinable
     internal init(for syntacticModules: [SyntacticModule]) {

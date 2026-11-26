@@ -1,3 +1,5 @@
+import OrderedCollections
+
 import Tokens
 import Syntax
 import Semantics
@@ -12,16 +14,10 @@ internal final class _ModuleAnalyzer {
     internal weak let _analyzer: _Analyzer?
     
     @usableFromInline
-    internal var _protocolAnalyzers = [] as [_ProtocolAnalyzer]
+    internal var _protocolAnalyzersForNames = [:] as OrderedDictionary<Identifier, _ProtocolAnalyzer>
     
     @usableFromInline
-    internal var _structureAnalyzers = [] as [_StructureAnalyzer]
-    
-    @usableFromInline
-    internal var _semanticProtocolsForNames = [:] as [Identifier: SemanticProtocol]
-    
-    @usableFromInline
-    internal var _semanticStructuresForNames = [:] as [Identifier: SemanticStructure]
+    internal var _structureAnalyzersForNames = [:] as OrderedDictionary<Identifier, _StructureAnalyzer>
     
     @inlinable
     internal init(for syntacticModule: SyntacticModule, in analyzer: _Analyzer) {
