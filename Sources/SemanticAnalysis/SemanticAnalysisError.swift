@@ -34,3 +34,15 @@ extension SemanticAnalysisError: Hashable {
         }
     }
 }
+
+extension SemanticAnalysisError: CustomDebugStringConvertible {
+    
+    @inlinable
+    public var debugDescription: String {
+        let caseDescription = switch self {
+        case let .invalidRedeclaration(declaration, of: otherDeclaration):
+            "invalidRedeclaration(\(String(reflecting: declaration)), of: \(String(reflecting: otherDeclaration)))"
+        }
+        return "SemanticAnalysis.SemanticAnalysisError.\(caseDescription)"
+    }
+}
