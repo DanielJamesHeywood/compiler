@@ -24,6 +24,9 @@ internal final class _ProtocolAnalyzer {
     @usableFromInline
     internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
     
+    @usableFromInline
+    internal var _nullaryFunctionNames = [] as Set<Identifier>
+    
     @inlinable
     internal init(_for syntacticProtocol: SyntacticDeclaration, in container: _Container) {
         guard case .protocol = syntacticProtocol.kind else {
@@ -49,6 +52,36 @@ internal final class _ProtocolAnalyzer {
             preconditionFailure("The declaration is not a protocol declaration")
         }
         for member in members {
+            switch member.kind {
+            case let .protocol(name, conformances: _, members: _),
+                let .structure(name, isExternal: _, conformances: _, members: _):
+                throw .typeNestedInProtocol(named: name, at: member.location)
+            case let .constant(name, isExternal: _, type: _, initialValue: _):
+                guard !_hasNonFunctionDeclaration(named: name), !_nullaryFunctionNames.contains(name) else {
+                    throw .invalidRedeclaration(of: name, at: member.location)
+                }
+                _constantAnalyzersForNames[name] = _ConstantAnalyzer(for: member, in: self)
+            case let .variable(name, isExternal: _, type: _, initialValue: _):
+                guard !_hasNonFunctionDeclaration(named: name), !_nullaryFunctionNames.contains(name) else {
+                    throw .invalidRedeclaration(of: name, at: member.location)
+                }
+                _variableAnalyzersForNames[name] = _VariableAnalyzer(for: member, in: self)
+            case .initializer:
+                _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
+            case let .function(name, isExternal: _, parameters: parameters, returnType: _, body: _):
+                guard !parameters.isEmpty || !_hasNonFunctionDeclaration(named: name) else {
+                    throw .invalidRedeclaration(of: name, at: member.location)
+                }
+                _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
+                if parameters.isEmpty {
+                    _nullaryFunctionNames.insert(name)
+                }
+            }
         }
+    }
+    
+    @inlinable
+    internal func _hasNonFunctionDeclaration(named name: Identifier) -> Bool {
+        _constantAnalyzersForNames.keys.contains(name) || _variableAnalyzersForNames.keys.contains(name)
     }
 }

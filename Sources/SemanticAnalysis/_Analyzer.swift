@@ -21,6 +21,12 @@ internal final class _Analyzer {
     internal var _variableAnalyzersForNames = [:] as [Identifier: _VariableAnalyzer]
     
     @usableFromInline
+    internal var _functionNames = [] as Set<Identifier>
+    
+    @usableFromInline
+    internal var _unlabelledFunctionNames = [] as Set<Identifier>
+    
+    @usableFromInline
     internal var _externalNames = [] as Set<Identifier>
     
     @inlinable
@@ -52,4 +58,21 @@ internal final class _Analyzer {
     
     @inlinable
     internal func takeSemanticFunctions() -> [SemanticFunction] { [] }
+    
+    @inlinable
+    internal func _hasDeclaration(named name: Identifier) -> Bool {
+        _hasNonFunctionDeclaration(named: name) || _functionNames.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasNonFunctionDeclaration(named name: Identifier) -> Bool {
+        _hasType(named: name)
+            || _constantAnalyzersForNames.keys.contains(name)
+            || _variableAnalyzersForNames.keys.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasType(named name: Identifier) -> Bool {
+        _protocolAnalyzersForNames.keys.contains(name) || _structureAnalyzersForNames.keys.contains(name)
+    }
 }
