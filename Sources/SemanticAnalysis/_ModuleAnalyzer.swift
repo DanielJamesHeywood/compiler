@@ -43,17 +43,29 @@ internal final class _ModuleAnalyzer {
             case let .protocol(name, conformances: _, members: _):
                 let protocolAnalyzer = _ProtocolAnalyzer(for: declaration, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
+                if declaration.accessLevel == .public {
+                    _analyzer._protocolAnalyzersForNames[name] = protocolAnalyzer
+                }
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, isExternal: _, conformances: _, members: _):
                 let structureAnalyzer = _StructureAnalyzer(for: declaration, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
+                if declaration.accessLevel == .public {
+                    _analyzer._structureAnalyzersForNames[name] = structureAnalyzer
+                }
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, isExternal: isExternal, type: _, initialValue: _):
                 let constantAnalyzer = _ConstantAnalyzer(for: declaration, in: self)
                 _constantAnalyzersForNames[name] = constantAnalyzer
+                if declaration.accessLevel == .public {
+                    _analyzer._constantAnalyzersForNames[name] = constantAnalyzer
+                }
             case let .variable(name, isExternal: isExternal, type: _, initialValue: _):
                 let variableAnalyzer = _VariableAnalyzer(for: declaration, in: self)
                 _variableAnalyzersForNames[name] = variableAnalyzer
+                if declaration.accessLevel == .public {
+                    _analyzer._variableAnalyzersForNames[name] = variableAnalyzer
+                }
             case .initializer:
                 break
             case let .function(name, isExternal: isExternal, parameters: _, returnType: _, body: _):
