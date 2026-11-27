@@ -17,6 +17,14 @@ internal final class _ConstantAnalyzer {
         guard case let .constant(_, isExternal, _, _) = syntacticConstant.kind else {
             preconditionFailure("The declaration is not a constant")
         }
+        if let syntacticContainer = container._syntacticDeclaration {
+            guard !isExternal else {
+                fatalError()
+            }
+            if syntacticContainer.accessLevel == .private, syntacticConstant.accessLevel == .public {
+                fatalError()
+            }
+        }
         self._syntacticConstant = syntacticConstant
         self._container = container
     }

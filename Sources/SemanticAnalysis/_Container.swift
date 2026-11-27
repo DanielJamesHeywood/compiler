@@ -1,3 +1,4 @@
+import Syntax
 import Semantics
 
 @usableFromInline
@@ -22,5 +23,23 @@ extension _Container {
     @inlinable
     internal init(_ structureAnalyzer: _StructureAnalyzer) {
         self = .structureAnalyzer(Weak(structureAnalyzer))
+    }
+    
+    @inlinable
+    internal var _syntacticDeclaration: SyntacticDeclaration? {
+        switch self {
+        case .moduleAnalyzer:
+            return nil
+        case let .protocolAnalyzer(protocolAnalyzer):
+            guard let protocolAnalyzer = protocolAnalyzer.object else {
+                preconditionFailure("The protocol analyzer has been deallocated")
+            }
+            return protocolAnalyzer._syntacticProtocol
+        case let .structureAnalyzer(structureAnalyzer):
+            guard let structureAnalyzer = structureAnalyzer.object else {
+                preconditionFailure("The structure analyzer has been deallocated")
+            }
+            return structureAnalyzer._syntacticStructure
+        }
     }
 }

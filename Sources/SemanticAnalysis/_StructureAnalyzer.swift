@@ -35,6 +35,14 @@ internal final class _StructureAnalyzer {
         guard case let .structure(_, isExternal, _, _) = syntacticStructure.kind else {
             preconditionFailure("The declaration is not a structure declaration")
         }
+        if let syntacticContainer = container._syntacticDeclaration {
+            guard !isExternal else {
+                fatalError()
+            }
+            if syntacticContainer.accessLevel == .private, syntacticStructure.accessLevel == .public {
+                fatalError()
+            }
+        }
         self._syntacticStructure = syntacticStructure
         self._container = container
     }

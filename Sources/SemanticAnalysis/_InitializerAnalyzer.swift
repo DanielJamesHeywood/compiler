@@ -17,6 +17,11 @@ internal final class _InitializerAnalyzer {
         guard case .initializer = syntacticInitializer.kind else {
             preconditionFailure("The declaration is not an initializer declaration")
         }
+        if let syntacticContainer = container._syntacticDeclaration {
+            if syntacticContainer.accessLevel == .private, syntacticInitializer.accessLevel == .public {
+                fatalError()
+            }
+        }
         self._syntacticInitializer = syntacticInitializer
         self._container = container
     }

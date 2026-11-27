@@ -17,6 +17,14 @@ internal final class _FunctionAnalyzer {
         guard case let .function(_, isExternal, _, _, _) = syntacticFunction.kind else {
             preconditionFailure("The declaration is not a function declaration")
         }
+        if let syntacticContainer = container._syntacticDeclaration {
+            guard !isExternal else {
+                fatalError()
+            }
+            if syntacticContainer.accessLevel == .private, syntacticFunction.accessLevel == .public {
+                fatalError()
+            }
+        }
         self._syntacticFunction = syntacticFunction
         self._container = container
     }

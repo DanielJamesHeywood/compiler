@@ -29,6 +29,11 @@ internal final class _ProtocolAnalyzer {
         guard case .protocol = syntacticProtocol.kind else {
             preconditionFailure("The declaration is not a protocol declaration")
         }
+        if let syntacticContainer = container._syntacticDeclaration {
+            if syntacticContainer.accessLevel == .private, syntacticProtocol.accessLevel == .public {
+                fatalError()
+            }
+        }
         self._syntacticProtocol = syntacticProtocol
         self._container = container
     }

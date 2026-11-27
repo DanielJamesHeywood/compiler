@@ -17,6 +17,14 @@ internal final class _VariableAnalyzer {
         guard case let .variable(_, isExternal, _, _) = syntacticVariable.kind else {
             preconditionFailure("The declaration is not a variable")
         }
+        if let syntacticContainer = container._syntacticDeclaration {
+            guard !isExternal else {
+                fatalError()
+            }
+            if syntacticContainer.accessLevel == .private, syntacticVariable.accessLevel == .public {
+                fatalError()
+            }
+        }
         self._syntacticVariable = syntacticVariable
         self._container = container
     }
