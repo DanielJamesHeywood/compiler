@@ -48,27 +48,26 @@ internal final class _ProtocolAnalyzer {
     
     @inlinable
     internal func registerDeclarations() throws(SemanticAnalysisError) {
-        guard case let .protocol(_, conformances: _, members: members) = _syntacticProtocol.kind else {
+        guard case let .protocol(_, _, members) = _syntacticProtocol.kind else {
             preconditionFailure("The declaration is not a protocol declaration")
         }
         for member in members {
             switch member.kind {
-            case let .protocol(name, conformances: _, members: _),
-                let .structure(name, isExternal: _, conformances: _, members: _):
+            case let .protocol(name, _, _), let .structure(name, _, _, _):
                 throw .typeNestedInProtocol(named: name, at: member.location)
-            case let .constant(name, isExternal: _, type: _, initialValue: _):
+            case let .constant(name, _, _, _):
                 guard !_hasNonFunctionDeclaration(named: name), !_nullaryFunctionNames.contains(name) else {
                     throw .invalidRedeclaration(of: name, at: member.location)
                 }
                 _constantAnalyzersForNames[name] = _ConstantAnalyzer(for: member, in: self)
-            case let .variable(name, isExternal: _, type: _, initialValue: _):
+            case let .variable(name, _, _, _):
                 guard !_hasNonFunctionDeclaration(named: name), !_nullaryFunctionNames.contains(name) else {
                     throw .invalidRedeclaration(of: name, at: member.location)
                 }
                 _variableAnalyzersForNames[name] = _VariableAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
-            case let .function(name, isExternal: _, parameters: parameters, returnType: _, body: _):
+            case let .function(name, _, parameters, _, _):
                 guard !parameters.isEmpty || !_hasNonFunctionDeclaration(named: name) else {
                     throw .invalidRedeclaration(of: name, at: member.location)
                 }

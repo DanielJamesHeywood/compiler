@@ -116,7 +116,7 @@ internal final class _ModuleAnalyzer {
                 }
             case .initializer:
                 throw .initializerOutsideType(at: declaration.location)
-            case let .function(name, isExternal: isExternal, parameters: parameters, returnType: _, body: _):
+            case let .function(name, isExternal, parameters, _, _):
                 guard !_hasType(named: name), !parameters.isEmpty || !_hasNonFunctionDeclaration(named: name) else {
                     throw .invalidRedeclaration(of: name, at: declaration.location)
                 }

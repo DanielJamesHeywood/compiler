@@ -76,19 +76,19 @@ internal final class _StructureAnalyzer {
                 let structureAnalyzer = _StructureAnalyzer(for: member, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 try structureAnalyzer.registerDeclarations()
-            case let .constant(name, isExternal: _, type: _, initialValue: _):
+            case let .constant(name, _, _, _):
                 guard !_hasNonFunctionDeclaration(named: name), !_unlabelledFunctionNames.contains(name) else {
                     throw .invalidRedeclaration(of: name, at: member.location)
                 }
                 _constantAnalyzersForNames[name] = _ConstantAnalyzer(for: member, in: self)
-            case let .variable(name, isExternal: _, type: _, initialValue: _):
+            case let .variable(name, _, _, _):
                 guard !_hasNonFunctionDeclaration(named: name), !_unlabelledFunctionNames.contains(name) else {
                     throw .invalidRedeclaration(of: name, at: member.location)
                 }
                 _variableAnalyzersForNames[name] = _VariableAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
-            case let .function(name, isExternal: _, parameters: parameters, returnType: _, body: _):
+            case let .function(name, _, parameters, _, _):
                 guard !_hasType(named: name), !parameters.isEmpty || !_hasNonFunctionDeclaration(named: name) else {
                     throw .invalidRedeclaration(of: name, at: member.location)
                 }
