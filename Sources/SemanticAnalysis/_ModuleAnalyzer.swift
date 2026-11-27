@@ -49,13 +49,23 @@ internal final class _ModuleAnalyzer {
             case let .protocol(name, _, _):
                 let protocolAnalyzer = try _ProtocolAnalyzer(for: declaration, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
+                if declaration.accessLevel == .public {
+                    _analyzer._publicProtocolAnalyzersForNames[name] = protocolAnalyzer
+                }
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, _, _, _):
                 let structureAnalyzer = try _StructureAnalyzer(for: declaration, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
+                if declaration.accessLevel == .public {
+                    _analyzer._publicStructureAnalyzersForNames[name] = structureAnalyzer
+                }
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, isExternal, _, _):
-                _constantAnalyzersForNames[name] = try _ConstantAnalyzer(for: declaration, in: self)
+                let constantAnalyzer = try _ConstantAnalyzer(for: declaration, in: self)
+                _constantAnalyzersForNames[name] = constantAnalyzer
+                if declaration.accessLevel == .public {
+                    _analyzer._publicConstantAnalyzersForNames[name] = constantAnalyzer
+                }
                 if isExternal {
                     guard !_analyzer._externalNames.contains(name) else {
                         fatalError()
@@ -63,7 +73,11 @@ internal final class _ModuleAnalyzer {
                     _analyzer._externalNames.insert(name)
                 }
             case let .variable(name, isExternal, _, _):
-                _variableAnalyzersForNames[name] = try _VariableAnalyzer(for: declaration, in: self)
+                let variableAnalyzer = try _VariableAnalyzer(for: declaration, in: self)
+                _variableAnalyzersForNames[name] = variableAnalyzer
+                if declaration.accessLevel == .public {
+                    _analyzer._publicVariableAnalyzersForNames[name] = variableAnalyzer
+                }
                 if isExternal {
                     guard !_analyzer._externalNames.contains(name) else {
                         fatalError()
@@ -77,6 +91,12 @@ internal final class _ModuleAnalyzer {
                 _functionNames.insert(name)
                 if parameters.isEmpty {
                     _unlabeledFunctionNames.insert(name)
+                }
+                if declaration.accessLevel == .public {
+                    _analyzer._publicFunctionNames.insert(name)
+                    if parameters.isEmpty {
+                        _analyzer._publicUnlabeledFunctionNames.insert(name)
+                    }
                 }
                 if isExternal {
                     guard !_analyzer._externalNames.contains(name) else {
