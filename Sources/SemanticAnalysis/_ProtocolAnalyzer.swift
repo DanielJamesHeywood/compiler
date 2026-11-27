@@ -53,7 +53,7 @@ internal final class _ProtocolAnalyzer {
                 _propertyAnalyzersForNames[name] = _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
-            case let .function(name, _, parameters, _, _):
+            case let .function(name, _, _, _, _):
                 _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
             }
         }
