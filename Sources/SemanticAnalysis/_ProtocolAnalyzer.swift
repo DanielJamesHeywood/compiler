@@ -67,10 +67,7 @@ internal final class _ProtocolAnalyzer {
             case .protocol, .structure:
                 fatalError()
             case let .constant(name, _, _, _), let .variable(name, _, _, _):
-                guard
-                    !_propertyAnalyzersForNames.keys.contains(name),
-                    !_unlabeledFunctionNames.contains(name)
-                else {
+                guard !_hasUnlabeledDeclaration(named: name) else {
                     fatalError()
                 }
                 _propertyAnalyzersForNames[name] = try _PropertyAnalyzer(for: member, in: self)
@@ -79,12 +76,27 @@ internal final class _ProtocolAnalyzer {
             case let .function(name, _, parameters, _, _):
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: member, in: self))
                 if parameters.isEmpty {
-                    guard !_propertyAnalyzersForNames.keys.contains(name) else {
+                    guard !_hasConstantOrVariable(named: name) else {
                         fatalError()
                     }
                     _unlabeledFunctionNames.insert(name)
                 }
             }
         }
+    }
+    
+    @inlinable
+    internal func _hasUnlabeledDeclaration(named name: Identifier) -> Bool {
+        _hasConstantOrVariable(named: name) || _hasUnlabeledFunction(named: name)
+    }
+    
+    @inlinable
+    internal func _hasConstantOrVariable(named name: Identifier) -> Bool {
+        _propertyAnalyzersForNames.keys.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasUnlabeledFunction(named name: Identifier) -> Bool {
+        _unlabeledFunctionNames.contains(name)
     }
 }

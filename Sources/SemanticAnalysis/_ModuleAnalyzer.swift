@@ -47,75 +47,39 @@ internal final class _ModuleAnalyzer {
         for declaration in _syntacticModule.declarations {
             switch declaration.kind {
             case let .protocol(name, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name),
-                    !_constantAnalyzersForNames.keys.contains(name),
-                    !_variableAnalyzersForNames.keys.contains(name),
-                    !_functionNames.contains(name)
-                else {
+                guard !_hasDeclaration(named: name) else {
                     fatalError()
                 }
                 let protocolAnalyzer = try _ProtocolAnalyzer(for: declaration, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 if declaration.accessLevel == .public {
-                    guard
-                        !_analyzer._publicProtocolAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicStructureAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicConstantAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicVariableAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicFunctionNames.contains(name)
-                    else {
+                    guard !_analyzer._hasPublicDeclaration(named: name) else {
                         fatalError()
                     }
                     _analyzer._publicProtocolAnalyzersForNames[name] = protocolAnalyzer
                 }
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, _, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name),
-                    !_constantAnalyzersForNames.keys.contains(name),
-                    !_variableAnalyzersForNames.keys.contains(name),
-                    !_functionNames.contains(name)
-                else {
+                guard !_hasDeclaration(named: name) else {
                     fatalError()
                 }
                 let structureAnalyzer = try _StructureAnalyzer(for: declaration, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 if declaration.accessLevel == .public {
-                    guard
-                        !_analyzer._publicProtocolAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicStructureAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicConstantAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicVariableAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicFunctionNames.contains(name)
-                    else {
+                    guard !_analyzer._hasPublicDeclaration(named: name) else {
                         fatalError()
                     }
                     _analyzer._publicStructureAnalyzersForNames[name] = structureAnalyzer
                 }
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, isExternal, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name),
-                    !_constantAnalyzersForNames.keys.contains(name),
-                    !_variableAnalyzersForNames.keys.contains(name),
-                    !_unlabeledFunctionNames.contains(name)
-                else {
+                guard !_hasUnlabeledDeclaration(named: name) else {
                     fatalError()
                 }
                 let constantAnalyzer = try _ConstantAnalyzer(for: declaration, in: self)
                 _constantAnalyzersForNames[name] = constantAnalyzer
                 if declaration.accessLevel == .public {
-                    guard
-                        !_analyzer._publicProtocolAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicStructureAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicConstantAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicVariableAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicUnlabeledFunctionNames.contains(name)
-                    else {
+                    guard !_analyzer._hasPublicUnlabeledDeclaration(named: name) else {
                         fatalError()
                     }
                     _analyzer._publicConstantAnalyzersForNames[name] = constantAnalyzer
@@ -127,25 +91,13 @@ internal final class _ModuleAnalyzer {
                     _analyzer._externalNames.insert(name)
                 }
             case let .variable(name, isExternal, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name),
-                    !_constantAnalyzersForNames.keys.contains(name),
-                    !_variableAnalyzersForNames.keys.contains(name),
-                    !_unlabeledFunctionNames.contains(name)
-                else {
+                guard !_hasUnlabeledDeclaration(named: name) else {
                     fatalError()
                 }
                 let variableAnalyzer = try _VariableAnalyzer(for: declaration, in: self)
                 _variableAnalyzersForNames[name] = variableAnalyzer
                 if declaration.accessLevel == .public {
-                    guard
-                        !_analyzer._publicProtocolAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicStructureAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicConstantAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicVariableAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicUnlabeledFunctionNames.contains(name)
-                    else {
+                    guard !_analyzer._hasPublicUnlabeledDeclaration(named: name) else {
                         fatalError()
                     }
                     _analyzer._publicVariableAnalyzersForNames[name] = variableAnalyzer
@@ -159,36 +111,24 @@ internal final class _ModuleAnalyzer {
             case .initializer:
                 fatalError()
             case let .function(name, isExternal, parameters, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name)
-                else {
+                guard !_hasTypeDeclaration(named: name) else {
                     fatalError()
                 }
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: declaration, in: self))
                 _functionNames.insert(name)
                 if parameters.isEmpty {
-                    guard
-                        !_constantAnalyzersForNames.keys.contains(name),
-                        !_variableAnalyzersForNames.keys.contains(name)
-                    else {
+                    guard !_hasConstantOrVariable(named: name) else {
                         fatalError()
                     }
                     _unlabeledFunctionNames.insert(name)
                 }
                 if declaration.accessLevel == .public {
-                    guard
-                        !_analyzer._publicProtocolAnalyzersForNames.keys.contains(name),
-                        !_analyzer._publicStructureAnalyzersForNames.keys.contains(name)
-                    else {
+                    guard !_analyzer._hasPublicTypeDeclaration(named: name) else {
                         fatalError()
                     }
                     _analyzer._publicFunctionNames.insert(name)
                     if parameters.isEmpty {
-                        guard
-                            !_analyzer._publicConstantAnalyzersForNames.keys.contains(name),
-                            !_analyzer._publicVariableAnalyzersForNames.keys.contains(name)
-                        else {
+                        guard !_analyzer._hasPublicConstantOrVariable(named: name) else {
                             fatalError()
                         }
                         _analyzer._publicUnlabeledFunctionNames.insert(name)
@@ -202,5 +142,35 @@ internal final class _ModuleAnalyzer {
                 }
             }
         }
+    }
+    
+    @inlinable
+    internal func _hasDeclaration(named name: Identifier) -> Bool {
+        _hasTypeDeclaration(named: name) || _hasConstantOrVariable(named: name) || _hasFunction(named: name)
+    }
+    
+    @inlinable
+    internal func _hasUnlabeledDeclaration(named name: Identifier) -> Bool {
+        _hasTypeDeclaration(named: name) || _hasConstantOrVariable(named: name) || _hasUnlabeledFunction(named: name)
+    }
+    
+    @inlinable
+    internal func _hasTypeDeclaration(named name: Identifier) -> Bool {
+        _protocolAnalyzersForNames.keys.contains(name) || _structureAnalyzersForNames.keys.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasConstantOrVariable(named name: Identifier) -> Bool {
+        _constantAnalyzersForNames.keys.contains(name) || _variableAnalyzersForNames.keys.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasFunction(named name: Identifier) -> Bool {
+        _functionNames.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasUnlabeledFunction(named name: Identifier) -> Bool {
+        _unlabeledFunctionNames.contains(name)
     }
 }

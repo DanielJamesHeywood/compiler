@@ -77,57 +77,69 @@ internal final class _StructureAnalyzer {
         for member in members {
             switch member.kind {
             case let .protocol(name, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name),
-                    !_propertyAnalyzersForNames.keys.contains(name),
-                    !_functionNames.contains(name)
-                else {
+                guard !_hasDeclaration(named: name) else {
                     fatalError()
                 }
                 let protocolAnalyzer = try _ProtocolAnalyzer(for: member, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, _, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name),
-                    !_propertyAnalyzersForNames.keys.contains(name),
-                    !_functionNames.contains(name)
-                else {
+                guard !_hasDeclaration(named: name) else {
                     fatalError()
                 }
                 let structureAnalyzer = try _StructureAnalyzer(for: member, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, _, _, _), let .variable(name, _, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name),
-                    !_propertyAnalyzersForNames.keys.contains(name),
-                    !_unlabeledFunctionNames.contains(name)
-                else {
+                guard !_hasUnlabeledDeclaration(named: name) else {
                     fatalError()
                 }
                 _propertyAnalyzersForNames[name] = try _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(try _InitializerAnalyzer(for: member, in: self))
             case let .function(name, _, parameters, _, _):
-                guard
-                    !_protocolAnalyzersForNames.keys.contains(name),
-                    !_structureAnalyzersForNames.keys.contains(name)
-                else {
+                guard !_hasTypeDeclaration(named: name) else {
                     fatalError()
                 }
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: member, in: self))
                 _functionNames.insert(name)
                 if parameters.isEmpty {
-                    guard !_propertyAnalyzersForNames.keys.contains(name) else {
+                    guard !_hasConstantOrVariable(named: name) else {
                         fatalError()
                     }
                     _unlabeledFunctionNames.insert(name)
                 }
             }
         }
+    }
+    
+    @inlinable
+    internal func _hasDeclaration(named name: Identifier) -> Bool {
+        _hasTypeDeclaration(named: name) || _hasConstantOrVariable(named: name) || _hasFunction(named: name)
+    }
+    
+    @inlinable
+    internal func _hasUnlabeledDeclaration(named name: Identifier) -> Bool {
+        _hasTypeDeclaration(named: name) || _hasConstantOrVariable(named: name) || _hasUnlabeledFunction(named: name)
+    }
+    
+    @inlinable
+    internal func _hasTypeDeclaration(named name: Identifier) -> Bool {
+        _protocolAnalyzersForNames.keys.contains(name) || _structureAnalyzersForNames.keys.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasConstantOrVariable(named name: Identifier) -> Bool {
+        _propertyAnalyzersForNames.keys.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasFunction(named name: Identifier) -> Bool {
+        _functionNames.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasUnlabeledFunction(named name: Identifier) -> Bool {
+        _unlabeledFunctionNames.contains(name)
     }
 }

@@ -58,4 +58,40 @@ internal final class _Analyzer {
     
     @inlinable
     internal func takeSemanticFunctions() -> [SemanticFunction] { [] }
+    
+    @inlinable
+    internal func _hasPublicDeclaration(named name: Identifier) -> Bool {
+        _hasPublicTypeDeclaration(named: name)
+            || _hasPublicConstantOrVariable(named: name)
+            || _hasPublicFunction(named: name)
+    }
+    
+    @inlinable
+    internal func _hasPublicUnlabeledDeclaration(named name: Identifier) -> Bool {
+        _hasPublicTypeDeclaration(named: name)
+            || _hasPublicConstantOrVariable(named: name)
+            || _hasPublicUnlabeledFunction(named: name)
+    }
+    
+    @inlinable
+    internal func _hasPublicTypeDeclaration(named name: Identifier) -> Bool {
+        _publicProtocolAnalyzersForNames.keys.contains(name)
+            || _publicStructureAnalyzersForNames.keys.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasPublicConstantOrVariable(named name: Identifier) -> Bool {
+        _publicConstantAnalyzersForNames.keys.contains(name)
+            || _publicVariableAnalyzersForNames.keys.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasPublicFunction(named name: Identifier) -> Bool {
+        _publicFunctionNames.contains(name)
+    }
+    
+    @inlinable
+    internal func _hasPublicUnlabeledFunction(named name: Identifier) -> Bool {
+        _publicUnlabeledFunctionNames.contains(name)
+    }
 }
