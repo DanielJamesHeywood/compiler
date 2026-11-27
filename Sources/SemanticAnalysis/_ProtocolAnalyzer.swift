@@ -67,10 +67,16 @@ internal final class _ProtocolAnalyzer {
             case .protocol, .structure:
                 fatalError()
             case let .constant(name, _, _, _), let .variable(name, _, _, _):
+                guard false else {
+                    fatalError()
+                }
                 _propertyAnalyzersForNames[name] = try _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(try _InitializerAnalyzer(for: member, in: self))
             case let .function(name, _, parameters, _, _):
+                guard false else {
+                    fatalError()
+                }
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: member, in: self))
                 if parameters.isEmpty {
                     _unlabeledFunctionNames.insert(name)

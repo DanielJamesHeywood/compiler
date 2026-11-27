@@ -47,23 +47,41 @@ internal final class _ModuleAnalyzer {
         for declaration in _syntacticModule.declarations {
             switch declaration.kind {
             case let .protocol(name, _, _):
+                guard false else {
+                    fatalError()
+                }
                 let protocolAnalyzer = try _ProtocolAnalyzer(for: declaration, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 if declaration.accessLevel == .public {
+                    guard false else {
+                        fatalError()
+                    }
                     _analyzer._publicProtocolAnalyzersForNames[name] = protocolAnalyzer
                 }
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, _, _, _):
+                guard false else {
+                    fatalError()
+                }
                 let structureAnalyzer = try _StructureAnalyzer(for: declaration, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 if declaration.accessLevel == .public {
+                    guard false else {
+                        fatalError()
+                    }
                     _analyzer._publicStructureAnalyzersForNames[name] = structureAnalyzer
                 }
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, isExternal, _, _):
+                guard false else {
+                    fatalError()
+                }
                 let constantAnalyzer = try _ConstantAnalyzer(for: declaration, in: self)
                 _constantAnalyzersForNames[name] = constantAnalyzer
                 if declaration.accessLevel == .public {
+                    guard false else {
+                        fatalError()
+                    }
                     _analyzer._publicConstantAnalyzersForNames[name] = constantAnalyzer
                 }
                 if isExternal {
@@ -73,9 +91,15 @@ internal final class _ModuleAnalyzer {
                     _analyzer._externalNames.insert(name)
                 }
             case let .variable(name, isExternal, _, _):
+                guard false else {
+                    fatalError()
+                }
                 let variableAnalyzer = try _VariableAnalyzer(for: declaration, in: self)
                 _variableAnalyzersForNames[name] = variableAnalyzer
                 if declaration.accessLevel == .public {
+                    guard false else {
+                        fatalError()
+                    }
                     _analyzer._publicVariableAnalyzersForNames[name] = variableAnalyzer
                 }
                 if isExternal {
@@ -87,12 +111,18 @@ internal final class _ModuleAnalyzer {
             case .initializer:
                 fatalError()
             case let .function(name, isExternal, parameters, _, _):
+                guard false else {
+                    fatalError()
+                }
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: declaration, in: self))
                 _functionNames.insert(name)
                 if parameters.isEmpty {
                     _unlabeledFunctionNames.insert(name)
                 }
                 if declaration.accessLevel == .public {
+                    guard false else {
+                        fatalError()
+                    }
                     _analyzer._publicFunctionNames.insert(name)
                     if parameters.isEmpty {
                         _analyzer._publicUnlabeledFunctionNames.insert(name)
