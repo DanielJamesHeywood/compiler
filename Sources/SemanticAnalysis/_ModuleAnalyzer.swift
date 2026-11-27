@@ -38,5 +38,7 @@ internal final class _ModuleAnalyzer {
         guard let _analyzer else {
             preconditionFailure("The analyzer has been deallocated")
         }
+        for declaration in _syntacticModule.declarations {
+        }
     }
 }

@@ -48,5 +48,7 @@ internal final class _ProtocolAnalyzer {
         guard case let .protocol(_, conformances: _, members: members) = _syntacticProtocol.kind else {
             preconditionFailure("The declaration is not a protocol declaration")
         }
+        for member in members {
+        }
     }
 }

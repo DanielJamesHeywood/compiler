@@ -54,5 +54,7 @@ internal final class _StructureAnalyzer {
         guard case let .structure(_, isExternal: _, conformances: _, members: members) = _syntacticStructure.kind else {
             preconditionFailure("The declaration is not a structure declaration")
         }
+        for member in members {
+        }
     }
 }
