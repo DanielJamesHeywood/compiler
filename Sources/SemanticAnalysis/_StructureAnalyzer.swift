@@ -57,19 +57,19 @@ internal final class _StructureAnalyzer {
     
     @inlinable
     internal func registerDeclarations() throws(SemanticAnalysisError) {
-        guard case let .structure(_, isExternal: _, conformances: _, members: members) = _syntacticStructure.kind else {
+        guard case let .structure(_, _, _, members) = _syntacticStructure.kind else {
             preconditionFailure("The declaration is not a structure declaration")
         }
         for member in members {
             switch member.kind {
-            case let .protocol(name, conformances: _, members: _):
+            case let .protocol(name, _, _):
                 guard !_hasDeclaration(named: name) else {
                     throw .invalidRedeclaration(of: name, at: member.location)
                 }
                 let protocolAnalyzer = _ProtocolAnalyzer(for: member, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 try protocolAnalyzer.registerDeclarations()
-            case let .structure(name, isExternal: _, conformances: _, members: _):
+            case let .structure(name, _, _, _):
                 guard !_hasDeclaration(named: name) else {
                     throw .invalidRedeclaration(of: name, at: member.location)
                 }
