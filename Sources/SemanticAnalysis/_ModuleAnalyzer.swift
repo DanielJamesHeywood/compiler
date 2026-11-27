@@ -32,4 +32,11 @@ internal final class _ModuleAnalyzer {
         self._syntacticModule = syntacticModule
         self._analyzer = analyzer
     }
+    
+    @inlinable
+    internal func registerDeclarations() throws(SemanticAnalysisError) {
+        guard let _analyzer else {
+            preconditionFailure("The analyzer has been deallocated")
+        }
+    }
 }

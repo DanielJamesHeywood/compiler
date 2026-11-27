@@ -29,6 +29,13 @@ internal final class _Analyzer {
     }
     
     @inlinable
+    internal func registerDeclarations() throws(SemanticAnalysisError) {
+        for moduleAnalyzer in _moduleAnalyzers {
+            try moduleAnalyzer.registerDeclarations()
+        }
+    }
+    
+    @inlinable
     internal func takeSemanticProtocols() -> [SemanticProtocol] { [] }
     
     @inlinable
