@@ -46,7 +46,7 @@ internal final class _ModuleAnalyzer {
         }
         for declaration in _syntacticModule.declarations {
             switch declaration.kind {
-            case let .protocol(name, conformances: _, members: _):
+            case let .protocol(name, _, _):
                 guard !_hasDeclaration(named: name) else {
                     throw .invalidRedeclaration(of: name, at: declaration.location)
                 }
@@ -59,7 +59,7 @@ internal final class _ModuleAnalyzer {
                     _analyzer._protocolAnalyzersForNames[name] = protocolAnalyzer
                 }
                 try protocolAnalyzer.registerDeclarations()
-            case let .structure(name, isExternal: _, conformances: _, members: _):
+            case let .structure(name, _, _, _):
                 guard !_hasDeclaration(named: name) else {
                     throw .invalidRedeclaration(of: name, at: declaration.location)
                 }
@@ -72,7 +72,7 @@ internal final class _ModuleAnalyzer {
                     _analyzer._structureAnalyzersForNames[name] = structureAnalyzer
                 }
                 try structureAnalyzer.registerDeclarations()
-            case let .constant(name, isExternal: isExternal, type: _, initialValue: _):
+            case let .constant(name, isExternal, _, _):
                 guard !_hasNonFunctionDeclaration(named: name), !_unlabelledFunctionNames.contains(name) else {
                     throw .invalidRedeclaration(of: name, at: declaration.location)
                 }
@@ -93,7 +93,7 @@ internal final class _ModuleAnalyzer {
                     }
                     _analyzer._externalNames.insert(name)
                 }
-            case let .variable(name, isExternal: isExternal, type: _, initialValue: _):
+            case let .variable(name, isExternal, _, _):
                 guard !_hasNonFunctionDeclaration(named: name), !_unlabelledFunctionNames.contains(name) else {
                     throw .invalidRedeclaration(of: name, at: declaration.location)
                 }
