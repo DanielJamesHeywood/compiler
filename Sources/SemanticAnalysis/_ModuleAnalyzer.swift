@@ -41,15 +41,15 @@ internal final class _ModuleAnalyzer {
         for declaration in _syntacticModule.declarations {
             switch declaration.kind {
             case let .protocol(name, _, _):
-                let protocolAnalyzer = _ProtocolAnalyzer(for: declaration, in: self)
+                let protocolAnalyzer = try _ProtocolAnalyzer(for: declaration, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, _, _, _):
-                let structureAnalyzer = _StructureAnalyzer(for: declaration, in: self)
+                let structureAnalyzer = try _StructureAnalyzer(for: declaration, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, isExternal, _, _):
-                _constantAnalyzersForNames[name] = _ConstantAnalyzer(for: declaration, in: self)
+                _constantAnalyzersForNames[name] = try _ConstantAnalyzer(for: declaration, in: self)
                 if isExternal {
                     guard !_analyzer._externalNames.contains(name) else {
                         fatalError()
@@ -57,7 +57,7 @@ internal final class _ModuleAnalyzer {
                     _analyzer._externalNames.insert(name)
                 }
             case let .variable(name, isExternal, _, _):
-                _variableAnalyzersForNames[name] = _VariableAnalyzer(for: declaration, in: self)
+                _variableAnalyzersForNames[name] = try _VariableAnalyzer(for: declaration, in: self)
                 if isExternal {
                     guard !_analyzer._externalNames.contains(name) else {
                         fatalError()
@@ -67,7 +67,7 @@ internal final class _ModuleAnalyzer {
             case .initializer:
                 fatalError()
             case let .function(name, isExternal, parameters, _, _):
-                _functionAnalyzers.append(_FunctionAnalyzer(for: declaration, in: self))
+                _functionAnalyzers.append(try _FunctionAnalyzer(for: declaration, in: self))
                 if isExternal {
                     guard !_analyzer._externalNames.contains(name) else {
                         fatalError()

@@ -22,7 +22,10 @@ internal final class _ProtocolAnalyzer {
     internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
     
     @inlinable
-    internal init(for syntacticProtocol: SyntacticDeclaration, in container: _Container) {
+    internal init(
+        for syntacticProtocol: SyntacticDeclaration,
+        in container: _Container
+    ) throws(SemanticAnalysisError) {
         guard case .protocol = syntacticProtocol.kind else {
             preconditionFailure("The declaration is not a protocol declaration")
         }
@@ -31,13 +34,19 @@ internal final class _ProtocolAnalyzer {
     }
     
     @inlinable
-    internal convenience init(for syntacticProtocol: SyntacticDeclaration, in moduleAnalyzer: _ModuleAnalyzer) {
-        self.init(for: syntacticProtocol, in: _Container(moduleAnalyzer))
+    internal convenience init(
+        for syntacticProtocol: SyntacticDeclaration,
+        in moduleAnalyzer: _ModuleAnalyzer
+    ) throws(SemanticAnalysisError) {
+        try self.init(for: syntacticProtocol, in: _Container(moduleAnalyzer))
     }
     
     @inlinable
-    internal convenience init(for syntacticProtocol: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
-        self.init(for: syntacticProtocol, in: _Container(structureAnalyzer))
+    internal convenience init(
+        for syntacticProtocol: SyntacticDeclaration,
+        in structureAnalyzer: _StructureAnalyzer
+    ) throws(SemanticAnalysisError) {
+        try self.init(for: syntacticProtocol, in: _Container(structureAnalyzer))
     }
     
     @inlinable
@@ -49,18 +58,12 @@ internal final class _ProtocolAnalyzer {
             switch member.kind {
             case .protocol, .structure:
                 fatalError()
-            case let .constant(name, isExternal, _, _), let .variable(name, isExternal, _, _):
-                guard !isExternal else {
-                    fatalError()
-                }
-                _propertyAnalyzersForNames[name] = _PropertyAnalyzer(for: member, in: self)
+            case let .constant(name, _, _, _), let .variable(name, _, _, _):
+                _propertyAnalyzersForNames[name] = try _PropertyAnalyzer(for: member, in: self)
             case .initializer:
-                _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
-            case let .function(name, isExternal, parameters, _, _):
-                guard !isExternal else {
-                    fatalError()
-                }
-                _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
+                _initializerAnalyzers.append(try _InitializerAnalyzer(for: member, in: self))
+            case let .function(name, _, parameters, _, _):
+                _functionAnalyzers.append(try _FunctionAnalyzer(for: member, in: self))
             }
         }
     }

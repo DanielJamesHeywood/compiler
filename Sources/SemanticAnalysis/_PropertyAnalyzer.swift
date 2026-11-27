@@ -9,24 +9,33 @@ internal enum _PropertyAnalyzer {
 extension _PropertyAnalyzer {
     
     @inlinable
-    internal init(for syntacticDeclaration: SyntacticDeclaration, in container: _Container) {
+    internal init(
+        for syntacticDeclaration: SyntacticDeclaration,
+        in container: _Container
+    ) throws(SemanticAnalysisError) {
         self = switch syntacticDeclaration.kind {
         case .constant:
-            .constantAnalyzer(_ConstantAnalyzer(for: syntacticDeclaration, in: container))
+            .constantAnalyzer(try _ConstantAnalyzer(for: syntacticDeclaration, in: container))
         case .variable:
-            .variableAnalyzer(_VariableAnalyzer(for: syntacticDeclaration, in: container))
+            .variableAnalyzer(try _VariableAnalyzer(for: syntacticDeclaration, in: container))
         default:
             preconditionFailure("The declaration is not a property")
         }
     }
     
     @inlinable
-    internal init(for syntacticDeclaration: SyntacticDeclaration, in protocolAnalyzer: _ProtocolAnalyzer) {
-        self.init(for: syntacticDeclaration, in: _Container(protocolAnalyzer))
+    internal init(
+        for syntacticDeclaration: SyntacticDeclaration,
+        in protocolAnalyzer: _ProtocolAnalyzer
+    ) throws(SemanticAnalysisError) {
+        try self.init(for: syntacticDeclaration, in: _Container(protocolAnalyzer))
     }
     
     @inlinable
-    internal init(for syntacticDeclaration: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
-        self.init(for: syntacticDeclaration, in: _Container(structureAnalyzer))
+    internal init(
+        for syntacticDeclaration: SyntacticDeclaration,
+        in structureAnalyzer: _StructureAnalyzer
+    ) throws(SemanticAnalysisError) {
+        try self.init(for: syntacticDeclaration, in: _Container(structureAnalyzer))
     }
 }
