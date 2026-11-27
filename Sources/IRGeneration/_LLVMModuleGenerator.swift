@@ -134,9 +134,9 @@ internal final class _LLVMModuleGenerator {
                 preconditionFailure("The structure has been deallocated")
             }
             return _llvmStructureType(for: structure)
-        case let .integerPrimitive(bitWidth: bitWidth):
+        case let .integerPrimitive(bitWidth):
             return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
-        case let .bytePrimitive(bitWidth: bitWidth):
+        case let .bytePrimitive(bitWidth):
             return LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
         }
     }
@@ -164,9 +164,9 @@ internal final class _LLVMModuleGenerator {
                                 preconditionFailure("The structure has been deallocated")
                             }
                             return llvmStructureType(for: structure)
-                        case let .integerPrimitive(bitWidth: bitWidth):
+                        case let .integerPrimitive(bitWidth):
                             return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
-                        case let .bytePrimitive(bitWidth: bitWidth):
+                        case let .bytePrimitive(bitWidth):
                             return LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
                         }
                     },
@@ -210,7 +210,7 @@ internal final class _LLVMModuleGenerator {
             preconditionFailure("The LLVM module has been taken")
         }
         switch expression.kind {
-        case let .structurePrimitive(weakStructure, propertyValues: propertyValues):
+        case let .structurePrimitive(weakStructure, propertyValues):
             guard let structure = weakStructure.object else {
                 preconditionFailure("The structure has been deallocated")
             }
@@ -225,12 +225,12 @@ internal final class _LLVMModuleGenerator {
                 elements: propertyValues.map { value in _llvmConstant(for: value) },
                 type: _llvmStructureType(for: structure)
             )
-        case let .integerPrimitive(words: words, bitWidth: bitWidth):
+        case let .integerPrimitive(words, bitWidth):
             return LLVMConstantInteger(
                 words: words,
                 type: LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
             )
-        case let .bytePrimitive(words: words, bitWidth: bitWidth):
+        case let .bytePrimitive(words, bitWidth):
             return LLVMConstantByte(
                 words: words,
                 type: LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
@@ -300,9 +300,9 @@ internal final class _LLVMModuleGenerator {
                 preconditionFailure("The structure has been deallocated")
             }
             return .structure(structure)
-        case let .integerPrimitive(_, bitWidth: bitWidth):
+        case let .integerPrimitive(_, bitWidth):
             return .integerPrimitive(bitWidth: bitWidth)
-        case let .bytePrimitive(_, bitWidth: bitWidth):
+        case let .bytePrimitive(_, bitWidth):
             return .bytePrimitive(bitWidth: bitWidth)
         default:
             preconditionFailure("The expression is not a structure, integer or byte primitive")

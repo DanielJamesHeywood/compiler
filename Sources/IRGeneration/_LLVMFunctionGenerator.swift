@@ -278,10 +278,10 @@ internal final class _LLVMFunctionGenerator {
         case .structurePrimitive, .integerPrimitive, .bytePrimitive:
             return _moduleGenerator._llvmConstant(for: expression)
         case let .primitiveTruncation(of: value, to: type):
-            guard case let .integerPrimitive(bitWidth: valueBitWidth) = _type(of: value).kind else {
+            guard case let .integerPrimitive(valueBitWidth) = _type(of: value).kind else {
                 preconditionFailure("The value is not an integer primitive")
             }
-            guard case let .integerPrimitive(bitWidth: typeBitWidth) = type.kind else {
+            guard case let .integerPrimitive(typeBitWidth) = type.kind else {
                 preconditionFailure("The type is not an integer primitive")
             }
             precondition(
@@ -291,13 +291,13 @@ internal final class _LLVMFunctionGenerator {
             return _llvmBuilder.buildTruncation(of: _llvmValue(for: value), to: _moduleGenerator._llvmType(for: type))
         case let .primitiveBitCast(of: value, to: type):
             let valueBitWidth = switch _type(of: value).kind {
-            case let .integerPrimitive(bitWidth: bitWidth), let .bytePrimitive(bitWidth: bitWidth):
+            case let .integerPrimitive(bitWidth), let .bytePrimitive(bitWidth):
                 bitWidth
             default:
                 preconditionFailure("The value is not an integer or byte primitive")
             }
             let typeBitWidth = switch type.kind {
-            case let .integerPrimitive(bitWidth: bitWidth), let .bytePrimitive(bitWidth: bitWidth):
+            case let .integerPrimitive(bitWidth), let .bytePrimitive(bitWidth):
                 bitWidth
             default:
                 preconditionFailure("The type is not an integer or byte primitive")
@@ -346,9 +346,9 @@ internal final class _LLVMFunctionGenerator {
                 preconditionFailure("The structure has been deallocated")
             }
             return .structure(structure)
-        case let .integerPrimitive(_, bitWidth: bitWidth):
+        case let .integerPrimitive(_, bitWidth):
             return .integerPrimitive(bitWidth: bitWidth)
-        case let .bytePrimitive(_, bitWidth: bitWidth):
+        case let .bytePrimitive(_, bitWidth):
             return .bytePrimitive(bitWidth: bitWidth)
         case let .primitiveTruncation(_, to: type):
             return type
