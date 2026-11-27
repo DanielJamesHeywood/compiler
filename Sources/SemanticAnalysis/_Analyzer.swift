@@ -9,22 +9,22 @@ internal final class _Analyzer {
     internal var _moduleAnalyzers = [] as [_ModuleAnalyzer]
     
     @usableFromInline
-    internal var _protocolAnalyzersForNames = [:] as [Identifier: _ProtocolAnalyzer]
+    internal var _publicProtocolAnalyzersForNames = [:] as [Identifier: _ProtocolAnalyzer]
     
     @usableFromInline
-    internal var _structureAnalyzersForNames = [:] as [Identifier: _StructureAnalyzer]
+    internal var _publicStructureAnalyzersForNames = [:] as [Identifier: _StructureAnalyzer]
     
     @usableFromInline
-    internal var _constantAnalyzersForNames = [:] as [Identifier: _ConstantAnalyzer]
+    internal var _publicConstantAnalyzersForNames = [:] as [Identifier: _ConstantAnalyzer]
     
     @usableFromInline
-    internal var _variableAnalyzersForNames = [:] as [Identifier: _VariableAnalyzer]
+    internal var _publicVariableAnalyzersForNames = [:] as [Identifier: _VariableAnalyzer]
     
     @usableFromInline
-    internal var _functionNames = [] as Set<Identifier>
+    internal var _publicFunctionNames = [] as Set<Identifier>
     
     @usableFromInline
-    internal var _unlabeledFunctionNames = [] as Set<Identifier>
+    internal var _publicUnlabeledFunctionNames = [] as Set<Identifier>
     
     @usableFromInline
     internal var _externalNames = [] as Set<Identifier>
