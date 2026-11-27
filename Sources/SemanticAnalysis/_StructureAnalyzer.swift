@@ -55,6 +55,24 @@ internal final class _StructureAnalyzer {
             preconditionFailure("The declaration is not a structure declaration")
         }
         for member in members {
+            switch member.kind {
+            case let .protocol(name, conformances: _, members: _):
+                let protocolAnalyzer = _ProtocolAnalyzer(for: member, in: self)
+                _protocolAnalyzersForNames[name] = protocolAnalyzer
+                try protocolAnalyzer.registerDeclarations()
+            case let .structure(name, isExternal: _, conformances: _, members: _):
+                let structureAnalyzer = _StructureAnalyzer(for: member, in: self)
+                _structureAnalyzersForNames[name] = structureAnalyzer
+                try structureAnalyzer.registerDeclarations()
+            case let .constant(name, isExternal: _, type: _, initialValue: _):
+                _constantAnalyzersForNames[name] = _ConstantAnalyzer(for: member, in: self)
+            case let .variable(name, isExternal: _, type: _, initialValue: _):
+                _variableAnalyzersForNames[name] = _VariableAnalyzer(for: member, in: self)
+            case .initializer:
+                _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
+            case let .function(name, isExternal: _, parameters: _, returnType: _, body: _):
+                _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
+            }
         }
     }
 }
