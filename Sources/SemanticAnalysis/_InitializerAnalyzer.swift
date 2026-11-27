@@ -10,7 +10,7 @@ internal final class _InitializerAnalyzer {
     internal let _container: _Container
     
     @inlinable
-    internal init(_for syntacticInitializer: SyntacticDeclaration, in container: _Container) {
+    internal init(for syntacticInitializer: SyntacticDeclaration, in container: _Container) {
         guard case .initializer = syntacticInitializer.kind else {
             preconditionFailure("The declaration is not an initializer declaration")
         }
@@ -20,11 +20,11 @@ internal final class _InitializerAnalyzer {
     
     @inlinable
     internal convenience init(for syntacticInitializer: SyntacticDeclaration, in protocolAnalyzer: _ProtocolAnalyzer) {
-        self.init(_for: syntacticInitializer, in: _Container(protocolAnalyzer))
+        self.init(for: syntacticInitializer, in: _Container(protocolAnalyzer))
     }
     
     @inlinable
     internal convenience init(for syntacticInitializer: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
-        self.init(_for: syntacticInitializer, in: _Container(structureAnalyzer))
+        self.init(for: syntacticInitializer, in: _Container(structureAnalyzer))
     }
 }

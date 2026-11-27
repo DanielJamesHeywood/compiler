@@ -10,7 +10,7 @@ internal final class _ConstantAnalyzer {
     internal let _container: _Container
     
     @inlinable
-    internal init(_for syntacticConstant: SyntacticDeclaration, in container: _Container) {
+    internal init(for syntacticConstant: SyntacticDeclaration, in container: _Container) {
         guard case .constant = syntacticConstant.kind else {
             preconditionFailure("The declaration is not a constant")
         }
@@ -20,16 +20,6 @@ internal final class _ConstantAnalyzer {
     
     @inlinable
     internal convenience init(for syntacticConstant: SyntacticDeclaration, in moduleAnalyzer: _ModuleAnalyzer) {
-        self.init(_for: syntacticConstant, in: _Container(moduleAnalyzer))
-    }
-    
-    @inlinable
-    internal convenience init(for syntacticConstant: SyntacticDeclaration, in protocolAnalyzer: _ProtocolAnalyzer) {
-        self.init(_for: syntacticConstant, in: _Container(protocolAnalyzer))
-    }
-    
-    @inlinable
-    internal convenience init(for syntacticConstant: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
-        self.init(_for: syntacticConstant, in: _Container(structureAnalyzer))
+        self.init(for: syntacticConstant, in: _Container(moduleAnalyzer))
     }
 }

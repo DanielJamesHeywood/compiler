@@ -10,7 +10,7 @@ internal final class _FunctionAnalyzer {
     internal let _container: _Container
     
     @inlinable
-    internal init(_for syntacticFunction: SyntacticDeclaration, in container: _Container) {
+    internal init(for syntacticFunction: SyntacticDeclaration, in container: _Container) {
         guard case .function = syntacticFunction.kind else {
             preconditionFailure("The declaration is not a function declaration")
         }
@@ -20,16 +20,16 @@ internal final class _FunctionAnalyzer {
     
     @inlinable
     internal convenience init(for syntacticFunction: SyntacticDeclaration, in moduleAnalyzer: _ModuleAnalyzer) {
-        self.init(_for: syntacticFunction, in: _Container(moduleAnalyzer))
+        self.init(for: syntacticFunction, in: _Container(moduleAnalyzer))
     }
     
     @inlinable
     internal convenience init(for syntacticFunction: SyntacticDeclaration, in protocolAnalyzer: _ProtocolAnalyzer) {
-        self.init(_for: syntacticFunction, in: _Container(protocolAnalyzer))
+        self.init(for: syntacticFunction, in: _Container(protocolAnalyzer))
     }
     
     @inlinable
     internal convenience init(for syntacticFunction: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
-        self.init(_for: syntacticFunction, in: _Container(structureAnalyzer))
+        self.init(for: syntacticFunction, in: _Container(structureAnalyzer))
     }
 }

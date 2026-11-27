@@ -28,7 +28,7 @@ internal final class _StructureAnalyzer {
     internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
     
     @inlinable
-    internal init(_for syntacticStructure: SyntacticDeclaration, in container: _Container) {
+    internal init(for syntacticStructure: SyntacticDeclaration, in container: _Container) {
         guard case .structure = syntacticStructure.kind else {
             preconditionFailure("The declaration is not a structure declaration")
         }
@@ -38,12 +38,12 @@ internal final class _StructureAnalyzer {
     
     @inlinable
     internal convenience init(for syntacticStructure: SyntacticDeclaration, in moduleAnalyzer: _ModuleAnalyzer) {
-        self.init(_for: syntacticStructure, in: _Container(moduleAnalyzer))
+        self.init(for: syntacticStructure, in: _Container(moduleAnalyzer))
     }
     
     @inlinable
     internal convenience init(for syntacticStructure: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
-        self.init(_for: syntacticStructure, in: _Container(structureAnalyzer))
+        self.init(for: syntacticStructure, in: _Container(structureAnalyzer))
     }
     
     @inlinable
@@ -59,21 +59,21 @@ internal final class _StructureAnalyzer {
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, isExternal, _, _):
                 guard !isExternal else {
-                    throw <#T##SemanticAnalysisError#>
+                    fatalError()
                 }
                 let structureAnalyzer = _StructureAnalyzer(for: member, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, isExternal, _, _), let .variable(name, isExternal, _, _):
                 guard !isExternal else {
-                    throw <#T##SemanticAnalysisError#>
+                    fatalError()
                 }
                 _propertyAnalyzersForNames[name] = _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
             case let .function(name, isExternal, parameters, _, _):
                 guard !isExternal else {
-                    throw <#T##SemanticAnalysisError#>
+                    fatalError()
                 }
                 _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
             }

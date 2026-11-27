@@ -51,26 +51,26 @@ internal final class _ModuleAnalyzer {
             case let .constant(name, isExternal, _, _):
                 _constantAnalyzersForNames[name] = _ConstantAnalyzer(for: declaration, in: self)
                 if isExternal {
-                    guard _analyzer._externalNames.contains(name) else {
-                        throw <#T##SemanticAnalysisError#>
+                    guard !_analyzer._externalNames.contains(name) else {
+                        fatalError()
                     }
                     _analyzer._externalNames.insert(name)
                 }
             case let .variable(name, isExternal, _, _):
                 _variableAnalyzersForNames[name] = _VariableAnalyzer(for: declaration, in: self)
                 if isExternal {
-                    guard _analyzer._externalNames.contains(name) else {
-                        throw <#T##SemanticAnalysisError#>
+                    guard !_analyzer._externalNames.contains(name) else {
+                        fatalError()
                     }
                     _analyzer._externalNames.insert(name)
                 }
             case .initializer:
-                throw <#T##SemanticAnalysisError#>
+                fatalError()
             case let .function(name, isExternal, parameters, _, _):
                 _functionAnalyzers.append(_FunctionAnalyzer(for: declaration, in: self))
                 if isExternal {
-                    guard _analyzer._externalNames.contains(name) else {
-                        throw <#T##SemanticAnalysisError#>
+                    guard !_analyzer._externalNames.contains(name) else {
+                        fatalError()
                     }
                     _analyzer._externalNames.insert(name)
                 }
