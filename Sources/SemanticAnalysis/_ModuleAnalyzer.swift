@@ -39,6 +39,26 @@ internal final class _ModuleAnalyzer {
             preconditionFailure("The analyzer has been deallocated")
         }
         for declaration in _syntacticModule.declarations {
+            switch declaration.kind {
+            case let .protocol(name, conformances: _, members: _):
+                let protocolAnalyzer = _ProtocolAnalyzer(for: declaration, in: self)
+                _protocolAnalyzersForNames[name] = protocolAnalyzer
+                try protocolAnalyzer.registerDeclarations()
+            case let .structure(name, isExternal: _, conformances: _, members: _):
+                let structureAnalyzer = _StructureAnalyzer(for: declaration, in: self)
+                _structureAnalyzersForNames[name] = structureAnalyzer
+                try structureAnalyzer.registerDeclarations()
+            case let .constant(name, isExternal: isExternal, type: _, initialValue: _):
+                let constantAnalyzer = _ConstantAnalyzer(for: declaration, in: self)
+                _constantAnalyzersForNames[name] = constantAnalyzer
+            case let .variable(name, isExternal: isExternal, type: _, initialValue: _):
+                let variableAnalyzer = _VariableAnalyzer(for: declaration, in: self)
+                _variableAnalyzersForNames[name] = variableAnalyzer
+            case .initializer:
+                break
+            case let .function(name, isExternal: isExternal, parameters: _, returnType: _, body: _):
+                _functionAnalyzers.append(_FunctionAnalyzer(for: declaration, in: self))
+            }
         }
     }
 }
