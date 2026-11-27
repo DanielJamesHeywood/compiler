@@ -42,4 +42,11 @@ internal final class _ProtocolAnalyzer {
     internal convenience init(for syntacticProtocol: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
         self.init(_for: syntacticProtocol, in: _Container(structureAnalyzer))
     }
+    
+    @inlinable
+    internal func registerDeclarations() throws(SemanticAnalysisError) {
+        guard case let .protocol(_, conformances: _, members: members) = _syntacticProtocol.kind else {
+            preconditionFailure("The declaration is not a protocol declaration")
+        }
+    }
 }

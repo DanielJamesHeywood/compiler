@@ -48,4 +48,11 @@ internal final class _StructureAnalyzer {
     internal convenience init(for syntacticStructure: SyntacticDeclaration, in structureAnalyzer: _StructureAnalyzer) {
         self.init(_for: syntacticStructure, in: _Container(structureAnalyzer))
     }
+    
+    @inlinable
+    internal func registerDeclarations() throws(SemanticAnalysisError) {
+        guard case let .structure(_, isExternal: _, conformances: _, members: members) = _syntacticStructure.kind else {
+            preconditionFailure("The declaration is not a structure declaration")
+        }
+    }
 }
