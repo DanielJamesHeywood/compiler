@@ -46,7 +46,7 @@ internal final class _LLVMModuleGenerator {
             _insertExternalName(constant.name)
         } else {
             precondition(
-                _llvmGlobalVariablesForConstants[constant] == nil,
+                !_llvmGlobalVariablesForConstants.keys.contains(constant),
                 "The constant \"\(constant.name)\" is already defined"
             )
             precondition(
@@ -78,7 +78,7 @@ internal final class _LLVMModuleGenerator {
             _insertExternalName(variable.name)
         } else {
             precondition(
-                _llvmGlobalVariablesForVariables[variable] == nil,
+                !_llvmGlobalVariablesForVariables.keys.contains(variable),
                 "The variable \"\(variable.name)\" is already defined"
             )
             precondition(

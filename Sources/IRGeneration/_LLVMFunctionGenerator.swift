@@ -59,7 +59,7 @@ internal final class _LLVMFunctionGenerator {
         switch _kind {
         case let .initializer(initializer):
             precondition(
-                _moduleGenerator._llvmFunctionsForInitializers[initializer] == nil,
+                !_moduleGenerator._llvmFunctionsForInitializers.keys.contains(initializer),
                 "The initializer is already defined"
             )
             let llvmFunction = llvmModule.addFunction(
@@ -92,7 +92,7 @@ internal final class _LLVMFunctionGenerator {
                 )
             } else {
                 precondition(
-                    _moduleGenerator._llvmFunctionsForFunctions[function] == nil,
+                    !_moduleGenerator._llvmFunctionsForFunctions.keys.contains(function),
                     "The function \"\(function.name)\" is already defined"
                 )
             }
