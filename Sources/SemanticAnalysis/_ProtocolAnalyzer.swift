@@ -48,7 +48,7 @@ internal final class _ProtocolAnalyzer {
         for member in members {
             switch member.kind {
             case let .protocol(name, _, _), let .structure(name, _, _, _):
-                throw .typeNestedInProtocol(named: name, at: member.location)
+                throw <#T##SemanticAnalysisError#>
             case let .constant(name, _, _, _), let .variable(name, _, _, _):
                 _propertyAnalyzersForNames[name] = _PropertyAnalyzer(for: member, in: self)
             case .initializer:
