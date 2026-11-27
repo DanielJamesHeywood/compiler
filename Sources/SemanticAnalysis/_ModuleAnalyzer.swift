@@ -66,7 +66,7 @@ internal final class _ModuleAnalyzer {
                 }
             case .initializer:
                 throw <#T##SemanticAnalysisError#>
-            case let .function(name, isExternal, _, _, _):
+            case let .function(name, isExternal, parameters, _, _):
                 _functionAnalyzers.append(_FunctionAnalyzer(for: declaration, in: self))
                 if isExternal {
                     guard _analyzer._externalNames.contains(name) else {

@@ -57,15 +57,24 @@ internal final class _StructureAnalyzer {
                 let protocolAnalyzer = _ProtocolAnalyzer(for: member, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 try protocolAnalyzer.registerDeclarations()
-            case let .structure(name, _, _, _):
+            case let .structure(name, isExternal, _, _):
+                guard !isExternal else {
+                    throw <#T##SemanticAnalysisError#>
+                }
                 let structureAnalyzer = _StructureAnalyzer(for: member, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 try structureAnalyzer.registerDeclarations()
-            case let .constant(name, _, _, _), let .variable(name, _, _, _):
+            case let .constant(name, isExternal, _, _), let .variable(name, isExternal, _, _):
+                guard !isExternal else {
+                    throw <#T##SemanticAnalysisError#>
+                }
                 _propertyAnalyzersForNames[name] = _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
-            case let .function(name, _, _, _, _):
+            case let .function(name, isExternal, parameters, _, _):
+                guard !isExternal else {
+                    throw <#T##SemanticAnalysisError#>
+                }
                 _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
             }
         }

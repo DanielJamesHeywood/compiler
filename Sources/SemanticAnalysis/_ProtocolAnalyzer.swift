@@ -50,10 +50,16 @@ internal final class _ProtocolAnalyzer {
             case .protocol, .structure:
                 throw <#T##SemanticAnalysisError#>
             case let .constant(name, isExternal, _, _), let .variable(name, isExternal, _, _):
+                guard !isExternal else {
+                    throw <#T##SemanticAnalysisError#>
+                }
                 _propertyAnalyzersForNames[name] = _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
             case let .function(name, isExternal, parameters, _, _):
+                guard !isExternal else {
+                    throw <#T##SemanticAnalysisError#>
+                }
                 _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
             }
         }
