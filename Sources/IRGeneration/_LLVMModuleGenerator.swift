@@ -295,14 +295,14 @@ internal final class _LLVMModuleGenerator {
     @inlinable
     internal func _type(of expression: SemanticExpression) -> SemanticType {
         switch expression.kind {
-        case let .structurePrimitive(weakStructure, propertyValues: _):
+        case let .structurePrimitive(weakStructure, _):
             guard let structure = weakStructure.object else {
                 preconditionFailure("The structure has been deallocated")
             }
             return .structure(structure)
-        case let .integerPrimitive(words: _, bitWidth: bitWidth):
+        case let .integerPrimitive(_, bitWidth: bitWidth):
             return .integerPrimitive(bitWidth: bitWidth)
-        case let .bytePrimitive(words: _, bitWidth: bitWidth):
+        case let .bytePrimitive(_, bitWidth: bitWidth):
             return .bytePrimitive(bitWidth: bitWidth)
         default:
             preconditionFailure("The expression is not a structure, integer or byte primitive")

@@ -330,7 +330,7 @@ internal final class _LLVMFunctionGenerator {
                 preconditionFailure("The declaration is not a member of a structure")
             }
             return .structure(structure)
-        case let .call(toInitializers: weakInitializers, passing: _):
+        case let .call(toInitializers: weakInitializers, _):
             precondition(weakInitializers.count == 1, "Expected exactly 1 initializer, but got \(weakInitializers.count)")
             guard let initializer = weakInitializers[0].object else {
                 preconditionFailure("The initializer has been deallocated")
@@ -339,20 +339,20 @@ internal final class _LLVMFunctionGenerator {
                 preconditionFailure("The initializer is not a member of a structure")
             }
             return .structure(structure)
-        case let .property(property, of: _):
+        case let .property(property, _):
             return property.type
-        case let .structurePrimitive(weakStructure, propertyValues: _):
+        case let .structurePrimitive(weakStructure, _):
             guard let structure = weakStructure.object else {
                 preconditionFailure("The structure has been deallocated")
             }
             return .structure(structure)
-        case let .integerPrimitive(words: _, bitWidth: bitWidth):
+        case let .integerPrimitive(_, bitWidth: bitWidth):
             return .integerPrimitive(bitWidth: bitWidth)
-        case let .bytePrimitive(words: _, bitWidth: bitWidth):
+        case let .bytePrimitive(_, bitWidth: bitWidth):
             return .bytePrimitive(bitWidth: bitWidth)
-        case let .primitiveTruncation(of: _, to: type):
+        case let .primitiveTruncation(_, to: type):
             return type
-        case let .primitiveBitCast(of: _, to: type):
+        case let .primitiveBitCast(_, to: type):
             return type
         }
     }
