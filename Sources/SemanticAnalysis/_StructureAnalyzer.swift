@@ -90,6 +90,10 @@ internal final class _StructureAnalyzer {
                 _initializerAnalyzers.append(try _InitializerAnalyzer(for: member, in: self))
             case let .function(name, _, parameters, _, _):
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: member, in: self))
+                _functionNames.insert(name)
+                if parameters.isEmpty {
+                    _unlabeledFunctionNames.insert(name)
+                }
             }
         }
     }

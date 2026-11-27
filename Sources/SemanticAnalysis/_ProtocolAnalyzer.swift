@@ -72,6 +72,9 @@ internal final class _ProtocolAnalyzer {
                 _initializerAnalyzers.append(try _InitializerAnalyzer(for: member, in: self))
             case let .function(name, _, parameters, _, _):
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: member, in: self))
+                if parameters.isEmpty {
+                    _unlabeledFunctionNames.insert(name)
+                }
             }
         }
     }

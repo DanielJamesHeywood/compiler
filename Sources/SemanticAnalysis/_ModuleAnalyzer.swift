@@ -74,6 +74,10 @@ internal final class _ModuleAnalyzer {
                 fatalError()
             case let .function(name, isExternal, parameters, _, _):
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: declaration, in: self))
+                _functionNames.insert(name)
+                if parameters.isEmpty {
+                    _unlabeledFunctionNames.insert(name)
+                }
                 if isExternal {
                     guard !_analyzer._externalNames.contains(name) else {
                         fatalError()
