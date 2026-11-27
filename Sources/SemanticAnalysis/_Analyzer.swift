@@ -21,6 +21,12 @@ internal final class _Analyzer {
     internal var _variableAnalyzersForNames = [:] as [Identifier: _VariableAnalyzer]
     
     @usableFromInline
+    internal var _functionNames = [] as Set<Identifier>
+    
+    @usableFromInline
+    internal var _unlabeledFunctionNames = [] as Set<Identifier>
+    
+    @usableFromInline
     internal var _externalNames = [] as Set<Identifier>
     
     @inlinable

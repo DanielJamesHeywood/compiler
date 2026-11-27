@@ -27,6 +27,12 @@ internal final class _StructureAnalyzer {
     @usableFromInline
     internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
     
+    @usableFromInline
+    internal var _functionNames = [] as Set<Identifier>
+    
+    @usableFromInline
+    internal var _unlabeledFunctionNames = [] as Set<Identifier>
+    
     @inlinable
     internal init(
         for syntacticStructure: SyntacticDeclaration,

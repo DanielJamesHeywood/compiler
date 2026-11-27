@@ -21,6 +21,9 @@ internal final class _ProtocolAnalyzer {
     @usableFromInline
     internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
     
+    @usableFromInline
+    internal var _unlabeledFunctionNames = [] as Set<Identifier>
+    
     @inlinable
     internal init(
         for syntacticProtocol: SyntacticDeclaration,
