@@ -47,13 +47,13 @@ internal final class _ProtocolAnalyzer {
         }
         for member in members {
             switch member.kind {
-            case let .protocol(name, _, _), let .structure(name, _, _, _):
+            case .protocol, .structure:
                 throw <#T##SemanticAnalysisError#>
-            case let .constant(name, _, _, _), let .variable(name, _, _, _):
+            case let .constant(name, isExternal, _, _), let .variable(name, isExternal, _, _):
                 _propertyAnalyzersForNames[name] = _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
-            case let .function(name, _, _, _, _):
+            case let .function(name, isExternal, parameters, _, _):
                 _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
             }
         }
