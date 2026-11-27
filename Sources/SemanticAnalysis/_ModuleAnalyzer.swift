@@ -60,16 +60,25 @@ internal final class _ModuleAnalyzer {
                 if declaration.accessLevel == .public {
                     _analyzer._constantAnalyzersForNames[name] = constantAnalyzer
                 }
+                if isExternal {
+                    _analyzer._externalNames.insert(name)
+                }
             case let .variable(name, isExternal: isExternal, type: _, initialValue: _):
                 let variableAnalyzer = _VariableAnalyzer(for: declaration, in: self)
                 _variableAnalyzersForNames[name] = variableAnalyzer
                 if declaration.accessLevel == .public {
                     _analyzer._variableAnalyzersForNames[name] = variableAnalyzer
                 }
+                if isExternal {
+                    _analyzer._externalNames.insert(name)
+                }
             case .initializer:
                 break
             case let .function(name, isExternal: isExternal, parameters: _, returnType: _, body: _):
                 _functionAnalyzers.append(_FunctionAnalyzer(for: declaration, in: self))
+                if isExternal {
+                    _analyzer._externalNames.insert(name)
+                }
             }
         }
     }

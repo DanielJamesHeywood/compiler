@@ -20,6 +20,9 @@ internal final class _Analyzer {
     @usableFromInline
     internal var _variableAnalyzersForNames = [:] as [Identifier: _VariableAnalyzer]
     
+    @usableFromInline
+    internal var _externalNames = [] as Set<Identifier>
+    
     @inlinable
     internal init(for syntacticModules: [SyntacticModule]) {
         let syntacticModules = [_syntacticStandardLibrary] + syntacticModules
