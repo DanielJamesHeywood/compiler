@@ -19,22 +19,13 @@ internal final class _StructureAnalyzer {
     internal var _structureAnalyzersForNames = [:] as OrderedDictionary<Identifier, _StructureAnalyzer>
     
     @usableFromInline
-    internal var _constantAnalyzersForNames = [:] as OrderedDictionary<Identifier, _ConstantAnalyzer>
-    
-    @usableFromInline
-    internal var _variableAnalyzersForNames = [:] as OrderedDictionary<Identifier, _VariableAnalyzer>
+    internal var _propertyAnalyzersForNames = [:] as OrderedDictionary<Identifier, _PropertyAnalyzer>
     
     @usableFromInline
     internal var _initializerAnalyzers = [] as [_InitializerAnalyzer]
     
     @usableFromInline
     internal var _functionAnalyzers = [] as [_FunctionAnalyzer]
-    
-    @usableFromInline
-    internal var _functionNames = [] as Set<Identifier>
-    
-    @usableFromInline
-    internal var _unlabelledFunctionNames = [] as Set<Identifier>
     
     @inlinable
     internal init(_for syntacticStructure: SyntacticDeclaration, in container: _Container) {
@@ -63,58 +54,20 @@ internal final class _StructureAnalyzer {
         for member in members {
             switch member.kind {
             case let .protocol(name, _, _):
-                guard !_hasDeclaration(named: name) else {
-                    throw .invalidRedeclaration(of: name, at: member.location)
-                }
                 let protocolAnalyzer = _ProtocolAnalyzer(for: member, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, _, _, _):
-                guard !_hasDeclaration(named: name) else {
-                    throw .invalidRedeclaration(of: name, at: member.location)
-                }
                 let structureAnalyzer = _StructureAnalyzer(for: member, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 try structureAnalyzer.registerDeclarations()
-            case let .constant(name, _, _, _):
-                guard !_hasNonFunctionDeclaration(named: name), !_unlabelledFunctionNames.contains(name) else {
-                    throw .invalidRedeclaration(of: name, at: member.location)
-                }
-                _constantAnalyzersForNames[name] = _ConstantAnalyzer(for: member, in: self)
-            case let .variable(name, _, _, _):
-                guard !_hasNonFunctionDeclaration(named: name), !_unlabelledFunctionNames.contains(name) else {
-                    throw .invalidRedeclaration(of: name, at: member.location)
-                }
-                _variableAnalyzersForNames[name] = _VariableAnalyzer(for: member, in: self)
+            case let .constant(name, _, _, _), let .variable(name, _, _, _):
+                _propertyAnalyzersForNames[name] = _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(_InitializerAnalyzer(for: member, in: self))
             case let .function(name, _, parameters, _, _):
-                guard !_hasType(named: name), !parameters.isEmpty || !_hasNonFunctionDeclaration(named: name) else {
-                    throw .invalidRedeclaration(of: name, at: member.location)
-                }
                 _functionAnalyzers.append(_FunctionAnalyzer(for: member, in: self))
-                _functionNames.insert(name)
-                if parameters.isEmpty {
-                    _unlabelledFunctionNames.insert(name)
-                }
             }
         }
-    }
-    
-    @inlinable
-    internal func _hasDeclaration(named name: Identifier) -> Bool {
-        _hasNonFunctionDeclaration(named: name) || _functionNames.contains(name)
-    }
-    
-    @inlinable
-    internal func _hasNonFunctionDeclaration(named name: Identifier) -> Bool {
-        _hasType(named: name)
-            || _constantAnalyzersForNames.keys.contains(name)
-            || _variableAnalyzersForNames.keys.contains(name)
-    }
-    
-    @inlinable
-    internal func _hasType(named name: Identifier) -> Bool {
-        _protocolAnalyzersForNames.keys.contains(name) || _structureAnalyzersForNames.keys.contains(name)
     }
 }
