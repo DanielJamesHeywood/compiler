@@ -61,6 +61,9 @@ internal final class _ModuleAnalyzer {
                     _analyzer._constantAnalyzersForNames[name] = constantAnalyzer
                 }
                 if isExternal {
+                    guard _analyzer._externalNames.contains(name) else {
+                        throw <#T##SemanticAnalysisError#>
+                    }
                     _analyzer._externalNames.insert(name)
                 }
             case let .variable(name, isExternal: isExternal, type: _, initialValue: _):
@@ -70,6 +73,9 @@ internal final class _ModuleAnalyzer {
                     _analyzer._variableAnalyzersForNames[name] = variableAnalyzer
                 }
                 if isExternal {
+                    guard _analyzer._externalNames.contains(name) else {
+                        throw <#T##SemanticAnalysisError#>
+                    }
                     _analyzer._externalNames.insert(name)
                 }
             case .initializer:
@@ -77,6 +83,9 @@ internal final class _ModuleAnalyzer {
             case let .function(name, isExternal: isExternal, parameters: _, returnType: _, body: _):
                 _functionAnalyzers.append(_FunctionAnalyzer(for: declaration, in: self))
                 if isExternal {
+                    guard _analyzer._externalNames.contains(name) else {
+                        throw <#T##SemanticAnalysisError#>
+                    }
                     _analyzer._externalNames.insert(name)
                 }
             }
