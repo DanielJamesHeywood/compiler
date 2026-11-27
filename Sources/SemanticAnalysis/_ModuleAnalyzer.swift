@@ -85,10 +85,7 @@ internal final class _ModuleAnalyzer {
                     _analyzer._publicConstantAnalyzersForNames[name] = constantAnalyzer
                 }
                 if isExternal {
-                    guard !_analyzer._externalNames.contains(name) else {
-                        fatalError()
-                    }
-                    _analyzer._externalNames.insert(name)
+                    try _analyzer._insertExternalName(name)
                 }
             case let .variable(name, isExternal, _, _):
                 guard !_hasUnlabeledDeclaration(named: name) else {
@@ -103,10 +100,7 @@ internal final class _ModuleAnalyzer {
                     _analyzer._publicVariableAnalyzersForNames[name] = variableAnalyzer
                 }
                 if isExternal {
-                    guard !_analyzer._externalNames.contains(name) else {
-                        fatalError()
-                    }
-                    _analyzer._externalNames.insert(name)
+                    try _analyzer._insertExternalName(name)
                 }
             case .initializer:
                 fatalError()
@@ -135,10 +129,7 @@ internal final class _ModuleAnalyzer {
                     }
                 }
                 if isExternal {
-                    guard !_analyzer._externalNames.contains(name) else {
-                        fatalError()
-                    }
-                    _analyzer._externalNames.insert(name)
+                    try _analyzer._insertExternalName(name)
                 }
             }
         }

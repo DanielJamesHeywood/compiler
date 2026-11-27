@@ -60,6 +60,14 @@ internal final class _Analyzer {
     internal func takeSemanticFunctions() -> [SemanticFunction] { [] }
     
     @inlinable
+    internal func _insertExternalName(_ name: Identifier) throws(SemanticAnalysisError) {
+        guard !_externalNames.contains(name) else {
+            fatalError()
+        }
+        _externalNames.insert(name)
+    }
+    
+    @inlinable
     internal func _hasPublicDeclaration(named name: Identifier) -> Bool {
         _hasPublicTypeDeclaration(named: name)
             || _hasPublicConstantOrVariable(named: name)
