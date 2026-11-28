@@ -1,4 +1,5 @@
 import Syntax
+import Semantics
 
 @usableFromInline
 internal final class _VariableAnalyzer {
@@ -8,6 +9,9 @@ internal final class _VariableAnalyzer {
     
     @usableFromInline
     internal let _container: _Container
+    
+    @usableFromInline
+    internal var _semanticVariable: SemanticVariable?
     
     @inlinable
     internal init(

@@ -1,4 +1,5 @@
 import Syntax
+import Semantics
 
 @usableFromInline
 internal final class _ConstantAnalyzer {
@@ -8,6 +9,9 @@ internal final class _ConstantAnalyzer {
     
     @usableFromInline
     internal let _container: _Container
+    
+    @usableFromInline
+    internal var _semanticConstant: SemanticConstant?
     
     @inlinable
     internal init(

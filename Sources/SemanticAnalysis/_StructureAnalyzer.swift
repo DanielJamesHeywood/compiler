@@ -2,6 +2,7 @@ import OrderedCollections
 
 import Tokens
 import Syntax
+import Semantics
 
 @usableFromInline
 internal final class _StructureAnalyzer {
@@ -32,6 +33,9 @@ internal final class _StructureAnalyzer {
     
     @usableFromInline
     internal var _unlabeledFunctionNames = [] as Set<Identifier>
+    
+    @usableFromInline
+    internal var _semanticStructure: SemanticStructure?
     
     @inlinable
     internal init(

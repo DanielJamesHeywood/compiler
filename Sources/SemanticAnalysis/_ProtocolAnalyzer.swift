@@ -2,6 +2,7 @@ import OrderedCollections
 
 import Tokens
 import Syntax
+import Semantics
 
 @usableFromInline
 internal final class _ProtocolAnalyzer {
@@ -23,6 +24,9 @@ internal final class _ProtocolAnalyzer {
     
     @usableFromInline
     internal var _unlabeledFunctionNames = [] as Set<Identifier>
+    
+    @usableFromInline
+    internal var _semanticProtocol: SemanticProtocol?
     
     @inlinable
     internal init(
