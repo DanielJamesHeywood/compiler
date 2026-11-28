@@ -62,7 +62,7 @@ internal final class _Analyzer {
     @inlinable
     internal func _insertExternalName(_ name: Identifier) throws(SemanticAnalysisError) {
         guard !_externalNames.contains(name) else {
-            fatalError()
+            throw .invalidRedeclaration
         }
         _externalNames.insert(name)
     }
