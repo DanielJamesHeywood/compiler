@@ -1,5 +1,7 @@
+import Tokens
+
 public enum SemanticAnalysisError: Hashable, Error {
-    case invalidRedeclaration
+    case invalidRedeclaration(of: Identifier)
 }
 
 extension SemanticAnalysisError: CustomStringConvertible {
@@ -7,8 +9,8 @@ extension SemanticAnalysisError: CustomStringConvertible {
     @inlinable
     public var description: String {
         switch self {
-        case .invalidRedeclaration:
-            "Invalid redeclaration"
+        case let .invalidRedeclaration(of: name):
+            "Invalid redeclaration of '\(name)'"
         }
     }
 }

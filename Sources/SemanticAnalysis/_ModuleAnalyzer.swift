@@ -48,39 +48,39 @@ internal final class _ModuleAnalyzer {
             switch declaration.kind {
             case let .protocol(name, _, _):
                 guard !_hasDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 let protocolAnalyzer = try _ProtocolAnalyzer(for: declaration, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 if declaration.accessLevel == .public {
                     guard !_analyzer._hasPublicDeclaration(named: name) else {
-                        throw .invalidRedeclaration
+                        throw .invalidRedeclaration(of: name)
                     }
                     _analyzer._publicProtocolAnalyzersForNames[name] = protocolAnalyzer
                 }
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, _, _, _):
                 guard !_hasDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 let structureAnalyzer = try _StructureAnalyzer(for: declaration, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 if declaration.accessLevel == .public {
                     guard !_analyzer._hasPublicDeclaration(named: name) else {
-                        throw .invalidRedeclaration
+                        throw .invalidRedeclaration(of: name)
                     }
                     _analyzer._publicStructureAnalyzersForNames[name] = structureAnalyzer
                 }
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, isExternal, _, _):
                 guard !_hasUnlabeledDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 let constantAnalyzer = try _ConstantAnalyzer(for: declaration, in: self)
                 _constantAnalyzersForNames[name] = constantAnalyzer
                 if declaration.accessLevel == .public {
                     guard !_analyzer._hasPublicUnlabeledDeclaration(named: name) else {
-                        throw .invalidRedeclaration
+                        throw .invalidRedeclaration(of: name)
                     }
                     _analyzer._publicConstantAnalyzersForNames[name] = constantAnalyzer
                 }
@@ -89,13 +89,13 @@ internal final class _ModuleAnalyzer {
                 }
             case let .variable(name, isExternal, _, _):
                 guard !_hasUnlabeledDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 let variableAnalyzer = try _VariableAnalyzer(for: declaration, in: self)
                 _variableAnalyzersForNames[name] = variableAnalyzer
                 if declaration.accessLevel == .public {
                     guard !_analyzer._hasPublicUnlabeledDeclaration(named: name) else {
-                        throw .invalidRedeclaration
+                        throw .invalidRedeclaration(of: name)
                     }
                     _analyzer._publicVariableAnalyzersForNames[name] = variableAnalyzer
                 }
@@ -106,24 +106,24 @@ internal final class _ModuleAnalyzer {
                 fatalError()
             case let .function(name, isExternal, parameters, _, _):
                 guard !_hasTypeDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: declaration, in: self))
                 _functionNames.insert(name)
                 if parameters.isEmpty {
                     guard !_hasConstantOrVariable(named: name) else {
-                        throw .invalidRedeclaration
+                        throw .invalidRedeclaration(of: name)
                     }
                     _unlabeledFunctionNames.insert(name)
                 }
                 if declaration.accessLevel == .public {
                     guard !_analyzer._hasPublicTypeDeclaration(named: name) else {
-                        throw .invalidRedeclaration
+                        throw .invalidRedeclaration(of: name)
                     }
                     _analyzer._publicFunctionNames.insert(name)
                     if parameters.isEmpty {
                         guard !_analyzer._hasPublicConstantOrVariable(named: name) else {
-                            throw .invalidRedeclaration
+                            throw .invalidRedeclaration(of: name)
                         }
                         _analyzer._publicUnlabeledFunctionNames.insert(name)
                     }

@@ -68,7 +68,7 @@ internal final class _ProtocolAnalyzer {
                 fatalError()
             case let .constant(name, _, _, _), let .variable(name, _, _, _):
                 guard !_hasUnlabeledDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 _propertyAnalyzersForNames[name] = try _PropertyAnalyzer(for: member, in: self)
             case .initializer:
@@ -77,7 +77,7 @@ internal final class _ProtocolAnalyzer {
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: member, in: self))
                 if parameters.isEmpty {
                     guard !_hasConstantOrVariable(named: name) else {
-                        throw .invalidRedeclaration
+                        throw .invalidRedeclaration(of: name)
                     }
                     _unlabeledFunctionNames.insert(name)
                 }

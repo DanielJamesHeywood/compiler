@@ -78,34 +78,34 @@ internal final class _StructureAnalyzer {
             switch member.kind {
             case let .protocol(name, _, _):
                 guard !_hasDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 let protocolAnalyzer = try _ProtocolAnalyzer(for: member, in: self)
                 _protocolAnalyzersForNames[name] = protocolAnalyzer
                 try protocolAnalyzer.registerDeclarations()
             case let .structure(name, _, _, _):
                 guard !_hasDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 let structureAnalyzer = try _StructureAnalyzer(for: member, in: self)
                 _structureAnalyzersForNames[name] = structureAnalyzer
                 try structureAnalyzer.registerDeclarations()
             case let .constant(name, _, _, _), let .variable(name, _, _, _):
                 guard !_hasUnlabeledDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 _propertyAnalyzersForNames[name] = try _PropertyAnalyzer(for: member, in: self)
             case .initializer:
                 _initializerAnalyzers.append(try _InitializerAnalyzer(for: member, in: self))
             case let .function(name, _, parameters, _, _):
                 guard !_hasTypeDeclaration(named: name) else {
-                    throw .invalidRedeclaration
+                    throw .invalidRedeclaration(of: name)
                 }
                 _functionAnalyzers.append(try _FunctionAnalyzer(for: member, in: self))
                 _functionNames.insert(name)
                 if parameters.isEmpty {
                     guard !_hasConstantOrVariable(named: name) else {
-                        throw .invalidRedeclaration
+                        throw .invalidRedeclaration(of: name)
                     }
                     _unlabeledFunctionNames.insert(name)
                 }
