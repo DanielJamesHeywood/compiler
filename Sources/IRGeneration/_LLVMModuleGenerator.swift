@@ -150,32 +150,31 @@ internal final class _LLVMModuleGenerator {
         func llvmStructureType(for structure: SemanticStructure) -> LLVMStructureType {
             if let llvmStructureType = _llvmStructureTypesForStructures[structure] {
                 return llvmStructureType
-            } else {
-                precondition(
-                    !structuresBeingLowered.contains(structure),
-                    "The structure \"\(structure.name)\" recursively contains itself"
-                )
-                structuresBeingLowered.insert(structure)
-                let llvmStructureType = LLVMStructureType(
-                    elementTypes: structure.properties.map { property in
-                        switch property.type.kind {
-                        case let .structure(weakStructure):
-                            guard let structure = weakStructure.object else {
-                                preconditionFailure("The structure has been deallocated")
-                            }
-                            return llvmStructureType(for: structure)
-                        case let .integerPrimitive(bitWidth):
-                            return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
-                        case let .bytePrimitive(bitWidth):
-                            return LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
-                        }
-                    },
-                    in: llvmModule.context
-                )
-                structuresBeingLowered.remove(structure)
-                _llvmStructureTypesForStructures[structure] = llvmStructureType
-                return llvmStructureType
             }
+            precondition(
+                !structuresBeingLowered.contains(structure),
+                "The structure \"\(structure.name)\" recursively contains itself"
+            )
+            structuresBeingLowered.insert(structure)
+            let llvmStructureType = LLVMStructureType(
+                elementTypes: structure.properties.map { property in
+                    switch property.type.kind {
+                    case let .structure(weakStructure):
+                        guard let structure = weakStructure.object else {
+                            preconditionFailure("The structure has been deallocated")
+                        }
+                        return llvmStructureType(for: structure)
+                    case let .integerPrimitive(bitWidth):
+                        return LLVMIntegerType(bitWidth: bitWidth.value, in: llvmModule.context)
+                    case let .bytePrimitive(bitWidth):
+                        return LLVMByteType(bitWidth: bitWidth.value, in: llvmModule.context)
+                    }
+                },
+                in: llvmModule.context
+            )
+            structuresBeingLowered.remove(structure)
+            _llvmStructureTypesForStructures[structure] = llvmStructureType
+            return llvmStructureType
         }
         return llvmStructureType(for: structure)
     }
@@ -244,45 +243,41 @@ internal final class _LLVMModuleGenerator {
     internal func _index(for property: SemanticProperty) -> Int {
         if let index = _indicesForProperties[property] {
             return index
-        } else {
-            guard let structure = property.containingStructure else {
-                preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
-            }
-            for (index, property) in structure.properties.enumerated() {
-                _indicesForProperties[property] = index
-            }
-            return _indicesForProperties[property].unsafelyUnwrapped
         }
+        guard let structure = property.containingStructure else {
+            preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
+        }
+        for (index, property) in structure.properties.enumerated() {
+            _indicesForProperties[property] = index
+        }
+        return _indicesForProperties[property].unsafelyUnwrapped
     }
     
     @inlinable
     internal func _llvmGlobalVariable(for constant: SemanticConstant) -> LLVMGlobalVariable {
         if let llvmGlobalVariable = _llvmGlobalVariablesForConstants[constant] {
             return llvmGlobalVariable
-        } else {
-            defineLLVMGlobalVariable(for: constant)
-            return _llvmGlobalVariablesForConstants[constant].unsafelyUnwrapped
         }
+        defineLLVMGlobalVariable(for: constant)
+        return _llvmGlobalVariablesForConstants[constant].unsafelyUnwrapped
     }
     
     @inlinable
     internal func _llvmGlobalVariable(for variable: SemanticVariable) -> LLVMGlobalVariable {
         if let llvmGlobalVariable = _llvmGlobalVariablesForVariables[variable] {
             return llvmGlobalVariable
-        } else {
-            defineLLVMGlobalVariable(for: variable)
-            return _llvmGlobalVariablesForVariables[variable].unsafelyUnwrapped
         }
+        defineLLVMGlobalVariable(for: variable)
+        return _llvmGlobalVariablesForVariables[variable].unsafelyUnwrapped
     }
     
     @inlinable
     internal func _llvmFunction(for initializer: SemanticInitializer) -> LLVMFunction {
         if let llvmFunction = _llvmFunctionsForInitializers[initializer] {
             return llvmFunction
-        } else {
-            defineLLVMFunction(for: initializer)
-            return _llvmFunctionsForInitializers[initializer].unsafelyUnwrapped
         }
+        defineLLVMFunction(for: initializer)
+        return _llvmFunctionsForInitializers[initializer].unsafelyUnwrapped
     }
     
     @inlinable

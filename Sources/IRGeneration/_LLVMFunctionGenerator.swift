@@ -160,29 +160,28 @@ internal final class _LLVMFunctionGenerator {
             func llvmAggregateValue(for expression: SemanticExpression) -> LLVMValue {
                 if let llvmValue = llvmAggregateValuesForExpressions[expression] {
                     return llvmValue
-                } else {
-                    let llvmValue: LLVMValue
-                    switch expression.kind {
-                    case .variable, .self:
-                        llvmValue = _llvmValue(for: expression)
-                    case let .property(property, of: base):
-                        guard let structure = property.containingStructure else {
-                            preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
-                        }
-                        precondition(
-                            _type(of: base) == .structure(structure),
-                            "The property \"\(property.name)\" is not a member of the type of the base"
-                        )
-                        llvmValue = _llvmBuilder.buildExtraction(
-                            fromAggregate: llvmAggregateValue(for: base),
-                            at: _moduleGenerator._index(for: property)
-                        )
-                    default:
-                        preconditionFailure("The expression is not assignable")
-                    }
-                    llvmAggregateValuesForExpressions[expression] = llvmValue
-                    return llvmValue
                 }
+                let llvmValue: LLVMValue
+                switch expression.kind {
+                case .variable, .self:
+                    llvmValue = _llvmValue(for: expression)
+                case let .property(property, of: base):
+                    guard let structure = property.containingStructure else {
+                        preconditionFailure("The property \"\(property.name)\" is not a member of a structure")
+                    }
+                    precondition(
+                        _type(of: base) == .structure(structure),
+                        "The property \"\(property.name)\" is not a member of the type of the base"
+                    )
+                    llvmValue = _llvmBuilder.buildExtraction(
+                        fromAggregate: llvmAggregateValue(for: base),
+                        at: _moduleGenerator._index(for: property)
+                    )
+                default:
+                    preconditionFailure("The expression is not assignable")
+                }
+                llvmAggregateValuesForExpressions[expression] = llvmValue
+                return llvmValue
             }
             func buildAssignment(of llvmValue: LLVMValue, to destination: SemanticExpression) {
                 switch destination.kind {
